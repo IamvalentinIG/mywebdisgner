@@ -593,6 +593,18 @@
       100% { width: 100%; }
     }
 
+    /* Animation fluide pour les éléments flottants (même sur mobile) */
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(5deg); }
+      100% { transform: translateY(0) rotate(-5deg); }
+    }
+    
+    @keyframes scrollBinary {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(200%); }
+    }
+
     /* Responsive styling */
     @media (max-width: 1024px) {
       .hero-title {
@@ -682,6 +694,11 @@
       .loading-bar {
         width: 80%;
         max-width: 250px;
+      }
+
+      /* S'assurer que les animations restent fluides */
+      .bg-canvas {
+        opacity: 0.4; /* Légèrement réduit mais toujours visible */
       }
     }
 
@@ -790,11 +807,6 @@
     @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
       body {
         text-rendering: optimizeLegibility;
-      }
-      
-      /* Réduire le nombre d'animations complexes */
-      .binary-line {
-        opacity: 0.05;
       }
     }
   </style>
@@ -1070,10 +1082,20 @@
       let mouseX = width / 2;
       let mouseY = height / 2;
       
-      window.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-      });
+      // Tracking du toucher sur mobile pour l'interactivité
+      if (isMobile) {
+        document.addEventListener('touchmove', (e) => {
+          if (e.touches.length > 0) {
+            mouseX = e.touches[0].clientX;
+            mouseY = e.touches[0].clientY;
+          }
+        });
+      } else {
+        window.addEventListener('mousemove', (e) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+        });
+      }
       
       function drawFluidLines() {
         bgCtx.clearRect(0, 0, width, height);
@@ -1085,31 +1107,38 @@
         bgCtx.fillStyle = gradient;
         bgCtx.fillRect(0, 0, width, height);
         
-        // Premier niveau - lignes fluides horizontales avec opacité augmentée
-        const lineCount = isMobile ? 15 : 30; // Réduire sur mobile
+        // Version optimisée pour mobile mais toujours visuellement intéressante
+        const lineCount = isMobile ? 12 : 30; // Moins de lignes sur mobile mais toujours visible
         const spacing = height / lineCount;
+        const skipFactor = isMobile ? 15 : 5; // Moins de points sur mobile
         
+        // Premier niveau - lignes fluides horizontales
         for (let i = 0; i <= lineCount; i++) {
           bgCtx.beginPath();
-          // Couleur plus visible pour les lignes horizontales
-          bgCtx.strokeStyle = 'rgba(50, 80, 150, 0.15)'; // Bleu plus foncé avec opacité augmentée
-          bgCtx.lineWidth = 0.9; // Ligne légèrement plus épaisse
+          bgCtx.strokeStyle = 'rgba(50, 80, 150, 0.15)';
+          bgCtx.lineWidth = 0.9;
           
           const yPos = i * spacing;
           const distY = Math.abs(mouseY - yPos);
           const influence = Math.max(0, 1 - distY / (height * 0.5));
           
-          for (let x = 0; x <= width; x += isMobile ? 10 : 5) { // Moins de points sur mobile
+          for (let x = 0; x <= width; x += skipFactor) {
             const distX = Math.abs(mouseX - x);
             const mouseInfluence = Math.max(0, 1 - distX / (width * 0.3)) * 40 * influence;
             
-            // Plus d'amplitude dans les vagues
+            // Simplifier les calculs de vagues sur mobile
             const wave1 = Math.sin((x * 0.003) + (time * 0.01)) * 12;
             const wave2 = Math.sin((x * 0.001) + (time * 0.005) + i * 0.2) * 18;
-            const wave3 = Math.cos((x * 0.002) + (time * 0.007)) * 10;
-            const wave4 = Math.sin((x * 0.0015) + (time * 0.003) + i * 0.1) * 6;
             
-            let waveY = yPos + wave1 + wave2 + wave3 + wave4;
+            let waveY;
+            if (isMobile) {
+              waveY = yPos + wave1 + wave2;
+            } else {
+              const wave3 = Math.cos((x * 0.002) + (time * 0.007)) * 10;
+              const wave4 = Math.sin((x * 0.0015) + (time * 0.003) + i * 0.1) * 6;
+              waveY = yPos + wave1 + wave2 + wave3 + wave4;
+            }
+            
             waveY += mouseInfluence * Math.sin((x - mouseX) * 0.01);
             
             if (x === 0) {
@@ -1121,49 +1150,48 @@
           bgCtx.stroke();
         }
         
-        // Deuxième niveau - lignes fluides verticales plus visibles
-        // Réduire ou simplifier sur mobile
-        if (!isMobile || i % 2 === 0) { // Sur mobile, dessiner une ligne sur deux
-          for (let i = 0; i <= lineCount/1.5; i++) {
-            bgCtx.beginPath();
-            // Couleur plus visible pour les lignes verticales
-            bgCtx.strokeStyle = 'rgba(60, 90, 160, 0.12)'; // Bleu légèrement différent
-            bgCtx.lineWidth = 0.7;
+        // Deuxième niveau - lignes fluides verticales (simplifiées sur mobile)
+        const verticalLines = isMobile ? Math.floor(lineCount/3) : Math.floor(lineCount/1.5);
+        
+        for (let i = 0; i <= verticalLines; i++) {
+          // Sur mobile, dessiner seulement quelques lignes
+          if (isMobile && i % 2 !== 0) continue;
+          
+          bgCtx.beginPath();
+          bgCtx.strokeStyle = 'rgba(60, 90, 160, 0.12)';
+          bgCtx.lineWidth = 0.7;
+          
+          const xPos = i * (width / verticalLines);
+          const distX = Math.abs(mouseX - xPos);
+          const influence = Math.max(0, 1 - distX / (width * 0.5));
+          
+          for (let y = 0; y <= height; y += skipFactor) {
+            const distY = Math.abs(mouseY - y);
+            const mouseInfluence = Math.max(0, 1 - distY / (height * 0.3)) * 30 * influence;
             
-            const xPos = i * (width / (lineCount/1.5));
-            const distX = Math.abs(mouseX - xPos);
-            const influence = Math.max(0, 1 - distX / (width * 0.5));
+            const wave1 = Math.sin((y * 0.004) + (time * 0.012)) * 10;
+            const wave2 = Math.cos((y * 0.002) + (time * 0.006) + i * 0.2) * 15;
             
-            for (let y = 0; y <= height; y += isMobile ? 10 : 5) { // Moins de points sur mobile
-              const distY = Math.abs(mouseY - y);
-              const mouseInfluence = Math.max(0, 1 - distY / (height * 0.3)) * 30 * influence;
-              
-              // Vagues plus prononcées
-              const wave1 = Math.sin((y * 0.004) + (time * 0.012)) * 10;
-              const wave2 = Math.cos((y * 0.002) + (time * 0.006) + i * 0.2) * 15;
-              
-              let waveX = xPos + wave1 + wave2;
-              waveX += mouseInfluence * Math.sin((y - mouseY) * 0.01);
-              
-              if (y === 0) {
-                bgCtx.moveTo(waveX, y);
-              } else {
-                bgCtx.lineTo(waveX, y);
-              }
+            let waveX = xPos + wave1 + wave2;
+            waveX += mouseInfluence * Math.sin((y - mouseY) * 0.01);
+            
+            if (y === 0) {
+              bgCtx.moveTo(waveX, y);
+            } else {
+              bgCtx.lineTo(waveX, y);
             }
-            bgCtx.stroke();
           }
+          bgCtx.stroke();
         }
         
-        // Réduire le nombre de particules et de connexions sur mobile
-        const particleCount = isMobile ? width/30 : width/15;
+        // Particules avec quantité adaptée au mobile
+        const particleCount = Math.max(15, width / (isMobile ? 30 : 15));
         
-        // Troisième niveau - particules de bruit plus visibles
-        bgCtx.fillStyle = 'rgba(40, 70, 140, 0.08)'; // Particules plus visibles
+        bgCtx.fillStyle = 'rgba(40, 70, 140, 0.08)';
         for (let i = 0; i < particleCount; i++) {
           const x = Math.random() * width;
           const y = Math.random() * height;
-          const size = Math.random() * 2.5 + 0.7; // Particules légèrement plus grandes
+          const size = Math.random() * 2.5 + 0.7;
           
           const distX = x - mouseX;
           const distY = y - mouseY;
@@ -1177,15 +1205,13 @@
           }
         }
         
-        // Quatrième niveau - lignes de connexion plus visibles
-        // Simplifier sur mobile
+        // Sur mobile, sauter la partie des nœuds et connexions complexes
         if (!isMobile) {
-          bgCtx.strokeStyle = 'rgba(40, 70, 140, 0.06)'; // Lignes de connexion plus visibles
-          bgCtx.lineWidth = 0.4; // Lignes légèrement plus épaisses
+          bgCtx.strokeStyle = 'rgba(40, 70, 140, 0.06)';
+          bgCtx.lineWidth = 0.4;
           
-          // Création de noeuds pour les connexions
           const nodes = [];
-          const nodeCount = isMobile ? 12 : 25;
+          const nodeCount = 25;
           
           for (let i = 0; i < nodeCount; i++) {
             nodes.push({
@@ -1196,7 +1222,6 @@
             });
           }
           
-          // Mise à jour des positions des noeuds
           nodes.forEach(node => {
             node.x += node.vx;
             node.y += node.vy;
@@ -1214,14 +1239,13 @@
             }
           });
           
-          // Dessin des connexions entre noeuds proches
           for (let i = 0; i < nodes.length; i++) {
             for (let j = i + 1; j < nodes.length; j++) {
               const dx = nodes[i].x - nodes[j].x;
               const dy = nodes[i].y - nodes[j].y;
               const dist = Math.sqrt(dx * dx + dy * dy);
               
-              if (dist < 220) { // Distance de connexion augmentée
+              if (dist < 220) {
                 bgCtx.beginPath();
                 bgCtx.moveTo(nodes[i].x, nodes[i].y);
                 bgCtx.lineTo(nodes[j].x, nodes[j].y);
@@ -1233,40 +1257,40 @@
           }
         }
         
-        // Cinquième niveau - accents de couleur plus prononcés
+        // Accents de couleur adaptés au mobile
         const accentCount = isMobile ? 3 : 7;
         for (let i = 0; i < accentCount; i++) {
           bgCtx.beginPath();
           const x = Math.random() * width;
           const y = Math.random() * height;
-          const gradient = bgCtx.createRadialGradient(x, y, 0, x, y, 120 + Math.random() * 200);
+          const radius = 120 + Math.random() * (isMobile ? 100 : 200);
+          const gradient = bgCtx.createRadialGradient(x, y, 0, x, y, radius);
           
-          // Variation entre bleu et violet pour plus de profondeur
-          const hue = Math.random() > 0.6 ? 240 : 280; // Bleu ou violet
-          gradient.addColorStop(0, `hsla(${hue}, 70%, 65%, 0.08)`); // Plus visible
+          const hue = Math.random() > 0.6 ? 240 : 280;
+          gradient.addColorStop(0, `hsla(${hue}, 70%, 65%, ${isMobile ? 0.1 : 0.08})`);
           gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
           
           bgCtx.fillStyle = gradient;
-          bgCtx.arc(x, y, 120 + Math.random() * 200, 0, Math.PI * 2);
+          bgCtx.arc(x, y, radius, 0, Math.PI * 2);
           bgCtx.fill();
         }
         
-        // Animation continue - plus lent sur mobile pour économiser les ressources
-        time += isMobile ? 0.3 : 0.5;
+        // Animation continue avec vitesse adaptée pour mobile
+        time += isMobile ? 0.4 : 0.5; // Légèrement plus lent sur mobile mais toujours visible
         requestAnimationFrame(drawFluidLines);
       }
       
-      // Generate floating elements for background effect - moins sur mobile
+      // Generate floating elements with fewer on mobile but still visually interesting
       function createFloatingElements() {
         floatingElements.innerHTML = '';
-        const elementCount = isMobile ? 6 : 12;
+        const elementCount = isMobile ? 8 : 12; // Légèrement réduit mais toujours visible
         
         for (let i = 0; i < elementCount; i++) {
           const element = document.createElement('div');
           element.className = 'floating-element';
           
-          // Random size
-          const size = Math.random() * 150 + 50;
+          // Random size - plus petit sur mobile
+          const size = Math.random() * (isMobile ? 100 : 150) + (isMobile ? 30 : 50);
           element.style.width = `${size}px`;
           element.style.height = `${size}px`;
           
@@ -1276,34 +1300,32 @@
           element.style.left = `${posX}%`;
           element.style.top = `${posY}%`;
           
-          // Random opacity
-          element.style.opacity = Math.random() * 0.2 + 0.1;
+          // Random opacity - assurer la visibilité
+          element.style.opacity = (Math.random() * 0.15 + 0.1).toString();
           
-          // Random animation
-          const duration = Math.random() * 20 + 20;
+          // Random animation - plus rapide sur mobile
+          const duration = Math.random() * (isMobile ? 15 : 20) + (isMobile ? 15 : 20);
           const delay = Math.random() * 5;
           element.style.animation = `float ${duration}s ease-in-out ${delay}s infinite alternate`;
           
-          // Add to container
           floatingElements.appendChild(element);
         }
       }
       
-      // Create binary visualization - réduire sur mobile
+      // Create binary visualization
       function createBinaryVisualization() {
         binaryData.innerHTML = '';
-        // Moins de lignes sur mobile
-        const lineCount = isMobile ? 10 : 20;
+        // Réduire mais garder visible sur mobile
+        const lineCount = isMobile ? 12 : 20;
         
-        if (isMobile) {
-          binaryData.style.opacity = '0.05'; // Réduire l'opacité pour améliorer les performances
-        }
+        // Réduire l'opacité sur mobile mais garder visible
+        binaryData.style.opacity = isMobile ? '0.08' : '0.1';
         
         for (let i = 0; i < lineCount; i++) {
           const line = document.createElement('div');
           line.className = 'binary-line';
           
-          // Generate binary content
+          // Generate binary content - plus court sur mobile
           let binaryContent = '';
           const length = Math.floor(Math.random() * (isMobile ? 100 : 200)) + (isMobile ? 50 : 100);
           
@@ -1317,8 +1339,8 @@
           line.style.top = `${Math.random() * 100}%`;
           line.style.left = `${Math.random() * 100 - 50}%`;
           
-          // Animation - plus lente sur mobile
-          const duration = Math.random() * (isMobile ? 90 : 60) + (isMobile ? 60 : 30);
+          // Animation - plus lente sur mobile pour performance
+          const duration = Math.random() * (isMobile ? 80 : 60) + (isMobile ? 40 : 30);
           const delay = Math.random() * 10;
           const direction = Math.random() > 0.5 ? 1 : -1;
           
@@ -1406,7 +1428,7 @@
       function initializeAnimations() {
         // Create 3D distortion effect for hero section
         const distortionFragment = document.createDocumentFragment();
-        // Moins d'éléments sur mobile
+        // Moins d'éléments sur mobile mais visible
         const distortionCount = isMobile ? 10 : 20;
         
         for (let i = 0; i < distortionCount; i++) {
@@ -1433,14 +1455,14 @@
         // Prepare parallax backgrounds for horizontal section
         const parallaxBgs = document.querySelectorAll('.parallax-bg');
         parallaxBgs.forEach((bg, index) => {
-          // Moins d'éléments parallax sur mobile
+          // Moins d'éléments parallax sur mobile mais visibles
           const elemCount = isMobile ? 3 : 5;
           for (let i = 0; i < elemCount; i++) {
             const parallaxElement = document.createElement('div');
             parallaxElement.className = 'parallax-element';
             
-            // Random size
-            const size = Math.random() * 200 + 100;
+            // Random size - ajuster pour mobile
+            const size = Math.random() * (isMobile ? 150 : 200) + (isMobile ? 80 : 100);
             parallaxElement.style.width = `${size}px`;
             parallaxElement.style.height = `${size}px`;
             
@@ -1505,16 +1527,28 @@
         contactForm3D.style.transform = 'rotateX(0) rotateY(0)';
       });
       
-      // Create distortion effect on mouse move - simplified on mobile
+      // Create distortion effect on mouse move or touch
+      const updateDistortion = (clientX) => {
+        const distortionElements = distortionContainer.querySelectorAll('.distortion-element');
+        const mouseXPercent = clientX / window.innerWidth;
+        
+        distortionElements.forEach((element, index) => {
+          const offset = (index % 2 === 0 ? 1 : -1) * mouseXPercent * 50;
+          element.style.transform = `translateX(${offset}px)`;
+        });
+      };
+      
+      // Support both mouse and touch for distortion effect
       document.addEventListener('mousemove', (e) => {
         if (!isMobile) {
-          const distortionElements = distortionContainer.querySelectorAll('.distortion-element');
-          const mouseXPercent = e.clientX / window.innerWidth;
-          
-          distortionElements.forEach((element, index) => {
-            const offset = (index % 2 === 0 ? 1 : -1) * mouseXPercent * 50;
-            element.style.transform = `translateX(${offset}px)`;
-          });
+          updateDistortion(e.clientX);
+        }
+      });
+      
+      // Ajouter le support tactile pour les effets de distortion
+      document.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          updateDistortion(e.touches[0].clientX);
         }
       });
       
@@ -1529,22 +1563,6 @@
         }, 600);
       }, isMobile ? 1500 : 2500); // Chargement plus rapide sur mobile
     });
-
-    // Define missing keyframes animations
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = `
-      @keyframes float {
-        0% { transform: translateY(0) rotate(0deg); }
-        50% { transform: translateY(-30px) rotate(5deg); }
-        100% { transform: translateY(0) rotate(-5deg); }
-      }
-      
-      @keyframes scrollBinary {
-        from { transform: translateX(-100%); }
-        to { transform: translateX(200%); }
-      }
-    `;
-    document.head.appendChild(styleSheet);
   </script>
 </body>
 </html>
