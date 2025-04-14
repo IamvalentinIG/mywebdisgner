@@ -1,0 +1,2854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creative Developer | Immersive Experience</title>
+  <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Space+Mono&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #fff;
+      --text-color: #0e0e0e;
+      --accent-color: #FF3366;
+      --progress: 0;
+      --grid-color-1: rgba(14, 14, 14, 0.15);
+      --grid-color-2: rgba(255, 51, 102, 0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: var(--primary-color);
+      color: var(--text-color);
+      overflow-x: hidden;
+      height: 100vh;
+      perspective: 1000px;
+    }
+
+    .scroll-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr 1fr;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid var(--text-color);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      transition: transform 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+      transform: translateY(-100%);
+    }
+
+    .header-visible { transform: translateY(0); }
+
+    .logo {
+      font-family: 'Major Mono Display', monospace;
+      font-size: 2.5rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .logo::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent-color);
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover::after { transform: scaleX(1); }
+
+    .status-text {
+      font-size: 0.75rem;
+      line-height: 1.5;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--text-color);
+      font-weight: bold;
+      text-transform: uppercase;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    nav a::before {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--accent-color);
+      transform: scaleX(0);
+      transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+
+    nav a:hover::before { transform: scaleX(1); }
+
+    .freelance {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      font-size: 1rem;
+      padding-left: 1rem;
+    }
+
+    .freelance a {
+      color: var(--accent-color);
+      font-weight: bold;
+      text-decoration: none;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .freelance a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: var(--accent-color);
+      transform: scaleX(0.3);
+      transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+
+    .freelance a:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.7;
+    }
+
+    .progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 0, 0, 0.1);
+      z-index: 1001;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--accent-color);
+      width: calc(var(--progress) * 100%);
+      transition: width 0.05s linear;
+    }
+
+    section {
+      position: relative;
+      min-height: 100vh;
+      width: 100%;
+      padding: 150px 10% 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      will-change: transform;
+    }
+
+    .hero {
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .hero-title {
+      font-size: 8vw;
+      font-weight: bold;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 2rem;
+      white-space: nowrap;
+      background-image: linear-gradient(135deg, var(--text-color) 0%, var(--accent-color) 100%);
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 0 5px 15px rgba(255, 51, 102, 0.2);
+    }
+
+    .hero-subtitle {
+      font-size: 1.5rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .distortion-container, .floating-elements, .binary-data {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .binary-data {
+      pointer-events: none;
+      opacity: 0.1;
+    }
+
+    .floating-element {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 51, 102, 0.1);
+      will-change: transform;
+    }
+
+    .binary-line {
+      position: absolute;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text-color);
+      white-space: nowrap;
+      will-change: transform;
+    }
+
+    .projects {
+      background: linear-gradient(180deg, var(--primary-color) 0%, #f5f5f5 100%);
+      z-index: 2;
+    }
+
+    .projects-title, .contact-title, .grid-title, .particles-title, .about-title {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    .projects-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: var(--accent-color);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      perspective: 1000px;
+    }
+
+    .project-card {
+      height: 400px;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      transform-style: preserve-3d;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+      opacity: 0;
+      transform: translateY(50px) rotateX(10deg);
+    }
+
+    .project-card.visible {
+      opacity: 1;
+      transform: translateY(0) rotateX(0);
+    }
+
+    .project-card:hover {
+      transform: scale(1.03) translateZ(20px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .project-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .project-card:hover .project-image { transform: scale(1.05); }
+
+    .project-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 2rem;
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+      color: white;
+      transform: translateY(20%);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .project-card:hover .project-overlay {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .project-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-desc {
+      font-size: 0.875rem;
+      opacity: 0.8;
+    }
+
+    .horizontal-section {
+      height: 100vh;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .horizontal-track {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 400%;
+      display: flex;
+      will-change: transform;
+    }
+
+    .horizontal-item {
+      width: 100vw;
+      height: 100vh;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .horizontal-content {
+      width: 70%;
+      max-width: 1000px;
+      padding: 2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .horizontal-title {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .horizontal-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100px;
+      height: 4px;
+      background: var(--accent-color);
+    }
+
+    .horizontal-text {
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+
+    .parallax-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .parallax-element {
+      position: absolute;
+      will-change: transform;
+    }
+
+    .contact {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      perspective: 1000px;
+    }
+
+    .contact-form-container {
+      width: 80%;
+      max-width: 800px;
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease;
+    }
+
+    .contact-form {
+      background: white;
+      padding: 3rem;
+      border-radius: 10px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+      transform-style: preserve-3d;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: translateZ(10px);
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: 'Roboto Mono', monospace;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(255, 51, 102, 0.2);
+    }
+
+    .form-textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .submit-btn, .particles-btn {
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      transform: translateZ(20px);
+    }
+
+    .submit-btn:hover, .particles-btn:hover {
+      background: #E62955;
+      transform: translateZ(25px) scale(1.05);
+      box-shadow: 0 10px 20px rgba(230, 41, 85, 0.3);
+    }
+
+    footer {
+      background: #111;
+      color: white;
+      padding: 4rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      z-index: 5;
+    }
+
+    .footer-content { position: relative; z-index: 2; }
+
+    .footer-logo {
+      font-family: 'Major Mono Display', monospace;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .footer-link {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-link:hover { color: var(--accent-color); }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      background: var(--accent-color);
+      transform: translateY(-3px);
+    }
+
+    .copyright { opacity: 0.6; margin-top: 2rem; }
+
+    .cursor, .cursor-follower {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor {
+      width: 20px;
+      height: 20px;
+      background-color: var(--accent-color);
+      mix-blend-mode: difference;
+      transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
+    }
+
+    .cursor-follower {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--accent-color);
+      z-index: 9998;
+      opacity: 0.5;
+      transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+    }
+
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .loading-container { text-align: center; }
+
+    .loading-logo {
+      font-family: 'Major Mono Display', monospace;
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s forwards 0.2s;
+    }
+
+    .loading-bar {
+      width: 200px;
+      height: 3px;
+      background: #eee;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loading-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0;
+      background: var(--accent-color);
+      animation: loadingProgress 2s ease forwards;
+    }
+
+    .loading-text {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      opacity: 0;
+      animation: fadeIn 0.8s forwards 0.5s;
+    }
+
+    .dynamic-grid-section {
+      min-height: 100vh;
+      padding: 100px 0;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #f5f5f5 0%, #ffffff 100%);
+    }
+
+    .grid-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .canvas-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .grid-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .grid-title {
+      background-image: linear-gradient(135deg, var(--text-color) 0%, var(--accent-color) 100%);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .grid-cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .grid-card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+      transform: translateY(50px);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .grid-card.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .grid-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: var(--accent-color);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.4s ease;
+    }
+
+    .grid-card:hover::before { transform: scaleY(1); }
+
+    .grid-card-title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+
+    .grid-card-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 2px;
+      background: var(--accent-color);
+    }
+
+    .grid-card-content {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .grid-card-icon {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      font-size: 1.5rem;
+      opacity: 0.3;
+      transition: opacity 0.3s ease;
+    }
+
+    .grid-card:hover .grid-card-icon { opacity: 0.8; }
+
+    .interactive-particles-section {
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%);
+    }
+
+    .particles-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #particlesCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .particles-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      width: 80%;
+      max-width: 1000px;
+      padding: 3rem;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+      transform: translateZ(50px);
+    }
+
+    .particles-description {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .particles-buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+
+    /* NOUVELLE SECTION: About Me avec effets 3D avancés */
+    .about-section {
+      position: relative;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%);
+      overflow: hidden;
+      padding: 100px 0;
+      z-index: 2;
+    }
+
+    .about-container {
+      position: relative;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      z-index: 2;
+    }
+
+    .about-title {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      background-image: linear-gradient(135deg, var(--text-color) 0%, var(--accent-color) 100%);
+      -webkit-background-clip: text;
+      color: transparent;
+      text-align: center;
+    }
+
+    .about-subtitle {
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto 3rem;
+      text-align: center;
+      color: rgba(14, 14, 14, 0.7);
+    }
+
+    .code-editor-container {
+      width: 100%;
+      max-width: 1200px;
+      height: 500px;
+      margin: 0 auto 4rem;
+      position: relative;
+      border-radius: 10px;
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    .code-editor-wrapper {
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease;
+    }
+
+    .code-editor-tab-bar {
+      height: 45px;
+      background: #1e1e1e;
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+
+    .code-editor-tab {
+      height: 35px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.85rem;
+      background: rgba(255, 255, 255, 0.05);
+      margin-right: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .code-editor-tab.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .code-editor-tab:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .code-editor-main {
+      height: calc(100% - 45px);
+      background: #1e1e1e;
+      display: flex;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+
+    .code-editor-line-numbers {
+      width: 50px;
+      height: 100%;
+      background: #252526;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.9rem;
+      text-align: right;
+      padding: 10px 5px;
+      user-select: none;
+    }
+
+    .code-editor-content {
+      flex: 1;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .code-editor-code {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #d4d4d4;
+      white-space: pre;
+      overflow: auto;
+    }
+
+    .code-token-keyword { color: #569CD6; }
+    .code-token-string { color: #CE9178; }
+    .code-token-comment { color: #6A9955; }
+    .code-token-function { color: #DCDCAA; }
+    .code-token-variable { color: #9CDCFE; }
+    .code-token-method { color: #DCDCAA; }
+    .code-token-number { color: #B5CEA8; }
+    .code-token-property { color: #9CDCFE; }
+    .code-token-operator { color: #D4D4D4; }
+    .code-token-class { color: #4EC9B0; }
+
+    .code-cursor {
+      position: absolute;
+      width: 2px;
+      background: white;
+      animation: blink 0.8s infinite;
+    }
+
+    .floating-code-blocks {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      perspective: 1000px;
+    }
+
+    .floating-code-block {
+      position: absolute;
+      background: rgba(30, 30, 30, 0.7);
+      border-radius: 6px;
+      padding: 10px 15px;
+      backdrop-filter: blur(5px);
+      transform-style: preserve-3d;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #d4d4d4;
+      will-change: transform;
+      white-space: nowrap;
+    }
+
+    .skill-wheels-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin: 0 auto;
+      max-width: 1200px;
+    }
+
+    .skill-wheel {
+      position: relative;
+      width: 220px;
+      height: 220px;
+    }
+
+    .skill-wheel-inner {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 51, 102, 0.2);
+      transform-style: preserve-3d;
+      transition: transform 1s ease;
+    }
+
+    .skill-wheel-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 75%;
+      height: 75%;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .skill-wheel-title {
+      font-weight: bold;
+      font-size: 1rem;
+      color: var(--accent-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .skill-wheel-percent {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .skill-tag {
+      position: absolute;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      font-size: 0.8rem;
+      white-space: nowrap;
+      transform-style: preserve-3d;
+      transform-origin: center;
+      transition: all 0.3s ease;
+    }
+
+    .skill-tag:hover {
+      transform: scale(1.1) translateZ(20px);
+      background: var(--accent-color);
+      color: white;
+    }
+
+    .about-cta {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .about-cta-btn {
+      background: transparent;
+      border: 2px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .about-cta-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100%;
+      background: var(--accent-color);
+      transition: width 0.3s ease;
+      z-index: -1;
+    }
+
+    .about-cta-btn:hover {
+      color: white;
+    }
+
+    .about-cta-btn:hover::before {
+      width: 100%;
+    }
+
+    .canvas-neural {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 0.7; }
+    }
+
+    @keyframes loadingProgress {
+      0% { width: 0; }
+      10% { width: 10%; }
+      30% { width: 40%; }
+      60% { width: 60%; }
+      80% { width: 80%; }
+      100% { width: 100%; }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(5deg); }
+      100% { transform: translateY(0) rotate(-5deg); }
+    }
+    
+    @keyframes scrollBinary {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(200%); }
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    @keyframes moveBackground {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @media (max-width: 1024px) {
+      .hero-title { font-size: 12vw; }
+      .gallery { grid-template-columns: 1fr; }
+      .horizontal-content { width: 85%; }
+      .horizontal-title { font-size: 3rem; }
+      .grid-cards-container { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+      .skill-wheels-container { gap: 1rem; }
+      .skill-wheel { width: 180px; height: 180px; }
+      .code-editor-container { height: 400px; }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 1rem;
+      }
+      .status-text {
+        grid-column: 1 / -1;
+        text-align: center;
+      }
+      nav {
+        grid-column: 1 / -1;
+        justify-content: space-around;
+      }
+      .hero-title { font-size: 15vw; }
+      .horizontal-title, .grid-title, .particles-title, .about-title { font-size: 2.5rem; }
+      .contact-form, .particles-content { padding: 2rem; }
+      .particles-content { width: 90%; }
+      .about-cta { flex-direction: column; align-items: center; }
+      .skill-wheel { width: 150px; height: 150px; }
+      .code-editor-container { height: 350px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title { font-size: 18vw; }
+      .horizontal-title, .projects-title, .contact-title, .about-title { font-size: 2rem; }
+      .grid-cards-container { grid-template-columns: 1fr; }
+      .particles-buttons { flex-direction: column; }
+      .skill-wheels-container { flex-direction: column; align-items: center; }
+      .code-editor-container { height: 300px; }
+      .about-subtitle { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-container">
+      <div class="loading-logo">NW</div>
+      <div class="loading-bar"><div class="loading-progress"></div></div>
+      <div class="loading-text">Building something amazing...</div>
+    </div>
+  </div>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursorFollower"></div>
+
+  <!-- Progress bar -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Header -->
+  <header id="header">
+    <div class="logo">NW</div>
+    <div class="status-text">
+      Animating pixels with passion<br>
+      Creating immersive experiences<br>
+      Pushing creative boundaries
+    </div>
+    <nav>
+      <a href="#hero" class="nav-link">Home</a>
+      <a href="#projects" class="nav-link">Work</a>
+      <a href="#horizontal" class="nav-link">Skills</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </nav>
+    <div class="freelance">
+      <div>Available for freelance work &rarr; <a href="#contact">Hire me</a></div>
+    </div>
+  </header>
+
+  <!-- Scroll container -->
+  <div class="scroll-container" id="scrollContainer">
+    <!-- Interactive background canvas -->
+    <canvas class="bg-canvas" id="bgCanvas"></canvas>
+    
+    <!-- Binary data visualization -->
+    <div class="binary-data" id="binaryData"></div>
+    
+    <!-- Hero section -->
+    <section class="hero" id="hero">
+      <div class="distortion-container" id="distortionContainer"></div>
+      <div class="floating-elements" id="floatingElements"></div>
+      
+      <div class="hero-content">
+        <h1 class="hero-title">Creative<br>Developer</h1>
+        <p class="hero-subtitle">Crafting immersive digital experiences where code meets design. Pushing the boundaries of web interactions.</p>
+      </div>
+    </section>
+    
+    <!-- Projects section -->
+    <section class="projects" id="projects">
+      <h2 class="projects-title">Selected Works</h2>
+      <div class="gallery" id="projectsGallery">
+        <div class="project-card">
+          <img src="/api/placeholder/800/600" alt="Project 1" class="project-image">
+          <div class="project-overlay">
+            <h3 class="project-title">Immersive Experience</h3>
+            <p class="project-desc">WebGL-powered interactive installation for a luxury brand</p>
+          </div>
+        </div>
+        <div class="project-card">
+          <img src="/api/placeholder/800/600" alt="Project 2" class="project-image">
+          <div class="project-overlay">
+            <h3 class="project-title">Data Visualization</h3>
+            <p class="project-desc">Real-time 3D visualization of global data patterns</p>
+          </div>
+        </div>
+        <div class="project-card">
+          <img src="/api/placeholder/800/600" alt="Project 3" class="project-image">
+          <div class="project-overlay">
+            <h3 class="project-title">Motion Graphics</h3>
+            <p class="project-desc">Particle-based animation system for digital storytelling</p>
+          </div>
+        </div>
+        <div class="project-card">
+          <img src="/api/placeholder/800/600" alt="Project 4" class="project-image">
+          <div class="project-overlay">
+            <h3 class="project-title">Interactive Art</h3>
+            <p class="project-desc">Audio-reactive visuals for music festival</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Horizontal scroll section -->
+    <section class="horizontal-section" id="horizontal">
+      <div class="horizontal-track" id="horizontalTrack">
+        <div class="horizontal-item">
+          <div class="horizontal-content">
+            <h2 class="horizontal-title">Creative Development</h2>
+            <p class="horizontal-text">Specializing in WebGL, Three.js, and GLSL to create immersive 3D experiences directly in the browser. Pushing the boundaries of what's possible on the web with performance-optimized animations and interactions.</p>
+          </div>
+          <div class="parallax-bg" id="parallaxBg1"></div>
+        </div>
+        <div class="horizontal-item">
+          <div class="horizontal-content">
+            <h2 class="horizontal-title">Interactive Design</h2>
+            <p class="horizontal-text">Creating responsive interfaces that adapt to user behavior. Implementing micro-interactions and subtle animations that enhance usability while providing memorable experiences.</p>
+          </div>
+          <div class="parallax-bg" id="parallaxBg2"></div>
+        </div>
+        <div class="horizontal-item">
+          <div class="horizontal-content">
+            <h2 class="horizontal-title">Technical Expertise</h2>
+            <p class="horizontal-text">Proficient in modern JavaScript (ES6+), React, Vue.js, and Svelte. Performance optimization through efficient rendering techniques, memory management, and asset loading strategies.</p>
+          </div>
+          <div class="parallax-bg" id="parallaxBg3"></div>
+        </div>
+        <div class="horizontal-item">
+          <div class="horizontal-content">
+            <h2 class="horizontal-title">Creative Process</h2>
+            <p class="horizontal-text">Combining technical knowledge with artistic sensibility to transform concepts into reality. Working closely with designers and stakeholders to ensure that the technical implementation enhances the creative vision.</p>
+          </div>
+          <div class="parallax-bg" id="parallaxBg4"></div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- About Me section with Code Editor Effect -->
+    <section class="about-section" id="about">
+      <canvas class="canvas-neural" id="neuralCanvas"></canvas>
+      
+      <div class="about-container">
+        <h2 class="about-title">About Me</h2>
+        <p class="about-subtitle">Passionate creative developer with expertise in building immersive web experiences that blur the line between art and technology.</p>
+        
+        <!-- Interactive Code Editor -->
+        <div class="code-editor-container" id="codeEditorContainer">
+          <div class="code-editor-wrapper" id="codeEditorWrapper">
+            <div class="code-editor-tab-bar">
+              <div class="code-editor-tab active">about-me.js</div>
+              <div class="code-editor-tab">skills.js</div>
+              <div class="code-editor-tab">experience.js</div>
+            </div>
+            <div class="code-editor-main">
+              <div class="code-editor-line-numbers" id="lineNumbers"></div>
+              <div class="code-editor-content">
+                <div class="code-editor-code" id="editorCode"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Floating Code Blocks -->
+        <div class="floating-code-blocks" id="floatingCodeBlocks"></div>
+        
+        <!-- Skill Wheels -->
+        <div class="skill-wheels-container">
+          <div class="skill-wheel">
+            <div class="skill-wheel-inner" id="frontendWheel">
+              <div class="skill-wheel-content">
+                <div class="skill-wheel-title">Frontend</div>
+                <div class="skill-wheel-percent">95%</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="skill-wheel">
+            <div class="skill-wheel-inner" id="backendWheel">
+              <div class="skill-wheel-content">
+                <div class="skill-wheel-title">Backend</div>
+                <div class="skill-wheel-percent">85%</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="skill-wheel">
+            <div class="skill-wheel-inner" id="creativeWheel">
+              <div class="skill-wheel-content">
+                <div class="skill-wheel-title">Creative Coding</div>
+                <div class="skill-wheel-percent">90%</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="skill-wheel">
+            <div class="skill-wheel-inner" id="uiWheel">
+              <div class="skill-wheel-content">
+                <div class="skill-wheel-title">UI/UX</div>
+                <div class="skill-wheel-percent">88%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="about-cta">
+          <a href="#contact" class="about-cta-btn">Get in Touch</a>
+          <a href="#" class="about-cta-btn">Download Resume</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact section -->
+    <section class="contact" id="contact">
+      <h2 class="contact-title">Let's Create Something Amazing</h2>
+      <div class="contact-form-container" id="contactForm3D">
+        <form class="contact-form">
+          <div class="form-group">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" id="name" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label for="message" class="form-label">Your Project</label>
+            <textarea id="message" class="form-textarea" required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">Send Message</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Grid section -->
+    <section class="dynamic-grid-section" id="gridSection">
+      <div class="grid-container">
+        <canvas class="canvas-grid" id="canvasGrid"></canvas>
+      </div>
+
+      <div class="grid-content">
+        <h2 class="grid-title">Cutting-Edge Solutions</h2>
+        <div class="grid-cards-container" id="gridCards">
+          <div class="grid-card">
+            <div class="grid-card-icon">⚡</div>
+            <h3 class="grid-card-title">Performance Optimization</h3>
+            <p class="grid-card-content">
+              Leveraging advanced techniques to create highly optimized web applications that load fast and run smoothly, even with complex animations and interactions.
+            </p>
+          </div>
+          <div class="grid-card">
+            <div class="grid-card-icon">🔮</div>
+            <h3 class="grid-card-title">Interactive Storytelling</h3>
+            <p class="grid-card-content">
+              Crafting narrative-driven experiences that respond to user actions, creating memorable journeys that keep your audience engaged and immersed.
+            </p>
+          </div>
+          <div class="grid-card">
+            <div class="grid-card-icon">🧠</div>
+            <h3 class="grid-card-title">AI Integration</h3>
+            <p class="grid-card-content">
+              Implementing cutting-edge artificial intelligence solutions to create personalized, adaptive experiences that evolve based on user behavior.
+            </p>
+          </div>
+          <div class="grid-card">
+            <div class="grid-card-icon">🌐</div>
+            <h3 class="grid-card-title">WebGL Experiences</h3>
+            <p class="grid-card-content">
+              Developing sophisticated 3D environments and visualizations directly in the browser, providing immersive experiences without plugins or special software.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Particles section -->
+    <section class="interactive-particles-section" id="interactiveSection">
+      <div class="particles-container">
+        <canvas id="particlesCanvas"></canvas>
+        <div class="particles-content">
+          <h2 class="particles-title">Experience the Future</h2>
+          <p class="particles-description">
+            Ready to transform your digital presence with cutting-edge creative development? From immersive 3D experiences to interactive storytelling, I'll help you push the boundaries of what's possible on the web.
+          </p>
+          <div class="particles-buttons">
+            <button class="particles-btn" id="exploreBtn">Explore Possibilities</button>
+            <button class="particles-btn" id="contactBtn">Start a Project</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <div class="footer-logo">NW</div>
+        <div class="footer-links">
+          <a href="#" class="footer-link">Home</a>
+          <a href="#" class="footer-link">Work</a>
+          <a href="#" class="footer-link">About</a>
+          <a href="#" class="footer-link">Contact</a>
+        </div>
+        <div class="footer-social">
+          <a href="#" class="social-icon">in</a>
+          <a href="#" class="social-icon">Tw</a>
+          <a href="#" class="social-icon">Ig</a>
+          <a href="#" class="social-icon">Gh</a>
+        </div>
+        <div class="copyright">&copy; 2025 Creative Developer. All rights reserved.</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Init variables & elements
+      const elements = {
+        header: document.getElementById('header'),
+        loadingScreen: document.getElementById('loadingScreen'),
+        cursor: document.getElementById('cursor'),
+        cursorFollower: document.getElementById('cursorFollower'),
+        progressBar: document.getElementById('progressBar'),
+        projectCards: document.querySelectorAll('.project-card'),
+        gridCards: document.querySelectorAll('.grid-card'),
+        horizontalTrack: document.getElementById('horizontalTrack'),
+        horizontalSection: document.getElementById('horizontal'),
+        contactForm3D: document.getElementById('contactForm3D'),
+        bgCanvas: document.getElementById('bgCanvas'),
+        canvasGrid: document.getElementById('canvasGrid'),
+        particlesCanvas: document.getElementById('particlesCanvas'),
+        binaryData: document.getElementById('binaryData'),
+        distortionContainer: document.getElementById('distortionContainer'),
+        floatingElements: document.getElementById('floatingElements'),
+        exploreBtn: document.getElementById('exploreBtn'),
+        contactBtn: document.getElementById('contactBtn'),
+        // Nouveaux éléments
+        neuralCanvas: document.getElementById('neuralCanvas'),
+        codeEditorContainer: document.getElementById('codeEditorContainer'),
+        codeEditorWrapper: document.getElementById('codeEditorWrapper'),
+        editorCode: document.getElementById('editorCode'),
+        lineNumbers: document.getElementById('lineNumbers'),
+        floatingCodeBlocks: document.getElementById('floatingCodeBlocks'),
+        frontendWheel: document.getElementById('frontendWheel'),
+        backendWheel: document.getElementById('backendWheel'),
+        creativeWheel: document.getElementById('creativeWheel'),
+        uiWheel: document.getElementById('uiWheel')
+      };
+
+      const state = {
+        lastScrollTop: 0,
+        scrollDirection: 'down',
+        ticking: false,
+        isHorizontalActive: false,
+        windowHeight: window.innerHeight,
+        totalScrollHeight: document.documentElement.scrollHeight - window.innerHeight,
+        time: 0,
+        mouseX: window.innerWidth / 2,
+        mouseY: window.innerHeight / 2,
+        // Nouveaux états
+        codeEditorRotateX: 0,
+        codeEditorRotateY: 0,
+        activeTab: 0,
+        typingSpeed: 70,
+        currentCodeLine: 0,
+        codeEditorAnimationActive: false,
+        neuralNodes: [],
+        neuralConnections: [],
+        skillWheelsAnimated: false
+      };
+
+      const bgCtx = elements.bgCanvas.getContext('2d');
+      let width = elements.bgCanvas.width = window.innerWidth;
+      let height = elements.bgCanvas.height = window.innerHeight;
+
+      // Core functions
+      function resizeCanvas() {
+        width = elements.bgCanvas.width = window.innerWidth;
+        height = elements.bgCanvas.height = window.innerHeight;
+
+        if (elements.canvasGrid) {
+          elements.canvasGrid.width = window.innerWidth;
+          elements.canvasGrid.height = document.querySelector('.dynamic-grid-section').offsetHeight;
+        }
+
+        if (elements.particlesCanvas) {
+          elements.particlesCanvas.width = window.innerWidth;
+          elements.particlesCanvas.height = document.querySelector('.interactive-particles-section').offsetHeight;
+        }
+        
+        if (elements.neuralCanvas) {
+          elements.neuralCanvas.width = window.innerWidth;
+          elements.neuralCanvas.height = document.querySelector('.about-section').offsetHeight;
+          initNeuralNetwork(); // réinitialiser le réseau neuronal lors du redimensionnement
+        }
+        
+        state.windowHeight = window.innerHeight;
+        state.totalScrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      }
+
+      function moveCursor(x, y) {
+        elements.cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        setTimeout(() => {
+          elements.cursorFollower.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        }, 70);
+      }
+
+      function drawFluidLines() {
+        bgCtx.clearRect(0, 0, width, height);
+        
+        // Background
+        bgCtx.fillStyle = 'rgba(245, 245, 255, 0.9)';
+        bgCtx.fillRect(0, 0, width, height);
+        
+        // Grid
+        const gridSize = 50;
+        
+        // Horizontal lines
+        bgCtx.lineWidth = 1;
+        bgCtx.strokeStyle = 'rgba(14, 14, 14, 0.07)';
+        
+        for (let y = 0; y <= height; y += gridSize) {
+          bgCtx.beginPath();
+          for (let x = 0; x <= width; x += 5) {
+            const distFromMouse = Math.sqrt(Math.pow(x - state.mouseX, 2) + Math.pow(y - state.mouseY, 2));
+            const influence = Math.max(0, 1 - distFromMouse / 300);
+            const waveY = y + Math.sin((x * 0.01) + (state.time * 0.05)) * 5 * influence;
+            if (x === 0) bgCtx.moveTo(x, waveY);
+            else bgCtx.lineTo(x, waveY);
+          }
+          bgCtx.stroke();
+        }
+        
+        // Vertical lines
+        bgCtx.strokeStyle = 'rgba(255, 51, 102, 0.07)';
+        for (let x = 0; x <= width; x += gridSize) {
+          bgCtx.beginPath();
+          for (let y = 0; y <= height; y += 5) {
+            const distFromMouse = Math.sqrt(Math.pow(x - state.mouseX, 2) + Math.pow(y - state.mouseY, 2));
+            const influence = Math.max(0, 1 - distFromMouse / 300);
+            const waveX = x + Math.sin((y * 0.01) + (state.time * 0.05)) * 5 * influence;
+            if (y === 0) bgCtx.moveTo(waveX, y);
+            else bgCtx.lineTo(waveX, y);
+          }
+          bgCtx.stroke();
+        }
+        
+        // Grid points
+        for (let x = 0; x <= width; x += gridSize) {
+          for (let y = 0; y <= height; y += gridSize) {
+            const distFromMouse = Math.sqrt(Math.pow(x - state.mouseX, 2) + Math.pow(y - state.mouseY, 2));
+            
+            if (distFromMouse < 300) {
+              const size = 2 + (1 - distFromMouse / 300) * 5;
+              const alpha = 0.2 + (1 - distFromMouse / 300) * 0.8;
+              bgCtx.fillStyle = distFromMouse < 150 
+                ? `rgba(255, 51, 102, ${alpha})` 
+                : `rgba(14, 14, 14, ${alpha * 0.3})`;
+              bgCtx.beginPath();
+              bgCtx.arc(x, y, size, 0, Math.PI * 2);
+              bgCtx.fill();
+            } else {
+              bgCtx.fillStyle = Math.random() > 0.5 
+                ? 'rgba(14, 14, 14, 0.15)' 
+                : 'rgba(255, 51, 102, 0.12)';
+              bgCtx.beginPath();
+              bgCtx.arc(x, y, 1, 0, Math.PI * 2);
+              bgCtx.fill();
+            }
+          }
+        }
+        
+        // Mouse connections
+        bgCtx.strokeStyle = 'rgba(255, 51, 102, 0.1)';
+        bgCtx.lineWidth = 0.5;
+        
+        const connectedPoints = [];
+        for (let x = 0; x <= width; x += gridSize) {
+          for (let y = 0; y <= height; y += gridSize) {
+            const distFromMouse = Math.sqrt(Math.pow(x - state.mouseX, 2) + Math.pow(y - state.mouseY, 2));
+            if (distFromMouse < 250) connectedPoints.push({ x, y, dist: distFromMouse });
+          }
+        }
+        
+        for (let i = 0; i < connectedPoints.length; i++) {
+          for (let j = i + 1; j < connectedPoints.length; j++) {
+            const p1 = connectedPoints[i], p2 = connectedPoints[j];
+            const dist = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+            
+            if (dist < 150) {
+              bgCtx.strokeStyle = `rgba(255, 51, 102, ${(1 - dist / 150) * 0.2})`;
+              bgCtx.beginPath();
+              bgCtx.moveTo(p1.x, p1.y);
+              bgCtx.lineTo(p2.x, p2.y);
+              bgCtx.stroke();
+            }
+          }
+        }
+        
+        // Mouse glow
+        const radialGradient = bgCtx.createRadialGradient(state.mouseX, state.mouseY, 0, state.mouseX, state.mouseY, 200);
+        radialGradient.addColorStop(0, 'rgba(255, 51, 102, 0.03)');
+        radialGradient.addColorStop(0.5, 'rgba(255, 51, 102, 0.01)');
+        radialGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        
+        bgCtx.fillStyle = radialGradient;
+        bgCtx.beginPath();
+        bgCtx.arc(state.mouseX, state.mouseY, 200, 0, Math.PI * 2);
+        bgCtx.fill();
+        
+        state.time += 0.5;
+        requestAnimationFrame(drawFluidLines);
+      }
+
+      function createFloatingElements() {
+        elements.floatingElements.innerHTML = '';
+        for (let i = 0; i < 12; i++) {
+          const element = document.createElement('div');
+          element.className = 'floating-element';
+          const size = Math.random() * 150 + 50;
+          element.style.width = `${size}px`;
+          element.style.height = `${size}px`;
+          element.style.left = `${Math.random() * 100}%`;
+          element.style.top = `${Math.random() * 100}%`;
+          element.style.opacity = Math.random() * 0.2 + 0.1;
+          element.style.animation = `float ${Math.random() * 20 + 20}s ease-in-out ${Math.random() * 5}s infinite alternate`;
+          elements.floatingElements.appendChild(element);
+        }
+      }
+
+      function createBinaryVisualization() {
+        elements.binaryData.innerHTML = '';
+        for (let i = 0; i < 20; i++) {
+          const line = document.createElement('div');
+          line.className = 'binary-line';
+          let binaryContent = '';
+          const length = Math.floor(Math.random() * 200) + 100;
+          for (let j = 0; j < length; j++) {
+            binaryContent += Math.random() > 0.5 ? '1' : '0';
+          }
+          line.textContent = binaryContent;
+          line.style.top = `${Math.random() * 100}%`;
+          line.style.left = `${Math.random() * 100 - 50}%`;
+          const duration = Math.random() * 60 + 30;
+          const delay = Math.random() * 10;
+          const direction = Math.random() > 0.5 ? 1 : -1;
+          line.style.animation = `scrollBinary ${duration}s linear ${delay}s infinite ${direction > 0 ? 'normal' : 'reverse'}`;
+          elements.binaryData.appendChild(line);
+        }
+      }
+
+      function updateHorizontalScroll() {
+        if (!elements.horizontalSection) return;
+        
+        const horizontalRect = elements.horizontalSection.getBoundingClientRect();
+        const distanceFromTop = horizontalRect.top;
+        
+        if (distanceFromTop <= 0 && distanceFromTop >= -horizontalRect.height) {
+          state.isHorizontalActive = true;
+          const horizontalScrollLength = elements.horizontalTrack.offsetWidth - window.innerWidth;
+          const scrollProgress = Math.min(1, Math.max(0, -distanceFromTop / horizontalRect.height));
+          elements.horizontalTrack.style.transform = `translateX(${-scrollProgress * horizontalScrollLength}px)`;
+          
+          document.querySelectorAll('.parallax-bg').forEach((layer, index) => {
+            const speed = 0.05 * (index + 1);
+            layer.style.transform = `translateX(${-scrollProgress * 100 * speed}%)`;
+          });
+        } else {
+          state.isHorizontalActive = false;
+        }
+      }
+
+      function initGridCanvas() {
+        if (!elements.canvasGrid) return;
+        
+        const ctx = elements.canvasGrid.getContext('2d');
+        const gridSection = document.querySelector('.dynamic-grid-section');
+        let gridTime = 0;
+        let gridPoints = [];
+        
+        function initGridPoints() {
+          gridPoints = [];
+          const spacing = 30;
+          for (let x = 0; x < elements.canvasGrid.width; x += spacing) {
+            for (let y = 0; y < elements.canvasGrid.height; y += spacing) {
+              gridPoints.push({
+                x, y, baseX: x, baseY: y, vx: 0, vy: 0,
+                size: Math.random() * 2 + 1
+              });
+            }
+          }
+        }
+        
+        function animateGrid() {
+          if (!elements.canvasGrid) return;
+          ctx.clearRect(0, 0, elements.canvasGrid.width, elements.canvasGrid.height);
+          
+          const gridRect = gridSection.getBoundingClientRect();
+          const isVisible = gridRect.top < state.windowHeight && gridRect.bottom > 0;
+          
+          if (isVisible) {
+            for (let i = 0; i < gridPoints.length; i++) {
+              const p1 = gridPoints[i];
+              p1.x = p1.baseX + Math.sin((p1.baseY * 0.01) + (gridTime * 0.1)) * 15;
+              p1.y = p1.baseY + Math.cos((p1.baseX * 0.01) + (gridTime * 0.1)) * 15;
+              
+              for (let j = i + 1; j < gridPoints.length; j++) {
+                const p2 = gridPoints[j];
+                const dist = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+                
+                if (dist < 60) {
+                  ctx.strokeStyle = `rgba(255, 51, 102, ${(1 - dist / 60) * 0.15})`;
+                  ctx.beginPath();
+                  ctx.moveTo(p1.x, p1.y);
+                  ctx.lineTo(p2.x, p2.y);
+                  ctx.stroke();
+                }
+              }
+            }
+            
+            for (const point of gridPoints) {
+              ctx.fillStyle = (Math.floor(point.baseX / 30) + Math.floor(point.baseY / 30)) % 2 === 0 
+                ? 'rgba(14, 14, 14, 0.15)' 
+                : 'rgba(255, 51, 102, 0.12)';
+              ctx.beginPath();
+              ctx.arc(point.x, point.y, point.size, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            
+            gridTime += 0.5;
+          }
+          
+          requestAnimationFrame(animateGrid);
+        }
+        
+        elements.canvasGrid.addEventListener('mousemove', (e) => {
+          const rect = elements.canvasGrid.getBoundingClientRect();
+          const mouseX = e.clientX - rect.left;
+          const mouseY = e.clientY - rect.top;
+          
+          for (const point of gridPoints) {
+            const dist = Math.sqrt(Math.pow(point.x - mouseX, 2) + Math.pow(point.y - mouseY, 2));
+            if (dist < 100) {
+              const force = (1 - dist / 100) * 5;
+              const angle = Math.atan2(point.y - mouseY, point.x - mouseX);
+              point.vx += Math.cos(angle) * force;
+              point.vy += Math.sin(angle) * force;
+            }
+          }
+        });
+        
+        initGridPoints();
+        animateGrid();
+      }
+
+      function initParticlesCanvas() {
+        if (!elements.particlesCanvas) return;
+        
+        const ctx = elements.particlesCanvas.getContext('2d');
+        let particles = [];
+        let flowfield = [];
+        let mouseInfluence = { x: 0, y: 0, power: 0 };
+        
+        class Particle {
+          constructor(x, y) {
+            this.pos = { x, y };
+            this.prevPos = { x, y };
+            this.vel = { x: 0, y: 0 };
+            this.acc = { x: 0, y: 0 };
+            this.color = Math.random() > 0.5 ? '#0e0e0e' : '#FF3366';
+            this.alpha = Math.random() * 0.5 + 0.1;
+            this.size = Math.random() * 2 + 1;
+            this.maxSpeed = Math.random() * 2 + 2;
+          }
+          
+          update() {
+            this.prevPos.x = this.pos.x;
+            this.prevPos.y = this.pos.y;
+            
+            // Flow field influence
+            const x = Math.floor(this.pos.x / 20);
+            const y = Math.floor(this.pos.y / 20);
+            const index = x + y * Math.floor(elements.particlesCanvas.width / 20);
+            
+            if (flowfield[index]) {
+              this.acc.x += flowfield[index].x * 0.1;
+              this.acc.y += flowfield[index].y * 0.1;
+            }
+            
+            // Mouse influence
+            const dx = this.pos.x - mouseInfluence.x;
+            const dy = this.pos.y - mouseInfluence.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            if (dist < 200 && mouseInfluence.power > 0) {
+              const force = (1 - dist / 200) * mouseInfluence.power * 0.5;
+              this.acc.x += (dx / dist) * force;
+              this.acc.y += (dy / dist) * force;
+            }
+            
+            // Update velocity & position
+            this.vel.x += this.acc.x;
+            this.vel.y += this.acc.y;
+            
+            // Limit speed
+            const speed = Math.sqrt(this.vel.x * this.vel.x + this.vel.y * this.vel.y);
+            if (speed > this.maxSpeed) {
+              this.vel.x = (this.vel.x / speed) * this.maxSpeed;
+              this.vel.y = (this.vel.y / speed) * this.maxSpeed;
+            }
+            
+            this.pos.x += this.vel.x;
+            this.pos.y += this.vel.y;
+            this.acc.x = this.acc.y = 0;
+            
+            // Bounce on edges
+            if (this.pos.x < 0) {
+              this.pos.x = 0;
+              this.vel.x *= -1;
+            }
+            if (this.pos.x > elements.particlesCanvas.width) {
+              this.pos.x = elements.particlesCanvas.width;
+              this.vel.x *= -1;
+            }
+            if (this.pos.y < 0) {
+              this.pos.y = 0;
+              this.vel.y *= -1;
+            }
+            if (this.pos.y > elements.particlesCanvas.height) {
+              this.pos.y = elements.particlesCanvas.height;
+              this.vel.y *= -1;
+            }
+          }
+          
+          draw() {
+            ctx.beginPath();
+            ctx.strokeStyle = this.color;
+            ctx.globalAlpha = this.alpha;
+            ctx.lineWidth = this.size;
+            ctx.moveTo(this.prevPos.x, this.prevPos.y);
+            ctx.lineTo(this.pos.x, this.pos.y);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
+        }
+        
+        function createFlowField() {
+          const cols = Math.floor(elements.particlesCanvas.width / 20);
+          const rows = Math.floor(elements.particlesCanvas.height / 20);
+          flowfield = new Array(cols * rows);
+          
+          const zoff = Math.random() * 1000;
+          
+          for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+              const angle = simplex2D(x / 20, y / 20 + zoff) * Math.PI * 2;
+              flowfield[x + y * cols] = {
+                x: Math.cos(angle),
+                y: Math.sin(angle)
+              };
+            }
+          }
+        }
+        
+        function simplex2D(x, y) {
+          const F2 = 0.5 * (Math.sqrt(3) - 1);
+          const G2 = (3 - Math.sqrt(3)) / 6;
+          const s = (x + y) * F2;
+          const i = Math.floor(x + s);
+          const j = Math.floor(y + s);
+          const t = (i + j) * G2;
+          const X0 = i - t;
+          const Y0 = j - t;
+          const x0 = x - X0;
+          const y0 = y - Y0;
+          const i1 = x0 > y0 ? 1 : 0;
+          const j1 = x0 > y0 ? 0 : 1;
+          const x1 = x0 - i1 + G2;
+          const y1 = y0 - j1 + G2;
+          const x2 = x0 - 1 + 2 * G2;
+          const y2 = y0 - 1 + 2 * G2;
+          
+          const hash = (a, b) => ((Math.sin(a * 127.1 + b * 311.7) * 43758.5453) % 1 + 1) * 0.5;
+          const dot = (g, a, b) => g[0] * a + g[1] * b;
+          const grad3 = [[1,1],[-1,1],[1,-1],[-1,-1],[1,0],[-1,0],[1,0],[-1,0],[0,1],[0,-1],[0,1],[0,-1]];
+          
+          const gi0 = Math.floor(hash(i, j) * 12) % 12;
+          const gi1 = Math.floor(hash(i + i1, j + j1) * 12) % 12;
+          const gi2 = Math.floor(hash(i + 1, j + 1) * 12) % 12;
+          
+          let n0 = 0, n1 = 0, n2 = 0;
+          
+          const t0 = 0.5 - x0 * x0 - y0 * y0;
+          if (t0 >= 0) {
+            n0 = t0 * t0 * t0 * t0 * dot(grad3[gi0], x0, y0);
+          }
+          
+          const t1 = 0.5 - x1 * x1 - y1 * y1;
+          if (t1 >= 0) {
+            n1 = t1 * t1 * t1 * t1 * dot(grad3[gi1], x1, y1);
+          }
+          
+          const t2 = 0.5 - x2 * x2 - y2 * y2;
+          if (t2 >= 0) {
+            n2 = t2 * t2 * t2 * t2 * dot(grad3[gi2], x2, y2);
+          }
+          
+          return 70 * (n0 + n1 + n2);
+        }
+        
+        function createParticles() {
+          particles = [];
+          for (let i = 0; i < 250; i++) {
+            particles.push(new Particle(
+              Math.random() * elements.particlesCanvas.width,
+              Math.random() * elements.particlesCanvas.height
+            ));
+          }
+        }
+        
+        function animate() {
+          const section = document.querySelector('.interactive-particles-section');
+          const rect = section.getBoundingClientRect();
+          const isVisible = rect.top < state.windowHeight && rect.bottom > 0;
+          
+          if (isVisible) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+            ctx.fillRect(0, 0, elements.particlesCanvas.width, elements.particlesCanvas.height);
+            
+            particles.forEach(p => {
+              p.update();
+              p.draw();
+            });
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.01)';
+            ctx.fillRect(0, 0, elements.particlesCanvas.width, elements.particlesCanvas.height);
+          }
+          
+          requestAnimationFrame(animate);
+        }
+        
+        elements.particlesCanvas.addEventListener('mousemove', (e) => {
+          const rect = elements.particlesCanvas.getBoundingClientRect();
+          mouseInfluence.x = e.clientX - rect.left;
+          mouseInfluence.y = e.clientY - rect.top;
+          mouseInfluence.power = 1;
+          
+          if (e.buttons) {
+            for (let i = 0; i < 3; i++) {
+              const x = mouseInfluence.x + (Math.random() * 40 - 20);
+              const y = mouseInfluence.y + (Math.random() * 40 - 20);
+              particles.push(new Particle(x, y));
+              
+              if (particles.length > 500) particles.shift();
+            }
+          }
+        });
+        
+        elements.particlesCanvas.addEventListener('mousedown', () => { mouseInfluence.power = 2; });
+        elements.particlesCanvas.addEventListener('mouseup', () => { mouseInfluence.power = 1; });
+        elements.particlesCanvas.addEventListener('mouseleave', () => { mouseInfluence.power = 0; });
+        
+        document.querySelectorAll('.particles-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const btnRect = btn.getBoundingClientRect();
+            const canvasRect = elements.particlesCanvas.getBoundingClientRect();
+            
+            const x = (btnRect.left + btnRect.right) / 2 - canvasRect.left;
+            const y = (btnRect.top + btnRect.bottom) / 2 - canvasRect.top;
+            
+            for (let i = 0; i < 50; i++) {
+              const angle = Math.random() * Math.PI * 2;
+              const distance = Math.random() * 30;
+              
+              const particle = new Particle(
+                x + Math.cos(angle) * distance,
+                y + Math.sin(angle) * distance
+              );
+              
+              particle.vel.x = Math.cos(angle) * (Math.random() * 5 + 2);
+              particle.vel.y = Math.sin(angle) * (Math.random() * 5 + 2);
+              particle.alpha = Math.random() * 0.7 + 0.3;
+              
+              particles.push(particle);
+              if (particles.length > 500) particles.shift();
+            }
+          });
+        });
+        
+        createFlowField();
+        createParticles();
+        animate();
+        
+        // Update flow field periodically
+        setInterval(createFlowField, 5000);
+      }
+
+      // Nouveau code pour l'animation du réseau neuronal
+      function initNeuralNetwork() {
+        if (!elements.neuralCanvas) return;
+        
+        const ctx = elements.neuralCanvas.getContext('2d');
+        const aboutSection = document.querySelector('.about-section');
+        
+        // Réinitialiser les nœuds et connexions
+        state.neuralNodes = [];
+        state.neuralConnections = [];
+        
+        // Créer les nœuds
+        const nodeCount = window.innerWidth < 768 ? 30 : 50;
+        
+        for (let i = 0; i < nodeCount; i++) {
+          state.neuralNodes.push({
+            x: Math.random() * elements.neuralCanvas.width,
+            y: Math.random() * elements.neuralCanvas.height,
+            radius: Math.random() * 2 + 1,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            color: Math.random() > 0.7 ? 'rgba(255, 51, 102, 0.7)' : 'rgba(14, 14, 14, 0.5)'
+          });
+        }
+        
+        // Créer les connexions entre les nœuds proches
+        for (let i = 0; i < state.neuralNodes.length; i++) {
+          for (let j = i + 1; j < state.neuralNodes.length; j++) {
+            const dx = state.neuralNodes[i].x - state.neuralNodes[j].x;
+            const dy = state.neuralNodes[i].y - state.neuralNodes[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // Créer une connexion si les nœuds sont suffisamment proches
+            if (distance < 200) {
+              state.neuralConnections.push({
+                from: i,
+                to: j,
+                width: Math.random() * 0.5 + 0.2,
+                color: Math.random() > 0.7 ? 'rgba(255, 51, 102, 0.2)' : 'rgba(14, 14, 14, 0.1)',
+                length: distance,
+                active: false,
+                activationProgress: 0,
+                activationSpeed: Math.random() * 0.01 + 0.005
+              });
+            }
+          }
+        }
+        
+        function animateNeuralNetwork() {
+          if (!elements.neuralCanvas) return;
+          
+          const aboutRect = aboutSection.getBoundingClientRect();
+          const isVisible = aboutRect.top < state.windowHeight && aboutRect.bottom > 0;
+          
+          if (isVisible) {
+            ctx.clearRect(0, 0, elements.neuralCanvas.width, elements.neuralCanvas.height);
+            
+            // Mettre à jour et dessiner les connexions
+            state.neuralConnections.forEach(connection => {
+              const fromNode = state.neuralNodes[connection.from];
+              const toNode = state.neuralNodes[connection.to];
+              
+              // Mettre à jour la distance
+              const dx = fromNode.x - toNode.x;
+              const dy = fromNode.y - toNode.y;
+              connection.length = Math.sqrt(dx * dx + dy * dy);
+              
+              // Faire pulser aléatoirement certaines connexions
+              if (Math.random() < 0.001) {
+                connection.active = true;
+              }
+              
+              if (connection.active) {
+                connection.activationProgress += connection.activationSpeed;
+                
+                if (connection.activationProgress >= 1) {
+                  connection.active = false;
+                  connection.activationProgress = 0;
+                }
+              }
+              
+              // Dessiner la connexion
+              ctx.beginPath();
+              ctx.strokeStyle = connection.active ? 
+                'rgba(255, 51, 102, ' + (0.6 * Math.sin(connection.activationProgress * Math.PI) + 0.2) + ')' : 
+                connection.color;
+              ctx.lineWidth = connection.width;
+              ctx.moveTo(fromNode.x, fromNode.y);
+              ctx.lineTo(toNode.x, toNode.y);
+              ctx.stroke();
+              
+              // Si la connexion est active, dessiner un point qui se déplace le long de la connexion
+              if (connection.active) {
+                const progress = connection.activationProgress;
+                const px = fromNode.x + (toNode.x - fromNode.x) * progress;
+                const py = fromNode.y + (toNode.y - fromNode.y) * progress;
+                
+                ctx.fillStyle = 'rgba(255, 51, 102, 0.8)';
+                ctx.beginPath();
+                ctx.arc(px, py, 2, 0, Math.PI * 2);
+                ctx.fill();
+              }
+            });
+            
+            // Mettre à jour et dessiner les nœuds
+            state.neuralNodes.forEach(node => {
+              // Mettre à jour la position
+              node.x += node.vx;
+              node.y += node.vy;
+              
+              // Rebond sur les bords
+              if (node.x < 0 || node.x > elements.neuralCanvas.width) node.vx *= -1;
+              if (node.y < 0 || node.y > elements.neuralCanvas.height) node.vy *= -1;
+              
+              // Dessiner le nœud
+              ctx.fillStyle = node.color;
+              ctx.beginPath();
+              ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+              ctx.fill();
+            });
+          }
+          
+          requestAnimationFrame(animateNeuralNetwork);
+        }
+        
+        animateNeuralNetwork();
+      }
+
+      // Animation du code dans l'éditeur
+      function initCodeEditor() {
+        if (!elements.editorCode || !elements.lineNumbers) return;
+        
+        // Initialiser les numéros de ligne
+        function updateLineNumbers(linesCount) {
+          elements.lineNumbers.innerHTML = '';
+          for (let i = 1; i <= linesCount; i++) {
+            elements.lineNumbers.innerHTML += i + '<br>';
+          }
+        }
+        
+        // Contenu de code pour chaque onglet
+        const codeSnippets = [
+          // Code de l'onglet "about-me.js"
+          `/**
+ * About Me - Creative Developer Profile
+ * @author Your Name
+ * @version 1.0.0
+ */
+
+class CreativeDeveloper {
+  constructor() {
+    this.name = "Your Name";
+    this.title = "Creative Developer";
+    this.location = "Your Location";
+    this.specialties = [
+      "Interactive Web Experiences",
+      "Creative Coding",
+      "UI/UX Development",
+      "Animation & Motion Graphics"
+    ];
+    this.yearsExperience = 5;
+  }
+
+  getAboutMe() {
+    return {
+      background: "Passionate developer with a design background",
+      approach: "Combining technical expertise with creative vision",
+      philosophy: "Technology should enable creativity, not limit it"
+    };
+  }
+
+  getPersonalStatement() {
+    return "I create immersive digital experiences that engage users through innovative interactions and captivating designs.";
+  }
+
+  init() {
+    console.log(\`Hello! I'm \${this.name}, a \${this.title}.\`);
+    this.createImmersiveExperiences();
+  }
+}
+
+// Initialize the profile
+const developer = new CreativeDeveloper();
+developer.init();`,
+
+          // Code de l'onglet "skills.js"
+          `/**
+ * Skills & Expertise
+ * @module SkillSet
+ */
+
+// Technical Skills - Rated out of 100
+const technicalSkills = {
+  // Frontend Development
+  "JavaScript": 95,
+  "HTML5/CSS3": 98,
+  "React": 90,
+  "Vue.js": 88,
+  "Svelte": 85,
+  "GSAP": 92,
+  "WebGL": 85,
+  "Three.js": 87,
+  
+  // Backend & Infrastructure
+  "Node.js": 85,
+  "Express": 82,
+  "MongoDB": 80,
+  "AWS": 75,
+  "Firebase": 88,
+  
+  // Tools & Methods
+  "Git": 90,
+  "Webpack": 85,
+  "Performance Optimization": 92,
+  "Responsive Design": 98,
+  "CI/CD": 80
+};
+
+// Creative Skills
+const creativeAbilities = {
+  "UI/UX Design": 88,
+  "Animation": 92,
+  "Motion Graphics": 85,
+  "Interactive Storytelling": 90,
+  "Generative Art": 85,
+  "3D Modeling": 75
+};
+
+// Measure skill proficiency in different domains
+function calculateDomainProficiency(skills) {
+  const domains = {
+    "Frontend": ["JavaScript", "HTML5/CSS3", "React", "Vue.js", "Svelte", "GSAP"],
+    "Creative Coding": ["WebGL", "Three.js", "GSAP", "Animation", "Generative Art"],
+    "Backend": ["Node.js", "Express", "MongoDB", "Firebase"],
+    "UI/UX": ["HTML5/CSS3", "UI/UX Design", "Responsive Design", "Animation"],
+  };
+  
+  return Object.entries(domains).reduce((result, [domain, domainSkills]) => {
+    const relevantSkills = [...domainSkills];
+    const scores = relevantSkills.map(skill => skills[skill] || 0);
+    const average = scores.reduce((sum, score) => sum + score, 0) / scores.length;
+    
+    result[domain] = Math.round(average);
+    return result;
+  }, {});
+}
+
+// Export skill metrics
+export const expertise = {
+  technical: technicalSkills,
+  creative: creativeAbilities,
+  domainProficiency: {
+    ...calculateDomainProficiency(technicalSkills),
+    ...calculateDomainProficiency(creativeAbilities)
+  }
+};`,
+
+          // Code de l'onglet "experience.js"
+          `/**
+ * Professional Experience & Projects
+ * @module Experience
+ */
+
+const professionalExperience = [
+  {
+    company: "Creative Digital Studio",
+    position: "Senior Frontend Developer",
+    period: "2021 - Present",
+    achievements: [
+      "Developed award-winning interactive experiences for luxury brands",
+      "Led a team of 5 developers on high-profile web projects",
+      "Optimized performance of animation-heavy websites improving load times by 40%"
+    ],
+    technologies: ["React", "WebGL", "GSAP", "Three.js"]
+  },
+  {
+    company: "Interactive Agency",
+    position: "Creative Developer",
+    period: "2018 - 2021",
+    achievements: [
+      "Created immersive web experiences for international clients",
+      "Implemented complex animations and interactions using GSAP and Canvas",
+      "Collaborated with designers to bring creative concepts to life"
+    ],
+    technologies: ["JavaScript", "Canvas", "GSAP", "Vue.js"]
+  },
+  {
+    company: "Tech Startup",
+    position: "Frontend Developer",
+    period: "2016 - 2018",
+    achievements: [
+      "Built responsive UI components for a SaaS platform",
+      "Implemented real-time data visualization features",
+      "Reduced load time by 60% through performance optimization"
+    ],
+    technologies: ["JavaScript", "React", "D3.js", "CSS"]
+  }
+];
+
+const notableProjects = [
+  {
+    name: "Immersive Brand Experience",
+    description: "WebGL-powered interactive installation for a luxury brand",
+    technologies: ["Three.js", "GLSL", "React"],
+    highlights: "Featured in Awwwards, FWA, and CSS Design Awards"
+  },
+  {
+    name: "Data Visualization Platform",
+    description: "Real-time 3D visualization of global data patterns",
+    technologies: ["D3.js", "WebGL", "Node.js"],
+    highlights: "Used by Fortune 500 companies for data analysis"
+  },
+  {
+    name: "Interactive Storytelling App",
+    description: "Mobile-first application with rich animations and interactions",
+    technologies: ["React Native", "GSAP", "Firebase"],
+    highlights: "100,000+ active users, featured by Apple"
+  }
+];
+
+// Exporting experience data
+export const careerHighlights = {
+  experience: professionalExperience,
+  projects: notableProjects,
+  yearsExperience: calculateYearsExperience(professionalExperience)
+};
+
+// Helper to calculate total years of experience
+function calculateYearsExperience(jobs) {
+  const present = new Date().getFullYear();
+  return jobs.reduce((total, job) => {
+    const startYear = parseInt(job.period.split(' - ')[0]);
+    const endYear = job.period.includes('Present') ? present : parseInt(job.period.split(' - ')[1]);
+    return total + (endYear - startYear);
+  }, 0);
+}`
+        ];
+        
+        // Variables pour l'animation du typing
+        let currentTabIndex = 0;
+        let currentCode = '';
+        let targetCode = codeSnippets[currentTabIndex];
+        let currentPosition = 0;
+        let typingInterval = null;
+        
+        // Fonction pour animer le typing du code
+        function animateTyping() {
+          if (currentPosition < targetCode.length) {
+            // Ajouter le prochain caractère
+            currentCode += targetCode.charAt(currentPosition);
+            currentPosition++;
+            
+            // Formater et afficher le code
+            elements.editorCode.innerHTML = formatCode(currentCode);
+            
+            // Mettre à jour les numéros de ligne
+            const lineCount = (currentCode.match(/\n/g) || []).length + 1;
+            updateLineNumbers(lineCount);
+            
+            // Faire défiler vers le bas automatiquement
+            elements.editorCode.scrollTop = elements.editorCode.scrollHeight;
+          } else {
+            // L'animation est terminée, arrêter l'intervalle
+            clearInterval(typingInterval);
+            
+            // Ajouter un curseur clignotant à la fin
+            const cursor = document.createElement('span');
+            cursor.className = 'code-cursor';
+            cursor.style.height = '16px';
+            elements.editorCode.appendChild(cursor);
+          }
+        }
+        
+        // Fonction pour formater le code avec syntaxe colorée
+        function formatCode(code) {
+          // Coloration syntaxique basique
+          return code
+            .replace(/\/\*\*[\s\S]*?\*\//g, match => `<span class="code-token-comment">${match}</span>`) // Commentaires multi-lignes
+            .replace(/\/\/.*$/gm, match => `<span class="code-token-comment">${match}</span>`) // Commentaires simples
+            .replace(/(".*?"|'.*?'|`.*?`)/g, match => `<span class="code-token-string">${match}</span>`) // Chaînes
+            .replace(/\b(const|let|var|function|class|export|import|return|if|else|for|while|switch|case|break|continue|new|this)\b/g, match => `<span class="code-token-keyword">${match}</span>`) // Mots-clés
+            .replace(/\b(document|window|console|Math|Array|Object|String|Number|Boolean)\b/g, match => `<span class="code-token-class">${match}</span>`) // Objets globaux
+            .replace(/\b(\d+(\.\d+)?)\b/g, match => `<span class="code-token-number">${match}</span>`) // Nombres
+            .replace(/(\w+)(?=\s*\()/g, match => `<span class="code-token-function">${match}</span>`) // Fonctions
+            .replace(/(\w+)(?=:)/g, match => `<span class="code-token-property">${match}</span>`); // Propriétés
+        }
+        
+        // Changer d'onglet
+        document.querySelectorAll('.code-editor-tab').forEach((tab, index) => {
+          tab.addEventListener('click', () => {
+            // Ne rien faire si c'est déjà l'onglet actif
+            if (index === currentTabIndex) return;
+            
+            // Mettre à jour les classes d'onglets
+            document.querySelectorAll('.code-editor-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            // Arrêter l'animation en cours si elle existe
+            if (typingInterval) clearInterval(typingInterval);
+            
+            // Mettre à jour les variables
+            currentTabIndex = index;
+            currentCode = '';
+            targetCode = codeSnippets[index];
+            currentPosition = 0;
+            
+            // Démarrer la nouvelle animation
+            elements.editorCode.innerHTML = '';
+            typingInterval = setInterval(animateTyping, state.typingSpeed);
+          });
+        });
+        
+        // Effet 3D sur l'éditeur
+        elements.codeEditorContainer.addEventListener('mousemove', e => {
+          if (!elements.codeEditorContainer) return;
+          
+          const rect = elements.codeEditorContainer.getBoundingClientRect();
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const mouseX = e.clientX - rect.left;
+          const mouseY = e.clientY - rect.top;
+          
+          const rotateY = ((mouseX - centerX) / centerX) * 5;
+          const rotateX = ((centerY - mouseY) / centerY) * 5;
+          
+          elements.codeEditorWrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        
+        elements.codeEditorContainer.addEventListener('mouseleave', () => {
+          elements.codeEditorWrapper.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        });
+        
+        // Initialiser l'animation du premier onglet
+        updateLineNumbers(1);
+        typingInterval = setInterval(animateTyping, state.typingSpeed);
+      }
+
+      // Initialisation des blocs de code flottants
+      function initFloatingCodeBlocks() {
+        if (!elements.floatingCodeBlocks) return;
+        
+        const codeSnippets = [
+          '<span class="code-token-keyword">const</span> <span class="code-token-variable">creativity</span> = <span class="code-token-keyword">new</span> <span class="code-token-class">Inspiration</span>();',
+          '<span class="code-token-keyword">function</span> <span class="code-token-function">createExperience</span>() { ... }',
+          '<span class="code-token-variable">animations</span>.<span class="code-token-method">add</span>(<span class="code-token-string">"parallax"</span>, { <span class="code-token-property">speed</span>: <span class="code-token-number">0.5</span> });',
+          '<span class="code-token-keyword">import</span> { <span class="code-token-variable">motion</span> } <span class="code-token-keyword">from</span> <span class="code-token-string">"framer-motion"</span>;',
+          '<span class="code-token-variable">canvas</span>.<span class="code-token-method">drawImage</span>(<span class="code-token-variable">texture</span>, <span class="code-token-number">0</span>, <span class="code-token-number">0</span>);',
+          '<span class="code-token-keyword">class</span> <span class="code-token-class">ParticleSystem</span> <span class="code-token-keyword">extends</span> <span class="code-token-class">Physics</span> { ... }',
+          '<span class="code-token-variable">scene</span>.<span class="code-token-method">add</span>(<span class="code-token-keyword">new</span> <span class="code-token-class">THREE.AmbientLight</span>());',
+          '<span class="code-token-comment">// Optimizing performance</span>',
+          '<span class="code-token-variable">gsap</span>.<span class="code-token-method">to</span>(<span class="code-token-variable">element</span>, { <span class="code-token-property">opacity</span>: <span class="code-token-number">0</span>, <span class="code-token-property">duration</span>: <span class="code-token-number">1</span> });'
+        ];
+        
+        // Créer des blocs flottants
+        for (let i = 0; i < 6; i++) {
+          const block = document.createElement('div');
+          block.className = 'floating-code-block';
+          block.innerHTML = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
+          
+          // Position aléatoire
+          block.style.left = `${Math.random() * 80 + 10}%`;
+          block.style.top = `${Math.random() * 80 + 10}%`;
+          
+          // Opacité aléatoire
+          block.style.opacity = Math.random() * 0.5 + 0.3;
+          
+          // Rotation et échelle aléatoires
+          const scale = Math.random() * 0.5 + 0.7;
+          const rotateX = (Math.random() - 0.5) * 20;
+          const rotateY = (Math.random() - 0.5) * 20;
+          const rotateZ = (Math.random() - 0.5) * 10;
+          block.style.transform = `scale(${scale}) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) translateZ(${Math.random() * 50}px)`;
+          
+          // Animation flottante
+          block.animate(
+            [
+              { transform: `scale(${scale}) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) translateZ(${Math.random() * 50}px)` },
+              { transform: `scale(${scale}) rotateX(${rotateX + 5}deg) rotateY(${rotateY + 5}deg) rotateZ(${rotateZ + 2}deg) translateZ(${Math.random() * 50 + 20}px)` },
+              { transform: `scale(${scale}) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) translateZ(${Math.random() * 50}px)` }
+            ],
+            {
+              duration: Math.random() * 5000 + 5000,
+              iterations: Infinity,
+              direction: 'alternate',
+              easing: 'ease-in-out'
+            }
+          );
+          
+          elements.floatingCodeBlocks.appendChild(block);
+        }
+      }
+
+      // Initialisation des roues de compétences
+      function initSkillWheels() {
+        if (!elements.frontendWheel || !elements.backendWheel || !elements.creativeWheel || !elements.uiWheel) return;
+        
+        const wheelData = [
+          {
+            element: elements.frontendWheel,
+            skills: ['HTML5', 'CSS3', 'JavaScript', 'React', 'Vue.js', 'Svelte', 'GSAP', 'Webpack']
+          },
+          {
+            element: elements.backendWheel,
+            skills: ['Node.js', 'Express', 'MongoDB', 'Firebase', 'AWS', 'REST API', 'GraphQL', 'SQL']
+          },
+          {
+            element: elements.creativeWheel,
+            skills: ['WebGL', 'Three.js', 'Canvas', 'SVG', 'GLSL', 'Animation', 'Particles', 'Generative']
+          },
+          {
+            element: elements.uiWheel,
+            skills: ['Responsive', 'Design Systems', 'Accessibility', 'Motion UI', 'Micro-interactions', 'UX', 'Prototyping', 'Color']
+          }
+        ];
+        
+        // Créer les tags de compétences autour de chaque roue
+        wheelData.forEach(wheel => {
+          wheel.skills.forEach((skill, i) => {
+            const angle = (i / wheel.skills.length) * Math.PI * 2;
+            const x = Math.cos(angle) * 100 + 110; // 110px est le rayon de la roue
+            const y = Math.sin(angle) * 100 + 110;
+            
+            const tag = document.createElement('div');
+            tag.className = 'skill-tag';
+            tag.textContent = skill;
+            tag.style.left = `${x - 20}px`; // Ajustement pour centrer le tag
+            tag.style.top = `${y - 15}px`;
+            tag.style.transform = `rotate(${angle + Math.PI/2}rad) translateZ(10px)`;
+            
+            wheel.element.appendChild(tag);
+          });
+          
+          // Animer la rotation de la roue
+          wheel.element.animate(
+            [
+              { transform: 'rotate(0deg)' },
+              { transform: 'rotate(360deg)' }
+            ],
+            {
+              duration: 120000 + Math.random() * 60000, // Entre 2 et 3 minutes
+              iterations: Infinity,
+              easing: 'linear'
+            }
+          );
+        });
+      }
+
+      function checkSkillWheelsVisibility() {
+        if (state.skillWheelsAnimated) return;
+        
+        const aboutSection = document.getElementById('about');
+        const rect = aboutSection.getBoundingClientRect();
+        
+        if (rect.top < state.windowHeight && rect.bottom > 0) {
+          initSkillWheels();
+          state.skillWheelsAnimated = true;
+        }
+      }
+
+      function initializeAnimations() {
+        // Animations existantes
+        createFloatingElements();
+        createBinaryVisualization();
+        drawFluidLines();
+        initGridCanvas();
+        initParticlesCanvas();
+        
+        // Nouvelles animations
+        initNeuralNetwork();
+        initCodeEditor();
+        initFloatingCodeBlocks();
+        // Les skill wheels sont initialisées au défilement
+        
+        // Préparation des arrière-plans parallaxes
+        document.querySelectorAll('.parallax-bg').forEach((bg, index) => {
+          for (let i = 0; i < 5; i++) {
+            const parallaxElement = document.createElement('div');
+            parallaxElement.className = 'parallax-element';
+            const size = Math.random() * 200 + 100;
+            parallaxElement.style.width = `${size}px`;
+            parallaxElement.style.height = `${size}px`;
+            parallaxElement.style.top = `${Math.random() * 100}%`;
+            parallaxElement.style.left = `${Math.random() * 100}%`;
+            parallaxElement.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+            parallaxElement.style.background = `rgba(${index * 50}, ${255 - index * 40}, ${150 + index * 20}, 0.1)`;
+            parallaxElement.style.transform = `translateZ(${(i + 1) * -100}px)`;
+            bg.appendChild(parallaxElement);
+          }
+        });
+        
+        // Animation des éléments de distortion
+        for (let i = 0; i < 20; i++) {
+          const distortElement = document.createElement('div');
+          distortElement.className = 'distortion-element';
+          distortElement.style.position = 'absolute';
+          distortElement.style.top = `${(i / 20) * 100}%`;
+          distortElement.style.left = '0';
+          distortElement.style.width = '100%';
+          distortElement.style.height = `${100 / 20}%`;
+          distortElement.style.backgroundImage = 'linear-gradient(90deg, rgba(255,51,102,0.05) 0%, rgba(255,255,255,0) 100%)';
+          distortElement.style.transform = 'translateX(0)';
+          distortElement.style.transition = 'transform 0.5s ease';
+          elements.distortionContainer.appendChild(distortElement);
+        }
+        
+        // Forcer la mise à jour du défilement initial
+        window.dispatchEvent(new Event('scroll'));
+      }
+
+      // Event listeners
+      window.addEventListener('resize', resizeCanvas);
+
+      document.addEventListener('mousemove', (e) => {
+        if (!state.ticking) {
+          window.requestAnimationFrame(() => {
+            moveCursor(e.clientX, e.clientY);
+            state.mouseX = e.clientX;
+            state.mouseY = e.clientY;
+            
+            // Distortion effect
+            const distortionElements = elements.distortionContainer.querySelectorAll('.distortion-element');
+            const mouseXPercent = e.clientX / window.innerWidth;
+            distortionElements.forEach((element, index) => {
+              const offset = (index % 2 === 0 ? 1 : -1) * mouseXPercent * 50;
+              element.style.transform = `translateX(${offset}px)`;
+            });
+            
+            state.ticking = false;
+          });
+          state.ticking = true;
+        }
+      });
+
+      document.addEventListener('mouseleave', () => {
+        elements.cursor.style.opacity = '0';
+        elements.cursorFollower.style.opacity = '0';
+      });
+
+      document.addEventListener('mouseenter', () => {
+        elements.cursor.style.opacity = '1';
+        elements.cursorFollower.style.opacity = '0.5';
+      });
+
+      document.querySelectorAll('a, button, .project-card, .grid-card, .skill-tag, .about-cta-btn').forEach(item => {
+        item.addEventListener('mouseenter', () => {
+          elements.cursor.style.width = '10px';
+          elements.cursor.style.height = '10px';
+          elements.cursorFollower.style.width = '60px';
+          elements.cursorFollower.style.height = '60px';
+          elements.cursorFollower.style.opacity = '0.2';
+        });
+        
+        item.addEventListener('mouseleave', () => {
+          elements.cursor.style.width = '20px';
+          elements.cursor.style.height = '20px';
+          elements.cursorFollower.style.width = '40px';
+          elements.cursorFollower.style.height = '40px';
+          elements.cursorFollower.style.opacity = '0.5';
+        });
+      });
+
+      window.addEventListener('scroll', () => {
+        if (!state.ticking) {
+          window.requestAnimationFrame(() => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Determine scroll direction
+            state.scrollDirection = scrollTop > state.lastScrollTop ? 'down' : 'up';
+            state.lastScrollTop = scrollTop;
+            
+            // Update progress bar
+            const scrollProgress = scrollTop / state.totalScrollHeight;
+            document.documentElement.style.setProperty('--progress', scrollProgress);
+            
+            // Header visibility
+            if (scrollTop > 100) {
+              if (state.scrollDirection === 'up') {
+                elements.header.classList.add('header-visible');
+              } else {
+                elements.header.classList.remove('header-visible');
+              }
+            } else {
+              elements.header.classList.remove('header-visible');
+            }
+            
+            // Horizontal scroll section
+            updateHorizontalScroll();
+            
+            // Animate project cards
+            elements.projectCards.forEach(card => {
+              if (card.getBoundingClientRect().top < state.windowHeight * 0.85) {
+                card.classList.add('visible');
+              }
+            });
+            
+            // Animate grid cards
+            elements.gridCards.forEach(card => {
+              if (card.getBoundingClientRect().top < state.windowHeight * 0.85) {
+                card.classList.add('visible');
+              }
+            });
+            
+            // Vérifier la visibilité des skill wheels
+            checkSkillWheelsVisibility();
+            
+            // 3D rotation for contact form
+            const contactRect = elements.contactForm3D.getBoundingClientRect();
+            if (contactRect.top < state.windowHeight && contactRect.bottom > 0) {
+              const contactProgress = 1 - (contactRect.top / state.windowHeight);
+              if (contactProgress >= 0 && contactProgress <= 1) {
+                elements.contactForm3D.style.transform = `rotateX(${20 - contactProgress * 20}deg)`;
+              }
+            }
+            
+            state.ticking = false;
+          });
+          state.ticking = true;
+        }
+      });
+
+      // Double-click to toggle header visibility
+      document.addEventListener('dblclick', () => {
+        elements.header.classList.toggle('header-visible');
+      });
+
+      // Navigation buttons
+      if (elements.exploreBtn) {
+        elements.exploreBtn.addEventListener('click', () => {
+          window.scrollTo({
+            top: document.getElementById('gridSection').offsetTop,
+            behavior: 'smooth'
+          });
+        });
+      }
+      
+      if (elements.contactBtn) {
+        elements.contactBtn.addEventListener('click', () => {
+          window.scrollTo({
+            top: document.getElementById('contact').offsetTop,
+            behavior: 'smooth'
+          });
+        });
+      }
+
+      // Contact form
+      const contactForm = document.querySelector('.contact-form');
+      contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        contactForm.style.transform = 'translateZ(50px) scale(0.95)';
+        setTimeout(() => {
+          contactForm.style.transform = 'translateZ(10px) scale(1)';
+          contactForm.reset();
+          alert('Message sent successfully!');
+        }, 1000);
+      });
+
+      // 3D tilt for form
+      elements.contactForm3D.addEventListener('mousemove', (e) => {
+        const rect = elements.contactForm3D.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        elements.contactForm3D.style.transform = `rotateX(${(centerY - y) / 20}deg) rotateY(${(x - centerX) / 20}deg)`;
+      });
+      
+      elements.contactForm3D.addEventListener('mouseleave', () => {
+        elements.contactForm3D.style.transform = 'rotateX(0) rotateY(0)';
+      });
+
+      // Smooth scroll for navigation
+      document.querySelectorAll('.nav-link, .about-cta-btn').forEach(link => {
+        link.addEventListener('click', (e) => {
+          const href = link.getAttribute('href');
+          if (href.startsWith('#')) {
+            e.preventDefault();
+            const targetId = href;
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              window.scrollTo({
+                top: targetElement.offsetTop,
+                behavior: 'smooth'
+              });
+            }
+          }
+        });
+      });
+
+      // Initialize after loading
+      setTimeout(() => {
+        elements.loadingScreen.style.opacity = '0';
+        elements.loadingScreen.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+          elements.loadingScreen.style.display = 'none';
+          initializeAnimations();
+        }, 600);
+      }, 2500);
+    });
+  </script>
+</body>
+</html>
