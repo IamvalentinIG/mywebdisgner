@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Creative Developer | Immersive Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Space+Mono&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -20,8 +22,10 @@
     }
 
     html, body {
-      overscroll-behavior: none; /* Empêche le rebond sur certains navigateurs */
-      -webkit-overflow-scrolling: touch; /* Défilement fluide sur iOS */
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: touch;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     body {
@@ -31,6 +35,7 @@
       overflow-x: hidden;
       height: 100vh;
       perspective: 1000px;
+      will-change: transform;
     }
 
     .scroll-container {
@@ -51,6 +56,7 @@
       height: 100%;
       z-index: -1;
       opacity: 0.5;
+      will-change: transform;
     }
 
     /* Progress bar */
@@ -69,7 +75,8 @@
       height: 100%;
       background: var(--accent-color);
       width: calc(var(--progress) * 100%);
-      transition: width 0.05s linear;
+      transform: translateZ(0);
+      will-change: width;
     }
 
     /* Main sections styling */
@@ -77,11 +84,12 @@
       position: relative;
       min-height: 100vh;
       width: 100%;
-      padding: 50px 10% 100px; /* Reduced top padding */
+      padding: 50px 10% 100px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       will-change: transform;
+      transform: translateZ(0);
     }
 
     /* Hero section */
@@ -110,6 +118,7 @@
       transform: translateZ(0);
       background-image: linear-gradient(135deg, var(--text-color) 0%, var(--accent-color) 100%);
       -webkit-background-clip: text;
+      background-clip: text;
       color: transparent;
     }
 
@@ -129,6 +138,7 @@
       height: 100%;
       overflow: hidden;
       z-index: 1;
+      will-change: transform;
     }
 
     /* Floating elements */
@@ -140,6 +150,7 @@
       height: 100%;
       overflow: hidden;
       z-index: 1;
+      will-change: transform;
     }
 
     .floating-element {
@@ -193,6 +204,7 @@
       transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
       opacity: 0;
       transform: translateY(50px) rotateX(10deg);
+      will-change: transform, opacity;
     }
 
     .project-card.visible {
@@ -210,6 +222,7 @@
       height: 100%;
       object-fit: cover;
       transition: transform 0.5s ease;
+      will-change: transform;
     }
 
     .project-card:hover .project-image {
@@ -227,6 +240,7 @@
       transform: translateY(20%);
       opacity: 0;
       transition: all 0.3s ease;
+      will-change: transform, opacity;
     }
 
     .project-card:hover .project-overlay {
@@ -257,7 +271,7 @@
       top: 0;
       left: 0;
       height: 100%;
-      width: 400%; /* 4 times viewport width */
+      width: 400%;
       display: flex;
       will-change: transform;
     }
@@ -310,11 +324,13 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
+      will-change: transform;
     }
 
     .parallax-element {
       position: absolute;
       will-change: transform;
+      transform: translateZ(0);
     }
 
     /* Binary data visualization */
@@ -361,6 +377,7 @@
       max-width: 800px;
       transform-style: preserve-3d;
       transition: transform 0.5s ease;
+      will-change: transform;
     }
 
     .contact-form {
@@ -415,6 +432,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
       transform: translateZ(20px);
+      will-change: transform, background-color;
     }
 
     .submit-btn:hover {
@@ -502,6 +520,7 @@
       z-index: 9999;
       transform: translate(-50%, -50%);
       transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
+      will-change: transform, width, height, opacity;
     }
 
     .cursor-follower {
@@ -515,6 +534,7 @@
       opacity: 0.5;
       transform: translate(-50%, -50%);
       transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+      will-change: transform, width, height, opacity;
     }
 
     /* Loading animation */
@@ -530,6 +550,7 @@
       align-items: center;
       z-index: 10000;
       transition: opacity 0.5s ease, transform 0.5s ease;
+      will-change: opacity, transform;
     }
 
     .loading-container {
@@ -562,6 +583,7 @@
       width: 0;
       background: var(--accent-color);
       animation: loadingProgress 2s ease forwards;
+      will-change: width;
     }
 
     .loading-text {
@@ -593,7 +615,6 @@
       100% { width: 100%; }
     }
 
-    /* Animation fluide pour les éléments flottants (même sur mobile) */
     @keyframes float {
       0% { transform: translateY(0) rotate(0deg); }
       50% { transform: translateY(-30px) rotate(5deg); }
@@ -625,15 +646,13 @@
     }
 
     @media (max-width: 768px) {
-      /* Ajustement des sections */
       section {
-        padding: 40px 5% 60px; /* Réduire le padding sur les côtés */
+        padding: 40px 5% 60px;
       }
       
-      /* Ajustement du héros */
       .hero-title {
-        font-size: 13vw; /* Taille plus grande pour meilleure lisibilité */
-        white-space: normal; /* Permettre le retour à la ligne */
+        font-size: 13vw;
+        white-space: normal;
       }
       
       .hero-subtitle {
@@ -642,21 +661,19 @@
         text-shadow: 0 0 1px rgba(255,255,255,0.2);
       }
       
-      /* Projet cards - Une colonne sur mobile */
       .gallery {
         grid-template-columns: 1fr;
         gap: 1.5rem;
       }
       
       .project-card {
-        height: 300px; /* Hauteur réduite pour s'adapter à l'écran */
+        height: 300px;
       }
       
       .project-desc {
         text-shadow: 0 0 1px rgba(255,255,255,0.2);
       }
       
-      /* Ajustement de la section horizontale */
       .horizontal-content {
         width: 90%;
         padding: 1rem;
@@ -671,7 +688,6 @@
         text-shadow: 0 0 1px rgba(255,255,255,0.2);
       }
       
-      /* Formulaire de contact */
       .contact-form-container {
         width: 95%;
       }
@@ -680,13 +696,11 @@
         padding: 1.5rem;
       }
       
-      /* Footer */
       .footer-links {
         flex-wrap: wrap;
         gap: 1rem;
       }
       
-      /* Amélioration du chargement initial sur mobile */
       .loading-logo {
         font-size: 2.5rem;
       }
@@ -695,15 +709,9 @@
         width: 80%;
         max-width: 250px;
       }
-
-      /* S'assurer que les animations restent fluides */
-      .bg-canvas {
-        opacity: 0.4; /* Légèrement réduit mais toujours visible */
-      }
     }
 
     @media (max-width: 480px) {
-      /* Titre héros encore plus grand */
       .hero-title {
         font-size: 15vw;
         margin-bottom: 1.5rem;
@@ -713,14 +721,12 @@
         font-size: 1rem;
       }
       
-      /* Ajuster les titres de section */
       .projects-title,
       .contact-title,
       .horizontal-title {
         font-size: 2rem;
       }
       
-      /* Projet cards plus petites */
       .project-card {
         height: 250px;
       }
@@ -729,7 +735,6 @@
         font-size: 1.2rem;
       }
       
-      /* Formulaire plus compact */
       .form-input, 
       .form-textarea {
         padding: 0.8rem;
@@ -739,14 +744,12 @@
         padding: 0.8rem 1.5rem;
       }
       
-      /* Curseur personnalisé - désactiver sur mobile */
       .cursor, 
       .cursor-follower {
         display: none;
       }
     }
 
-    /* Optimisation pour l'orientation paysage sur mobile */
     @media (max-height: 500px) and (orientation: landscape) {
       .hero {
         height: auto;
@@ -773,16 +776,13 @@
       }
     }
 
-    /* Améliorations d'interaction tactile */
     @media (hover: none) {
-      /* Rendre les overlay de projet toujours visibles */
       .project-overlay {
         transform: translateY(0);
         opacity: 1;
         background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
       }
       
-      /* Désactiver certaines animations basées sur hover */
       .project-card:hover {
         transform: none;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -792,7 +792,6 @@
         transform: none;
       }
       
-      /* Améliorer le clic des boutons */
       .submit-btn {
         transition: background-color 0.3s ease;
       }
@@ -803,7 +802,6 @@
       }
     }
 
-    /* Optimisation pour les écrans à haute densité de pixels */
     @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
       body {
         text-rendering: optimizeLegibility;
@@ -966,44 +964,90 @@
   </div>
 
   <script>
+    // Utilisation de requestIdleCallback pour les tâches non critiques
+    const requestIdleCallback = window.requestIdleCallback || 
+      function(cb) {
+        const start = Date.now();
+        return setTimeout(function() {
+          cb({
+            didTimeout: false,
+            timeRemaining: function() {
+              return Math.max(0, 50 - (Date.now() - start));
+            }
+          });
+        }, 1);
+      };
+      
+    // Performance monitoring helper
+    const perf = {
+      startTime: {},
+      start(label) {
+        this.startTime[label] = performance.now();
+      },
+      end(label) {
+        if (this.startTime[label]) {
+          const time = performance.now() - this.startTime[label];
+          console.log(`${label}: ${time.toFixed(2)}ms`);
+          delete this.startTime[label];
+        }
+      }
+    };
+
     // Track page load status
     document.addEventListener('DOMContentLoaded', () => {
-      // Detect if device is mobile
+      // Cache DOM queries for better performance
       const isMobile = window.matchMedia("(max-width: 768px)").matches;
-
+      const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      
       // Variables to track scroll state
       let lastScrollTop = 0;
       let scrollDirection = 'down';
       let ticking = false;
       let isHorizontalActive = false;
-      let horizontalProgress = 0;
       let totalScrollHeight;
       let windowHeight;
+      let mouseX, mouseY;
+      let rafId;
+      let time = 0;
 
       // DOM elements
-      const loadingScreen = document.getElementById('loadingScreen');
-      const scrollContainer = document.getElementById('scrollContainer');
-      const cursor = document.getElementById('cursor');
-      const cursorFollower = document.getElementById('cursorFollower');
-      const progressBar = document.getElementById('progressBar');
-      const projectCards = document.querySelectorAll('.project-card');
-      const horizontalTrack = document.getElementById('horizontalTrack');
-      const horizontalSection = document.getElementById('horizontal');
-      const contactForm3D = document.getElementById('contactForm3D');
-      const bgCanvas = document.getElementById('bgCanvas');
-      const binaryData = document.getElementById('binaryData');
-      const distortionContainer = document.getElementById('distortionContainer');
-      const floatingElements = document.getElementById('floatingElements');
+      const elements = {
+        loadingScreen: document.getElementById('loadingScreen'),
+        scrollContainer: document.getElementById('scrollContainer'),
+        cursor: document.getElementById('cursor'),
+        cursorFollower: document.getElementById('cursorFollower'),
+        progressBar: document.getElementById('progressBar'),
+        projectCards: document.querySelectorAll('.project-card'),
+        horizontalTrack: document.getElementById('horizontalTrack'),
+        horizontalSection: document.getElementById('horizontal'),
+        contactForm3D: document.getElementById('contactForm3D'),
+        bgCanvas: document.getElementById('bgCanvas'),
+        binaryData: document.getElementById('binaryData'),
+        distortionContainer: document.getElementById('distortionContainer'),
+        floatingElements: document.getElementById('floatingElements'),
+        contactForm: document.querySelector('.contact-form')
+      };
       
       // Initialize WebGL context for background
-      const bgCtx = bgCanvas.getContext('2d');
+      const bgCtx = elements.bgCanvas.getContext('2d', { alpha: false });
       
       // Initialize dimensions
       let width, height;
       
+      // Resize handler with debounce
+      let resizeTimeout;
+      const handleResize = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          resizeCanvas();
+        }, 100);
+      };
+      
       function resizeCanvas() {
-        width = bgCanvas.width = window.innerWidth;
-        height = bgCanvas.height = window.innerHeight;
+        width = elements.bgCanvas.width = window.innerWidth;
+        height = elements.bgCanvas.height = window.innerHeight;
+        mouseX = width / 2;
+        mouseY = height / 2;
         
         // Recalculate total scroll height
         calculateScrollHeight();
@@ -1014,180 +1058,141 @@
         totalScrollHeight = document.documentElement.scrollHeight - windowHeight;
       }
       
+      // Initialize mouse/touch position
+      mouseX = width / 2;
+      mouseY = height / 2;
+      
       // Call resize initially and on window resize
-      window.addEventListener('resize', resizeCanvas);
+      window.addEventListener('resize', handleResize);
       resizeCanvas();
       
-      // Custom cursor implementation - disable on mobile
-      if (!isMobile) {
+      // Custom cursor implementation - only on desktop
+      if (!isTouch) {
+        const updateCursor = (e) => {
+          requestAnimationFrame(() => {
+            elements.cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+            elements.cursorFollower.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+          });
+        };
+        
         document.addEventListener('mousemove', (e) => {
           if (!ticking) {
-            window.requestAnimationFrame(() => {
-              moveCursor(e.clientX, e.clientY);
+            requestAnimationFrame(() => {
+              mouseX = e.clientX;
+              mouseY = e.clientY;
+              updateCursor(e);
               ticking = false;
             });
             ticking = true;
           }
         });
-      } else {
-        // Hide cursors on mobile
-        cursor.style.display = 'none';
-        cursorFollower.style.display = 'none';
-      }
-      
-      function moveCursor(x, y) {
-        cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
         
-        // Add slight delay to follower for smooth effect
-        setTimeout(() => {
-          cursorFollower.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-        }, 70);
-      }
-      
-      // Cursor hover effects for interactive elements
-      if (!isMobile) {
+        // Cursor hover effects for interactive elements
         document.querySelectorAll('a, button, .project-card').forEach(item => {
           item.addEventListener('mouseenter', () => {
-            cursor.style.width = '10px';
-            cursor.style.height = '10px';
-            cursorFollower.style.width = '60px';
-            cursorFollower.style.height = '60px';
-            cursorFollower.style.opacity = '0.2';
+            elements.cursor.style.width = '10px';
+            elements.cursor.style.height = '10px';
+            elements.cursorFollower.style.width = '60px';
+            elements.cursorFollower.style.height = '60px';
+            elements.cursorFollower.style.opacity = '0.2';
           });
           
           item.addEventListener('mouseleave', () => {
-            cursor.style.width = '20px';
-            cursor.style.height = '20px';
-            cursorFollower.style.width = '40px';
-            cursorFollower.style.height = '40px';
-            cursorFollower.style.opacity = '0.5';
+            elements.cursor.style.width = '20px';
+            elements.cursor.style.height = '20px';
+            elements.cursorFollower.style.width = '40px';
+            elements.cursorFollower.style.height = '40px';
+            elements.cursorFollower.style.opacity = '0.5';
           });
         });
         
         // Hide cursor when leaving window
         document.addEventListener('mouseleave', () => {
-          cursor.style.opacity = '0';
-          cursorFollower.style.opacity = '0';
+          elements.cursor.style.opacity = '0';
+          elements.cursorFollower.style.opacity = '0';
         });
         
         // Show cursor when entering window
         document.addEventListener('mouseenter', () => {
-          cursor.style.opacity = '1';
-          cursorFollower.style.opacity = '0.5';
+          elements.cursor.style.opacity = '1';
+          elements.cursorFollower.style.opacity = '0.5';
         });
+      } else {
+        // Hide cursors on touch devices
+        elements.cursor.style.display = 'none';
+        elements.cursorFollower.style.display = 'none';
       }
       
-      // Background animation with interactive fluid lines
-      let time = 0;
-      let mouseX = width / 2;
-      let mouseY = height / 2;
-      
-      // Tracking du toucher sur mobile pour l'interactivité
-      if (isMobile) {
+      // Track mouse/touch position for animations
+      if (isTouch) {
         document.addEventListener('touchmove', (e) => {
           if (e.touches.length > 0) {
             mouseX = e.touches[0].clientX;
             mouseY = e.touches[0].clientY;
           }
         });
-      } else {
-        window.addEventListener('mousemove', (e) => {
-          mouseX = e.clientX;
-          mouseY = e.clientY;
-        });
       }
       
-      function drawFluidLines() {
-        bgCtx.clearRect(0, 0, width, height);
+      // Optimized function to draw wave patterns
+      function drawWave(ctx, yPos, spacing, index, skipFactor) {
+        ctx.beginPath();
         
-        // Fond avec un dégradé plus prononcé
-        const gradient = bgCtx.createLinearGradient(0, 0, width, height);
-        gradient.addColorStop(0, 'rgba(235, 240, 255, 0.9)');
-        gradient.addColorStop(1, 'rgba(220, 230, 250, 0.9)');
-        bgCtx.fillStyle = gradient;
+        const distY = Math.abs(mouseY - yPos);
+        const influence = Math.max(0, 1 - distY / (height * 0.5));
+        
+        // Use lookup tables or precalculate where possible
+        const timeOffset = time * 0.01;
+        const timeOffset2 = time * 0.005;
+        
+        for (let x = 0; x <= width; x += skipFactor) {
+          const distX = Math.abs(mouseX - x);
+          const mouseInfluence = Math.max(0, 1 - distX / (width * 0.3)) * 40 * influence;
+          
+          // Simplified wave calculation with fewer sine operations
+          const baseWave = Math.sin((x * 0.003) + timeOffset) * 12;
+          const secondWave = Math.sin((x * 0.001) + timeOffset2 + index * 0.2) * 18;
+          
+          let waveY = yPos + baseWave + secondWave;
+          
+          // Only add mouse influence when near mouse position
+          if (distX < width * 0.3) {
+            waveY += mouseInfluence * Math.sin((x - mouseX) * 0.01);
+          }
+          
+          if (x === 0) {
+            ctx.moveTo(x, waveY);
+          } else {
+            ctx.lineTo(x, waveY);
+          }
+        }
+        
+        ctx.stroke();
+      }
+      
+      // Background animation with optimized rendering
+      function drawFluidLines() {
+        // Clear with fillRect instead of clearRect for better performance
+        bgCtx.fillStyle = 'rgb(235, 240, 255)';
         bgCtx.fillRect(0, 0, width, height);
         
-        // Version optimisée pour mobile mais toujours visuellement intéressante
-        const lineCount = isMobile ? 12 : 30; // Moins de lignes sur mobile mais toujours visible
+        // Use device-adaptive settings
+        const lineCount = Math.min(30, Math.floor(height / 30));
         const spacing = height / lineCount;
-        const skipFactor = isMobile ? 15 : 5; // Moins de points sur mobile
+        const skipFactor = isMobile ? 15 : 8;
         
-        // Premier niveau - lignes fluides horizontales
-        for (let i = 0; i <= lineCount; i++) {
-          bgCtx.beginPath();
-          bgCtx.strokeStyle = 'rgba(50, 80, 150, 0.15)';
-          bgCtx.lineWidth = 0.9;
-          
-          const yPos = i * spacing;
-          const distY = Math.abs(mouseY - yPos);
-          const influence = Math.max(0, 1 - distY / (height * 0.5));
-          
-          for (let x = 0; x <= width; x += skipFactor) {
-            const distX = Math.abs(mouseX - x);
-            const mouseInfluence = Math.max(0, 1 - distX / (width * 0.3)) * 40 * influence;
-            
-            // Simplifier les calculs de vagues sur mobile
-            const wave1 = Math.sin((x * 0.003) + (time * 0.01)) * 12;
-            const wave2 = Math.sin((x * 0.001) + (time * 0.005) + i * 0.2) * 18;
-            
-            let waveY;
-            if (isMobile) {
-              waveY = yPos + wave1 + wave2;
-            } else {
-              const wave3 = Math.cos((x * 0.002) + (time * 0.007)) * 10;
-              const wave4 = Math.sin((x * 0.0015) + (time * 0.003) + i * 0.1) * 6;
-              waveY = yPos + wave1 + wave2 + wave3 + wave4;
-            }
-            
-            waveY += mouseInfluence * Math.sin((x - mouseX) * 0.01);
-            
-            if (x === 0) {
-              bgCtx.moveTo(x, waveY);
-            } else {
-              bgCtx.lineTo(x, waveY);
-            }
-          }
-          bgCtx.stroke();
+        // Pre-set styles to avoid repeated context state changes
+        bgCtx.strokeStyle = 'rgba(50, 80, 150, 0.15)';
+        bgCtx.lineWidth = 0.9;
+        
+        // Draw horizontal waves with minimal calculations
+        for (let i = 0; i < lineCount; i++) {
+          drawWave(bgCtx, i * spacing, spacing, i, skipFactor);
         }
         
-        // Deuxième niveau - lignes fluides verticales (simplifiées sur mobile)
-        const verticalLines = isMobile ? Math.floor(lineCount/3) : Math.floor(lineCount/1.5);
-        
-        for (let i = 0; i <= verticalLines; i++) {
-          // Sur mobile, dessiner seulement quelques lignes
-          if (isMobile && i % 2 !== 0) continue;
-          
-          bgCtx.beginPath();
-          bgCtx.strokeStyle = 'rgba(60, 90, 160, 0.12)';
-          bgCtx.lineWidth = 0.7;
-          
-          const xPos = i * (width / verticalLines);
-          const distX = Math.abs(mouseX - xPos);
-          const influence = Math.max(0, 1 - distX / (width * 0.5));
-          
-          for (let y = 0; y <= height; y += skipFactor) {
-            const distY = Math.abs(mouseY - y);
-            const mouseInfluence = Math.max(0, 1 - distY / (height * 0.3)) * 30 * influence;
-            
-            const wave1 = Math.sin((y * 0.004) + (time * 0.012)) * 10;
-            const wave2 = Math.cos((y * 0.002) + (time * 0.006) + i * 0.2) * 15;
-            
-            let waveX = xPos + wave1 + wave2;
-            waveX += mouseInfluence * Math.sin((y - mouseY) * 0.01);
-            
-            if (y === 0) {
-              bgCtx.moveTo(waveX, y);
-            } else {
-              bgCtx.lineTo(waveX, y);
-            }
-          }
-          bgCtx.stroke();
-        }
-        
-        // Particules avec quantité adaptée au mobile
-        const particleCount = Math.max(15, width / (isMobile ? 30 : 15));
-        
+        // Only draw particles on devices that can handle it well
+        const particleCount = Math.min(Math.floor(width / 30), 50);
         bgCtx.fillStyle = 'rgba(40, 70, 140, 0.08)';
+        
         for (let i = 0; i < particleCount; i++) {
           const x = Math.random() * width;
           const y = Math.random() * height;
@@ -1205,60 +1210,39 @@
           }
         }
         
-        // Sur mobile, sauter la partie des nœuds et connexions complexes
-        if (!isMobile) {
-          bgCtx.strokeStyle = 'rgba(40, 70, 140, 0.06)';
-          bgCtx.lineWidth = 0.4;
+        // Vertical lines - reduced for performance
+        if (!isMobile || Math.random() > 0.7) {
+          bgCtx.strokeStyle = 'rgba(60, 90, 160, 0.12)';
+          bgCtx.lineWidth = 0.7;
           
-          const nodes = [];
-          const nodeCount = 25;
+          const vertLineCount = Math.floor(lineCount / 2);
           
-          for (let i = 0; i < nodeCount; i++) {
-            nodes.push({
-              x: Math.random() * width,
-              y: Math.random() * height,
-              vx: Math.random() * 0.2 - 0.1,
-              vy: Math.random() * 0.2 - 0.1
-            });
-          }
-          
-          nodes.forEach(node => {
-            node.x += node.vx;
-            node.y += node.vy;
-            
-            if (node.x < 0 || node.x > width) node.vx *= -1;
-            if (node.y < 0 || node.y > height) node.vy *= -1;
-            
-            const dx = mouseX - node.x;
-            const dy = mouseY - node.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            
-            if (dist < 300) {
-              node.x += dx * 0.002;
-              node.y += dy * 0.002;
-            }
-          });
-          
-          for (let i = 0; i < nodes.length; i++) {
-            for (let j = i + 1; j < nodes.length; j++) {
-              const dx = nodes[i].x - nodes[j].x;
-              const dy = nodes[i].y - nodes[j].y;
-              const dist = Math.sqrt(dx * dx + dy * dy);
+          for (let i = 0; i < vertLineCount; i++) {
+            if (i % 2 === 0 || !isMobile) {  // Skip some on mobile
+              const xPos = i * (width / vertLineCount);
+              bgCtx.beginPath();
               
-              if (dist < 220) {
-                bgCtx.beginPath();
-                bgCtx.moveTo(nodes[i].x, nodes[i].y);
-                bgCtx.lineTo(nodes[j].x, nodes[j].y);
-                bgCtx.globalAlpha = 1 - dist / 220;
-                bgCtx.stroke();
-                bgCtx.globalAlpha = 1;
+              for (let y = 0; y <= height; y += skipFactor * 2) {
+                const wave1 = Math.sin((y * 0.004) + (time * 0.012)) * 10;
+                const wave2 = Math.cos((y * 0.002) + (time * 0.006) + i * 0.2) * 15;
+                
+                let waveX = xPos + wave1 + wave2;
+                
+                if (y === 0) {
+                  bgCtx.moveTo(waveX, y);
+                } else {
+                  bgCtx.lineTo(waveX, y);
+                }
               }
+              
+              bgCtx.stroke();
             }
           }
         }
         
-        // Accents de couleur adaptés au mobile
-        const accentCount = isMobile ? 3 : 7;
+        // Color accents - reduced for better performance
+        const accentCount = isMobile ? 2 : 4;
+        
         for (let i = 0; i < accentCount; i++) {
           bgCtx.beginPath();
           const x = Math.random() * width;
@@ -1266,7 +1250,7 @@
           const radius = 120 + Math.random() * (isMobile ? 100 : 200);
           const gradient = bgCtx.createRadialGradient(x, y, 0, x, y, radius);
           
-          const hue = Math.random() > 0.6 ? 240 : 280;
+          const hue = 240 + Math.random() * 40;
           gradient.addColorStop(0, `hsla(${hue}, 70%, 65%, ${isMobile ? 0.1 : 0.08})`);
           gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
           
@@ -1275,293 +1259,338 @@
           bgCtx.fill();
         }
         
-        // Animation continue avec vitesse adaptée pour mobile
-        time += isMobile ? 0.4 : 0.5; // Légèrement plus lent sur mobile mais toujours visible
-        requestAnimationFrame(drawFluidLines);
+        // Animation cycle
+        time += isMobile ? 0.4 : 0.5;
+        rafId = requestAnimationFrame(drawFluidLines);
       }
       
-      // Generate floating elements with fewer on mobile but still visually interesting
+      // Generate floating elements - optimized DOM manipulations
       function createFloatingElements() {
-        floatingElements.innerHTML = '';
-        const elementCount = isMobile ? 8 : 12; // Légèrement réduit mais toujours visible
+        // Use document fragment to avoid reflow
+        const fragment = document.createDocumentFragment();
+        const elementCount = isMobile ? 8 : 12;
         
         for (let i = 0; i < elementCount; i++) {
           const element = document.createElement('div');
           element.className = 'floating-element';
           
-          // Random size - plus petit sur mobile
+          // Combine styles to reduce reflows
           const size = Math.random() * (isMobile ? 100 : 150) + (isMobile ? 30 : 50);
-          element.style.width = `${size}px`;
-          element.style.height = `${size}px`;
-          
-          // Random position
           const posX = Math.random() * 100;
           const posY = Math.random() * 100;
-          element.style.left = `${posX}%`;
-          element.style.top = `${posY}%`;
-          
-          // Random opacity - assurer la visibilité
-          element.style.opacity = (Math.random() * 0.15 + 0.1).toString();
-          
-          // Random animation - plus rapide sur mobile
+          const opacity = (Math.random() * 0.15 + 0.1);
           const duration = Math.random() * (isMobile ? 15 : 20) + (isMobile ? 15 : 20);
           const delay = Math.random() * 5;
-          element.style.animation = `float ${duration}s ease-in-out ${delay}s infinite alternate`;
           
-          floatingElements.appendChild(element);
+          Object.assign(element.style, {
+            width: `${size}px`,
+            height: `${size}px`,
+            left: `${posX}%`,
+            top: `${posY}%`,
+            opacity: opacity.toString(),
+            animation: `float ${duration}s ease-in-out ${delay}s infinite alternate`
+          });
+          
+          fragment.appendChild(element);
         }
+        
+        // Single DOM update
+        elements.floatingElements.innerHTML = '';
+        elements.floatingElements.appendChild(fragment);
       }
       
-      // Create binary visualization
+      // Create binary visualization - optimized
       function createBinaryVisualization() {
-        binaryData.innerHTML = '';
-        // Réduire mais garder visible sur mobile
+        const fragment = document.createDocumentFragment();
         const lineCount = isMobile ? 12 : 20;
         
-        // Réduire l'opacité sur mobile mais garder visible
-        binaryData.style.opacity = isMobile ? '0.08' : '0.1';
+        // Set opacity once on container instead of per element
+        elements.binaryData.style.opacity = isMobile ? '0.08' : '0.1';
         
         for (let i = 0; i < lineCount; i++) {
           const line = document.createElement('div');
           line.className = 'binary-line';
           
-          // Generate binary content - plus court sur mobile
-          let binaryContent = '';
+          // Generate binary content efficiently
           const length = Math.floor(Math.random() * (isMobile ? 100 : 200)) + (isMobile ? 50 : 100);
+          let binaryContent = '';
           
-          for (let j = 0; j < length; j++) {
-            binaryContent += Math.random() > 0.5 ? '1' : '0';
+          // Build string in chunks for better performance
+          for (let j = 0; j < length; j += 10) {
+            binaryContent += Math.random() > 0.5 ? '1010101010' : '0101010101';
           }
           
-          line.textContent = binaryContent;
+          line.textContent = binaryContent.substring(0, length);
           
-          // Position randomly
-          line.style.top = `${Math.random() * 100}%`;
-          line.style.left = `${Math.random() * 100 - 50}%`;
+          // Set all styles at once
+          Object.assign(line.style, {
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100 - 50}%`,
+            animation: `scrollBinary ${Math.random() * (isMobile ? 80 : 60) + (isMobile ? 40 : 30)}s linear ${Math.random() * 10}s infinite ${Math.random() > 0.5 ? 'normal' : 'reverse'}`
+          });
           
-          // Animation - plus lente sur mobile pour performance
-          const duration = Math.random() * (isMobile ? 80 : 60) + (isMobile ? 40 : 30);
-          const delay = Math.random() * 10;
-          const direction = Math.random() > 0.5 ? 1 : -1;
-          
-          line.style.animation = `scrollBinary ${duration}s linear ${delay}s infinite ${direction > 0 ? 'normal' : 'reverse'}`;
-          
-          binaryData.appendChild(line);
+          fragment.appendChild(line);
         }
+        
+        // Single DOM update
+        elements.binaryData.innerHTML = '';
+        elements.binaryData.appendChild(fragment);
       }
       
-      // Horizontal scroll handling
+      // Horizontal scroll handling - optimized
       function updateHorizontalScroll() {
-        // Calculate where the horizontal section is relative to viewport
-        const horizontalRect = horizontalSection.getBoundingClientRect();
+        const horizontalRect = elements.horizontalSection.getBoundingClientRect();
         const distanceFromTop = horizontalRect.top;
         
-        // When horizontal section comes into view
         if (distanceFromTop <= 0 && distanceFromTop >= -horizontalRect.height) {
-          isHorizontalActive = true;
+          if (!isHorizontalActive) {
+            isHorizontalActive = true;
+          }
           
-          // Calculate horizontal scroll progress (0 to 1)
-          // Map the vertical scroll position to horizontal scroll position
-          const horizontalScrollLength = horizontalTrack.offsetWidth - window.innerWidth;
+          const horizontalScrollLength = elements.horizontalTrack.offsetWidth - window.innerWidth;
           const scrollProgress = Math.min(1, Math.max(0, -distanceFromTop / horizontalRect.height));
           
-          // Apply transform to horizontal track
-          horizontalTrack.style.transform = `translateX(${-scrollProgress * horizontalScrollLength}px)`;
+          // Use transform for better performance
+          elements.horizontalTrack.style.transform = `translateX(${-scrollProgress * horizontalScrollLength}px)`;
           
-          // Update parallax elements in each horizontal section
+          // Update parallax with transform3d for GPU acceleration
           const parallaxLayers = document.querySelectorAll('.parallax-bg');
           parallaxLayers.forEach((layer, index) => {
             const speed = 0.05 * (index + 1);
             const xPos = scrollProgress * 100 * speed;
-            layer.style.transform = `translateX(${-xPos}%)`;
+            layer.style.transform = `translate3d(${-xPos}%, 0, 0)`;
           });
-        } else {
+        } else if (isHorizontalActive) {
           isHorizontalActive = false;
         }
       }
       
-      // Scroll event handler
+      // Optimized scroll handler with passive option for better performance
+      let scrollRafPending = false;
       window.addEventListener('scroll', () => {
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            // Determine scroll direction
-            scrollDirection = scrollTop > lastScrollTop ? 'down' : 'up';
-            lastScrollTop = scrollTop;
-            
-            // Update progress bar
-            const scrollProgress = scrollTop / totalScrollHeight;
-            document.documentElement.style.setProperty('--progress', scrollProgress);
-            
-            // Handle horizontal scroll section
-            updateHorizontalScroll();
-            
-            // Animate project cards when they come into view
-            projectCards.forEach(card => {
-              const cardRect = card.getBoundingClientRect();
-              if (cardRect.top < windowHeight * 0.85) {
-                card.classList.add('visible');
-              }
-            });
-            
-            // 3D rotation effect for contact form based on scroll position
-            const contactRect = contactForm3D.getBoundingClientRect();
-            if (contactRect.top < windowHeight && contactRect.bottom > 0) {
-              const contactProgress = 1 - (contactRect.top / windowHeight);
-              if (contactProgress >= 0 && contactProgress <= 1) {
-                // Moins de rotation sur mobile
-                const rotateX = isMobile ? 
-                  10 - contactProgress * 10 : 
-                  20 - contactProgress * 20;
-                contactForm3D.style.transform = `rotateX(${rotateX}deg)`;
-              }
-            }
-            
-            ticking = false;
+        if (!scrollRafPending) {
+          scrollRafPending = true;
+          requestAnimationFrame(() => {
+            handleScroll();
+            scrollRafPending = false;
           });
-          ticking = true;
         }
-      });
+      }, { passive: true });
       
-      // Initialize animations
-      function initializeAnimations() {
-        // Create 3D distortion effect for hero section
-        const distortionFragment = document.createDocumentFragment();
-        // Moins d'éléments sur mobile mais visible
+      function handleScroll() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Determine scroll direction
+        scrollDirection = scrollTop > lastScrollTop ? 'down' : 'up';
+        lastScrollTop = scrollTop;
+        
+        // Update progress bar
+        const scrollProgress = scrollTop / totalScrollHeight;
+        document.documentElement.style.setProperty('--progress', scrollProgress.toString());
+        
+        // Handle horizontal scroll section
+        updateHorizontalScroll();
+        
+        // Process only visible cards for performance
+        elements.projectCards.forEach(card => {
+          const cardRect = card.getBoundingClientRect();
+          if (cardRect.top < windowHeight * 0.85 && cardRect.bottom > 0) {
+            if (!card.classList.contains('visible')) {
+              card.classList.add('visible');
+            }
+          }
+        });
+        
+        // 3D rotation effect for contact form
+        const contactRect = elements.contactForm3D.getBoundingClientRect();
+        if (contactRect.top < windowHeight && contactRect.bottom > 0) {
+          const contactProgress = 1 - (contactRect.top / windowHeight);
+          if (contactProgress >= 0 && contactProgress <= 1) {
+            const rotateX = isMobile ? 
+              10 - contactProgress * 10 : 
+              20 - contactProgress * 20;
+            elements.contactForm3D.style.transform = `rotateX(${rotateX}deg)`;
+          }
+        }
+      }
+      
+      // Create distortion effect efficiently
+      function initializeDistortionElements() {
+        const fragment = document.createDocumentFragment();
         const distortionCount = isMobile ? 10 : 20;
         
         for (let i = 0; i < distortionCount; i++) {
           const distortElement = document.createElement('div');
           distortElement.className = 'distortion-element';
-          distortElement.style.position = 'absolute';
-          distortElement.style.top = `${(i / distortionCount) * 100}%`;
-          distortElement.style.left = '0';
-          distortElement.style.width = '100%';
-          distortElement.style.height = `${100 / distortionCount}%`;
-          distortElement.style.backgroundImage = 'linear-gradient(90deg, rgba(255,51,102,0.05) 0%, rgba(255,255,255,0) 100%)';
-          distortElement.style.transform = 'translateX(0)';
-          distortElement.style.transition = 'transform 0.5s ease';
           
-          distortionContainer.appendChild(distortElement);
+          // Set all styles at once
+          Object.assign(distortElement.style, {
+            position: 'absolute',
+            top: `${(i / distortionCount) * 100}%`,
+            left: '0',
+            width: '100%',
+            height: `${100 / distortionCount}%`,
+            backgroundImage: 'linear-gradient(90deg, rgba(255,51,102,0.05) 0%, rgba(255,255,255,0) 100%)',
+            transform: 'translateX(0)',
+            transition: 'transform 0.5s ease'
+          });
+          
+          fragment.appendChild(distortElement);
         }
         
-        // Create floating elements
-        createFloatingElements();
-        
-        // Create binary visualization
-        createBinaryVisualization();
-        
-        // Prepare parallax backgrounds for horizontal section
+        elements.distortionContainer.appendChild(fragment);
+      }
+      
+      // Create parallax elements efficiently
+      function initializeParallaxElements() {
         const parallaxBgs = document.querySelectorAll('.parallax-bg');
+        
         parallaxBgs.forEach((bg, index) => {
-          // Moins d'éléments parallax sur mobile mais visibles
+          const fragment = document.createDocumentFragment();
           const elemCount = isMobile ? 3 : 5;
+          
           for (let i = 0; i < elemCount; i++) {
             const parallaxElement = document.createElement('div');
             parallaxElement.className = 'parallax-element';
             
-            // Random size - ajuster pour mobile
             const size = Math.random() * (isMobile ? 150 : 200) + (isMobile ? 80 : 100);
-            parallaxElement.style.width = `${size}px`;
-            parallaxElement.style.height = `${size}px`;
             
-            // Random position
-            parallaxElement.style.top = `${Math.random() * 100}%`;
-            parallaxElement.style.left = `${Math.random() * 100}%`;
+            // Set all styles at once
+            Object.assign(parallaxElement.style, {
+              width: `${size}px`,
+              height: `${size}px`,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              borderRadius: Math.random() > 0.5 ? '50%' : '0',
+              background: `rgba(${index * 50}, ${255 - index * 40}, ${150 + index * 20}, 0.1)`,
+              transform: `translateZ(${(i + 1) * -100}px)`
+            });
             
-            // Shape and style
-            parallaxElement.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-            parallaxElement.style.background = `rgba(${index * 50}, ${255 - index * 40}, ${150 + index * 20}, 0.1)`;
-            parallaxElement.style.transform = `translateZ(${(i + 1) * -100}px)`;
-            
-            bg.appendChild(parallaxElement);
+            fragment.appendChild(parallaxElement);
           }
+          
+          bg.appendChild(fragment);
         });
+      }
+      
+      // Initialize animations
+      function initializeAnimations() {
+        // Create visual elements
+        createFloatingElements();
+        createBinaryVisualization();
+        initializeDistortionElements();
+        initializeParallaxElements();
         
-        // Initialize fluid line animation
+        // Start animation loop
         drawFluidLines();
         
         // Force initial scroll update
         window.dispatchEvent(new Event('scroll'));
+        
+        // Add input event handlers after initialization
+        setupEventHandlers();
       }
       
-      // Handle contact form submission
-      const contactForm = document.querySelector('.contact-form');
-      contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        // Form animation on submit
-        contactForm.style.transform = 'translateZ(50px) scale(0.95)';
-        
-        setTimeout(() => {
-          // Reset animation
-          contactForm.style.transform = 'translateZ(10px) scale(1)';
+      // Set up event handlers
+      function setupEventHandlers() {
+        // Handle contact form submission
+        elements.contactForm.addEventListener('submit', (e) => {
+          e.preventDefault();
           
-          // Reset form fields
-          contactForm.reset();
+          // Form animation on submit
+          elements.contactForm.style.transform = 'translateZ(50px) scale(0.95)';
           
-          // Show success message
-          alert('Message sent successfully!');
-        }, 1000);
-      });
-      
-      // 3D tilt effect for contact form - disable on mobile
-      contactForm3D.addEventListener('mousemove', (e) => {
-        if (!isMobile) {
-          const formRect = contactForm3D.getBoundingClientRect();
-          const x = e.clientX - formRect.left;
-          const y = e.clientY - formRect.top;
-          
-          const centerX = formRect.width / 2;
-          const centerY = formRect.height / 2;
-          
-          const rotateY = (x - centerX) / 20;
-          const rotateX = (centerY - y) / 20;
-          
-          contactForm3D.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        }
-      });
-      
-      contactForm3D.addEventListener('mouseleave', () => {
-        contactForm3D.style.transform = 'rotateX(0) rotateY(0)';
-      });
-      
-      // Create distortion effect on mouse move or touch
-      const updateDistortion = (clientX) => {
-        const distortionElements = distortionContainer.querySelectorAll('.distortion-element');
-        const mouseXPercent = clientX / window.innerWidth;
-        
-        distortionElements.forEach((element, index) => {
-          const offset = (index % 2 === 0 ? 1 : -1) * mouseXPercent * 50;
-          element.style.transform = `translateX(${offset}px)`;
+          setTimeout(() => {
+            // Reset animation
+            elements.contactForm.style.transform = 'translateZ(10px) scale(1)';
+            
+            // Reset form fields
+            elements.contactForm.reset();
+            
+            // Show success message
+            alert('Message sent successfully!');
+          }, 1000);
         });
-      };
+        
+        // 3D tilt effect for contact form
+        if (!isTouch) {
+          elements.contactForm3D.addEventListener('mousemove', (e) => {
+            const formRect = elements.contactForm3D.getBoundingClientRect();
+            const x = e.clientX - formRect.left;
+            const y = e.clientY - formRect.top;
+            
+            const centerX = formRect.width / 2;
+            const centerY = formRect.height / 2;
+            
+            const rotateY = (x - centerX) / 20;
+            const rotateX = (centerY - y) / 20;
+            
+            elements.contactForm3D.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+          });
+          
+          elements.contactForm3D.addEventListener('mouseleave', () => {
+            elements.contactForm3D.style.transform = 'rotateX(0) rotateY(0)';
+          });
+        }
+        
+        // Update distortion effect with pointer input
+        const updateDistortion = (clientX) => {
+          requestAnimationFrame(() => {
+            const distortionElements = elements.distortionContainer.querySelectorAll('.distortion-element');
+            const mouseXPercent = clientX / window.innerWidth;
+            
+            distortionElements.forEach((element, index) => {
+              const offset = (index % 2 === 0 ? 1 : -1) * mouseXPercent * 50;
+              element.style.transform = `translateX(${offset}px)`;
+            });
+          });
+        };
+        
+        // Support both mouse and touch
+        if (isTouch) {
+          document.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+              updateDistortion(e.touches[0].clientX);
+            }
+          }, { passive: true });
+        } else {
+          document.addEventListener('mousemove', (e) => {
+            updateDistortion(e.clientX);
+          }, { passive: true });
+        }
+      }
       
-      // Support both mouse and touch for distortion effect
-      document.addEventListener('mousemove', (e) => {
-        if (!isMobile) {
-          updateDistortion(e.clientX);
+      // Clean up resources when page is hidden/closed
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          cancelAnimationFrame(rafId);
+        } else {
+          rafId = requestAnimationFrame(drawFluidLines);
         }
       });
       
-      // Ajouter le support tactile pour les effets de distortion
-      document.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) {
-          updateDistortion(e.touches[0].clientX);
-        }
-      });
-      
-      // Initialize animation after page load
+      // Initialize with a slight delay for better perceived performance
       setTimeout(() => {
-        loadingScreen.style.opacity = '0';
-        loadingScreen.style.transform = 'translateY(-20px)';
+        elements.loadingScreen.style.opacity = '0';
+        elements.loadingScreen.style.transform = 'translateY(-20px)';
         
         setTimeout(() => {
-          loadingScreen.style.display = 'none';
+          elements.loadingScreen.style.display = 'none';
+          
+          // Start with critical animations first
           initializeAnimations();
+          
+          // Defer non-critical work
+          requestIdleCallback(() => {
+            // Preload images for better transitions
+            const imagesToPreload = Array.from(document.querySelectorAll('.project-image')).map(img => img.src);
+            imagesToPreload.forEach(src => {
+              const img = new Image();
+              img.src = src;
+            });
+          });
         }, 600);
-      }, isMobile ? 1500 : 2500); // Chargement plus rapide sur mobile
+      }, isMobile ? 1500 : 2000);
     });
   </script>
 </body>
