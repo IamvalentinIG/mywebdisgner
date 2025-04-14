@@ -19,6 +19,11 @@
       box-sizing: border-box;
     }
 
+    html, body {
+      overscroll-behavior: none; /* Empêche le rebond sur certains navigateurs */
+      -webkit-overflow-scrolling: touch; /* Défilement fluide sur iOS */
+    }
+
     body {
       font-family: 'Roboto Mono', monospace;
       background-color: var(--primary-color);
@@ -36,8 +41,6 @@
       height: 100vh;
       overflow: hidden;
     }
-
-    /* Header styles removed */
 
     /* Interactive canvas background */
     .bg-canvas {
@@ -610,36 +613,188 @@
     }
 
     @media (max-width: 768px) {
-      /* Header styles removed from media query */
+      /* Ajustement des sections */
+      section {
+        padding: 40px 5% 60px; /* Réduire le padding sur les côtés */
+      }
       
+      /* Ajustement du héros */
       .hero-title {
-        font-size: 15vw;
+        font-size: 13vw; /* Taille plus grande pour meilleure lisibilité */
+        white-space: normal; /* Permettre le retour à la ligne */
+      }
+      
+      .hero-subtitle {
+        font-size: 1.1rem;
+        padding: 0 10px;
+        text-shadow: 0 0 1px rgba(255,255,255,0.2);
+      }
+      
+      /* Projet cards - Une colonne sur mobile */
+      .gallery {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .project-card {
+        height: 300px; /* Hauteur réduite pour s'adapter à l'écran */
+      }
+      
+      .project-desc {
+        text-shadow: 0 0 1px rgba(255,255,255,0.2);
+      }
+      
+      /* Ajustement de la section horizontale */
+      .horizontal-content {
+        width: 90%;
+        padding: 1rem;
       }
       
       .horizontal-title {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
+      }
+      
+      .horizontal-text {
+        font-size: 1rem;
+        text-shadow: 0 0 1px rgba(255,255,255,0.2);
+      }
+      
+      /* Formulaire de contact */
+      .contact-form-container {
+        width: 95%;
       }
       
       .contact-form {
-        padding: 2rem;
+        padding: 1.5rem;
+      }
+      
+      /* Footer */
+      .footer-links {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      
+      /* Amélioration du chargement initial sur mobile */
+      .loading-logo {
+        font-size: 2.5rem;
+      }
+      
+      .loading-bar {
+        width: 80%;
+        max-width: 250px;
       }
     }
 
     @media (max-width: 480px) {
+      /* Titre héros encore plus grand */
       .hero-title {
-        font-size: 18vw;
+        font-size: 15vw;
+        margin-bottom: 1.5rem;
       }
       
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+      
+      /* Ajuster les titres de section */
+      .projects-title,
+      .contact-title,
       .horizontal-title {
         font-size: 2rem;
       }
       
-      .projects-title {
-        font-size: 2.5rem;
+      /* Projet cards plus petites */
+      .project-card {
+        height: 250px;
       }
       
-      .contact-title {
-        font-size: 2.5rem;
+      .project-title {
+        font-size: 1.2rem;
+      }
+      
+      /* Formulaire plus compact */
+      .form-input, 
+      .form-textarea {
+        padding: 0.8rem;
+      }
+      
+      .submit-btn {
+        padding: 0.8rem 1.5rem;
+      }
+      
+      /* Curseur personnalisé - désactiver sur mobile */
+      .cursor, 
+      .cursor-follower {
+        display: none;
+      }
+    }
+
+    /* Optimisation pour l'orientation paysage sur mobile */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .hero {
+        height: auto;
+        min-height: 100vh;
+        padding: 30px 5%;
+      }
+      
+      .hero-title {
+        font-size: 8vw;
+      }
+      
+      .project-card {
+        height: 200px;
+      }
+      
+      .horizontal-section {
+        height: auto;
+        min-height: 100vh;
+      }
+      
+      .horizontal-item {
+        height: auto;
+        min-height: 100vh;
+      }
+    }
+
+    /* Améliorations d'interaction tactile */
+    @media (hover: none) {
+      /* Rendre les overlay de projet toujours visibles */
+      .project-overlay {
+        transform: translateY(0);
+        opacity: 1;
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
+      }
+      
+      /* Désactiver certaines animations basées sur hover */
+      .project-card:hover {
+        transform: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+      
+      .project-card:hover .project-image {
+        transform: none;
+      }
+      
+      /* Améliorer le clic des boutons */
+      .submit-btn {
+        transition: background-color 0.3s ease;
+      }
+      
+      .submit-btn:active {
+        background: #E62955;
+        transform: translateY(2px);
+      }
+    }
+
+    /* Optimisation pour les écrans à haute densité de pixels */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      body {
+        text-rendering: optimizeLegibility;
+      }
+      
+      /* Réduire le nombre d'animations complexes */
+      .binary-line {
+        opacity: 0.05;
       }
     }
   </style>
@@ -665,8 +820,6 @@
     <div class="progress-bar" id="progressBar"></div>
   </div>
 
-  <!-- Header removed -->
-
   <!-- Scroll container -->
   <div class="scroll-container" id="scrollContainer">
     <!-- Interactive background canvas -->
@@ -683,6 +836,41 @@
       <div class="hero-content">
         <h1 class="hero-title">Creative<br>Developer</h1>
         <p class="hero-subtitle">Crafting immersive digital experiences where code meets design. Pushing the boundaries of web interactions.</p>
+      </div>
+    </section>
+    
+    <!-- Projects section -->
+    <section class="projects" id="projects">
+      <h2 class="projects-title">Selected Works</h2>
+      <div class="gallery" id="projectsGallery">
+        <div class="project-card">
+          <img src="https://picsum.photos/800/600?random=1" alt="Project 1" class="project-image">
+          <div class="project-overlay">
+            <h3 class="project-title">Immersive Experience</h3>
+            <p class="project-desc">WebGL-powered interactive installation for a luxury brand</p>
+          </div>
+        </div>
+        <div class="project-card">
+          <img src="https://picsum.photos/800/600?random=2" alt="Project 2" class="project-image">
+          <div class="project-overlay">
+            <h3 class="project-title">Data Visualization</h3>
+            <p class="project-desc">Real-time 3D visualization of global data patterns</p>
+          </div>
+        </div>
+        <div class="project-card">
+          <img src="https://picsum.photos/800/600?random=3" alt="Project 3" class="project-image">
+          <div class="project-overlay">
+            <h3 class="project-title">Motion Graphics</h3>
+            <p class="project-desc">Particle-based animation system for digital storytelling</p>
+          </div>
+        </div>
+        <div class="project-card">
+          <img src="https://picsum.photos/800/600?random=4" alt="Project 4" class="project-image">
+          <div class="project-overlay">
+            <h3 class="project-title">Interactive Art</h3>
+            <p class="project-desc">Audio-reactive visuals for music festival</p>
+          </div>
+        </div>
       </div>
     </section>
     
@@ -768,6 +956,9 @@
   <script>
     // Track page load status
     document.addEventListener('DOMContentLoaded', () => {
+      // Detect if device is mobile
+      const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
       // Variables to track scroll state
       let lastScrollTop = 0;
       let scrollDirection = 'down';
@@ -779,7 +970,6 @@
 
       // DOM elements
       const loadingScreen = document.getElementById('loadingScreen');
-      // header reference removed
       const scrollContainer = document.getElementById('scrollContainer');
       const cursor = document.getElementById('cursor');
       const cursorFollower = document.getElementById('cursorFollower');
@@ -806,8 +996,6 @@
         // Recalculate total scroll height
         calculateScrollHeight();
       }
-      
-      // Continuing the script from the previous code...
 
       function calculateScrollHeight() {
         windowHeight = window.innerHeight;
@@ -818,16 +1006,22 @@
       window.addEventListener('resize', resizeCanvas);
       resizeCanvas();
       
-      // Custom cursor implementation
-      document.addEventListener('mousemove', (e) => {
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            moveCursor(e.clientX, e.clientY);
-            ticking = false;
-          });
-          ticking = true;
-        }
-      });
+      // Custom cursor implementation - disable on mobile
+      if (!isMobile) {
+        document.addEventListener('mousemove', (e) => {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              moveCursor(e.clientX, e.clientY);
+              ticking = false;
+            });
+            ticking = true;
+          }
+        });
+      } else {
+        // Hide cursors on mobile
+        cursor.style.display = 'none';
+        cursorFollower.style.display = 'none';
+      }
       
       function moveCursor(x, y) {
         cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
@@ -839,35 +1033,37 @@
       }
       
       // Cursor hover effects for interactive elements
-      document.querySelectorAll('a, button, .project-card').forEach(item => {
-        item.addEventListener('mouseenter', () => {
-          cursor.style.width = '10px';
-          cursor.style.height = '10px';
-          cursorFollower.style.width = '60px';
-          cursorFollower.style.height = '60px';
-          cursorFollower.style.opacity = '0.2';
+      if (!isMobile) {
+        document.querySelectorAll('a, button, .project-card').forEach(item => {
+          item.addEventListener('mouseenter', () => {
+            cursor.style.width = '10px';
+            cursor.style.height = '10px';
+            cursorFollower.style.width = '60px';
+            cursorFollower.style.height = '60px';
+            cursorFollower.style.opacity = '0.2';
+          });
+          
+          item.addEventListener('mouseleave', () => {
+            cursor.style.width = '20px';
+            cursor.style.height = '20px';
+            cursorFollower.style.width = '40px';
+            cursorFollower.style.height = '40px';
+            cursorFollower.style.opacity = '0.5';
+          });
         });
         
-        item.addEventListener('mouseleave', () => {
-          cursor.style.width = '20px';
-          cursor.style.height = '20px';
-          cursorFollower.style.width = '40px';
-          cursorFollower.style.height = '40px';
+        // Hide cursor when leaving window
+        document.addEventListener('mouseleave', () => {
+          cursor.style.opacity = '0';
+          cursorFollower.style.opacity = '0';
+        });
+        
+        // Show cursor when entering window
+        document.addEventListener('mouseenter', () => {
+          cursor.style.opacity = '1';
           cursorFollower.style.opacity = '0.5';
         });
-      });
-      
-      // Hide cursor when leaving window
-      document.addEventListener('mouseleave', () => {
-        cursor.style.opacity = '0';
-        cursorFollower.style.opacity = '0';
-      });
-      
-      // Show cursor when entering window
-      document.addEventListener('mouseenter', () => {
-        cursor.style.opacity = '1';
-        cursorFollower.style.opacity = '0.5';
-      });
+      }
       
       // Background animation with interactive fluid lines
       let time = 0;
@@ -890,7 +1086,7 @@
         bgCtx.fillRect(0, 0, width, height);
         
         // Premier niveau - lignes fluides horizontales avec opacité augmentée
-        const lineCount = 30;
+        const lineCount = isMobile ? 15 : 30; // Réduire sur mobile
         const spacing = height / lineCount;
         
         for (let i = 0; i <= lineCount; i++) {
@@ -903,7 +1099,7 @@
           const distY = Math.abs(mouseY - yPos);
           const influence = Math.max(0, 1 - distY / (height * 0.5));
           
-          for (let x = 0; x <= width; x += 5) {
+          for (let x = 0; x <= width; x += isMobile ? 10 : 5) { // Moins de points sur mobile
             const distX = Math.abs(mouseX - x);
             const mouseInfluence = Math.max(0, 1 - distX / (width * 0.3)) * 40 * influence;
             
@@ -926,39 +1122,45 @@
         }
         
         // Deuxième niveau - lignes fluides verticales plus visibles
-        for (let i = 0; i <= lineCount/1.5; i++) {
-          bgCtx.beginPath();
-          // Couleur plus visible pour les lignes verticales
-          bgCtx.strokeStyle = 'rgba(60, 90, 160, 0.12)'; // Bleu légèrement différent
-          bgCtx.lineWidth = 0.7;
-          
-          const xPos = i * (width / (lineCount/1.5));
-          const distX = Math.abs(mouseX - xPos);
-          const influence = Math.max(0, 1 - distX / (width * 0.5));
-          
-          for (let y = 0; y <= height; y += 5) {
-            const distY = Math.abs(mouseY - y);
-            const mouseInfluence = Math.max(0, 1 - distY / (height * 0.3)) * 30 * influence;
+        // Réduire ou simplifier sur mobile
+        if (!isMobile || i % 2 === 0) { // Sur mobile, dessiner une ligne sur deux
+          for (let i = 0; i <= lineCount/1.5; i++) {
+            bgCtx.beginPath();
+            // Couleur plus visible pour les lignes verticales
+            bgCtx.strokeStyle = 'rgba(60, 90, 160, 0.12)'; // Bleu légèrement différent
+            bgCtx.lineWidth = 0.7;
             
-            // Vagues plus prononcées
-            const wave1 = Math.sin((y * 0.004) + (time * 0.012)) * 10;
-            const wave2 = Math.cos((y * 0.002) + (time * 0.006) + i * 0.2) * 15;
+            const xPos = i * (width / (lineCount/1.5));
+            const distX = Math.abs(mouseX - xPos);
+            const influence = Math.max(0, 1 - distX / (width * 0.5));
             
-            let waveX = xPos + wave1 + wave2;
-            waveX += mouseInfluence * Math.sin((y - mouseY) * 0.01);
-            
-            if (y === 0) {
-              bgCtx.moveTo(waveX, y);
-            } else {
-              bgCtx.lineTo(waveX, y);
+            for (let y = 0; y <= height; y += isMobile ? 10 : 5) { // Moins de points sur mobile
+              const distY = Math.abs(mouseY - y);
+              const mouseInfluence = Math.max(0, 1 - distY / (height * 0.3)) * 30 * influence;
+              
+              // Vagues plus prononcées
+              const wave1 = Math.sin((y * 0.004) + (time * 0.012)) * 10;
+              const wave2 = Math.cos((y * 0.002) + (time * 0.006) + i * 0.2) * 15;
+              
+              let waveX = xPos + wave1 + wave2;
+              waveX += mouseInfluence * Math.sin((y - mouseY) * 0.01);
+              
+              if (y === 0) {
+                bgCtx.moveTo(waveX, y);
+              } else {
+                bgCtx.lineTo(waveX, y);
+              }
             }
+            bgCtx.stroke();
           }
-          bgCtx.stroke();
         }
+        
+        // Réduire le nombre de particules et de connexions sur mobile
+        const particleCount = isMobile ? width/30 : width/15;
         
         // Troisième niveau - particules de bruit plus visibles
         bgCtx.fillStyle = 'rgba(40, 70, 140, 0.08)'; // Particules plus visibles
-        for (let i = 0; i < width/15; i++) { // Plus de particules
+        for (let i = 0; i < particleCount; i++) {
           const x = Math.random() * width;
           const y = Math.random() * height;
           const size = Math.random() * 2.5 + 0.7; // Particules légèrement plus grandes
@@ -976,58 +1178,64 @@
         }
         
         // Quatrième niveau - lignes de connexion plus visibles
-        bgCtx.strokeStyle = 'rgba(40, 70, 140, 0.06)'; // Lignes de connexion plus visibles
-        bgCtx.lineWidth = 0.4; // Lignes légèrement plus épaisses
-        
-        // Création de noeuds pour les connexions
-        const nodes = [];
-        for (let i = 0; i < 25; i++) { // Plus de noeuds
-          nodes.push({
-            x: Math.random() * width,
-            y: Math.random() * height,
-            vx: Math.random() * 0.2 - 0.1,
-            vy: Math.random() * 0.2 - 0.1
-          });
-        }
-        
-        // Mise à jour des positions des noeuds
-        nodes.forEach(node => {
-          node.x += node.vx;
-          node.y += node.vy;
+        // Simplifier sur mobile
+        if (!isMobile) {
+          bgCtx.strokeStyle = 'rgba(40, 70, 140, 0.06)'; // Lignes de connexion plus visibles
+          bgCtx.lineWidth = 0.4; // Lignes légèrement plus épaisses
           
-          if (node.x < 0 || node.x > width) node.vx *= -1;
-          if (node.y < 0 || node.y > height) node.vy *= -1;
+          // Création de noeuds pour les connexions
+          const nodes = [];
+          const nodeCount = isMobile ? 12 : 25;
           
-          const dx = mouseX - node.x;
-          const dy = mouseY - node.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          
-          if (dist < 300) {
-            node.x += dx * 0.002;
-            node.y += dy * 0.002;
+          for (let i = 0; i < nodeCount; i++) {
+            nodes.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              vx: Math.random() * 0.2 - 0.1,
+              vy: Math.random() * 0.2 - 0.1
+            });
           }
-        });
-        
-        // Dessin des connexions entre noeuds proches
-        for (let i = 0; i < nodes.length; i++) {
-          for (let j = i + 1; j < nodes.length; j++) {
-            const dx = nodes[i].x - nodes[j].x;
-            const dy = nodes[i].y - nodes[j].y;
+          
+          // Mise à jour des positions des noeuds
+          nodes.forEach(node => {
+            node.x += node.vx;
+            node.y += node.vy;
+            
+            if (node.x < 0 || node.x > width) node.vx *= -1;
+            if (node.y < 0 || node.y > height) node.vy *= -1;
+            
+            const dx = mouseX - node.x;
+            const dy = mouseY - node.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             
-            if (dist < 220) { // Distance de connexion augmentée
-              bgCtx.beginPath();
-              bgCtx.moveTo(nodes[i].x, nodes[i].y);
-              bgCtx.lineTo(nodes[j].x, nodes[j].y);
-              bgCtx.globalAlpha = 1 - dist / 220;
-              bgCtx.stroke();
-              bgCtx.globalAlpha = 1;
+            if (dist < 300) {
+              node.x += dx * 0.002;
+              node.y += dy * 0.002;
+            }
+          });
+          
+          // Dessin des connexions entre noeuds proches
+          for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+              const dx = nodes[i].x - nodes[j].x;
+              const dy = nodes[i].y - nodes[j].y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              
+              if (dist < 220) { // Distance de connexion augmentée
+                bgCtx.beginPath();
+                bgCtx.moveTo(nodes[i].x, nodes[i].y);
+                bgCtx.lineTo(nodes[j].x, nodes[j].y);
+                bgCtx.globalAlpha = 1 - dist / 220;
+                bgCtx.stroke();
+                bgCtx.globalAlpha = 1;
+              }
             }
           }
         }
         
         // Cinquième niveau - accents de couleur plus prononcés
-        for (let i = 0; i < 7; i++) { // Plus d'accents de couleur
+        const accentCount = isMobile ? 3 : 7;
+        for (let i = 0; i < accentCount; i++) {
           bgCtx.beginPath();
           const x = Math.random() * width;
           const y = Math.random() * height;
@@ -1043,15 +1251,15 @@
           bgCtx.fill();
         }
         
-        // Animation continue
-        time += 0.5;
+        // Animation continue - plus lent sur mobile pour économiser les ressources
+        time += isMobile ? 0.3 : 0.5;
         requestAnimationFrame(drawFluidLines);
       }
       
-      // Generate floating elements for background effect
+      // Generate floating elements for background effect - moins sur mobile
       function createFloatingElements() {
         floatingElements.innerHTML = '';
-        const elementCount = 12;
+        const elementCount = isMobile ? 6 : 12;
         
         for (let i = 0; i < elementCount; i++) {
           const element = document.createElement('div');
@@ -1081,10 +1289,15 @@
         }
       }
       
-      // Create binary visualization
+      // Create binary visualization - réduire sur mobile
       function createBinaryVisualization() {
         binaryData.innerHTML = '';
-        const lineCount = 20;
+        // Moins de lignes sur mobile
+        const lineCount = isMobile ? 10 : 20;
+        
+        if (isMobile) {
+          binaryData.style.opacity = '0.05'; // Réduire l'opacité pour améliorer les performances
+        }
         
         for (let i = 0; i < lineCount; i++) {
           const line = document.createElement('div');
@@ -1092,7 +1305,7 @@
           
           // Generate binary content
           let binaryContent = '';
-          const length = Math.floor(Math.random() * 200) + 100;
+          const length = Math.floor(Math.random() * (isMobile ? 100 : 200)) + (isMobile ? 50 : 100);
           
           for (let j = 0; j < length; j++) {
             binaryContent += Math.random() > 0.5 ? '1' : '0';
@@ -1104,8 +1317,8 @@
           line.style.top = `${Math.random() * 100}%`;
           line.style.left = `${Math.random() * 100 - 50}%`;
           
-          // Animation
-          const duration = Math.random() * 60 + 30;
+          // Animation - plus lente sur mobile
+          const duration = Math.random() * (isMobile ? 90 : 60) + (isMobile ? 60 : 30);
           const delay = Math.random() * 10;
           const direction = Math.random() > 0.5 ? 1 : -1;
           
@@ -1159,8 +1372,6 @@
             const scrollProgress = scrollTop / totalScrollHeight;
             document.documentElement.style.setProperty('--progress', scrollProgress);
             
-            // Header show/hide code removed
-            
             // Handle horizontal scroll section
             updateHorizontalScroll();
             
@@ -1177,7 +1388,10 @@
             if (contactRect.top < windowHeight && contactRect.bottom > 0) {
               const contactProgress = 1 - (contactRect.top / windowHeight);
               if (contactProgress >= 0 && contactProgress <= 1) {
-                const rotateX = 20 - contactProgress * 20; // Start tilted and level out as scrolled into view
+                // Moins de rotation sur mobile
+                const rotateX = isMobile ? 
+                  10 - contactProgress * 10 : 
+                  20 - contactProgress * 20;
                 contactForm3D.style.transform = `rotateX(${rotateX}deg)`;
               }
             }
@@ -1192,7 +1406,8 @@
       function initializeAnimations() {
         // Create 3D distortion effect for hero section
         const distortionFragment = document.createDocumentFragment();
-        const distortionCount = 20;
+        // Moins d'éléments sur mobile
+        const distortionCount = isMobile ? 10 : 20;
         
         for (let i = 0; i < distortionCount; i++) {
           const distortElement = document.createElement('div');
@@ -1218,7 +1433,9 @@
         // Prepare parallax backgrounds for horizontal section
         const parallaxBgs = document.querySelectorAll('.parallax-bg');
         parallaxBgs.forEach((bg, index) => {
-          for (let i = 0; i < 5; i++) {
+          // Moins d'éléments parallax sur mobile
+          const elemCount = isMobile ? 3 : 5;
+          for (let i = 0; i < elemCount; i++) {
             const parallaxElement = document.createElement('div');
             parallaxElement.className = 'parallax-element';
             
@@ -1267,36 +1484,38 @@
         }, 1000);
       });
       
-      // 3D tilt effect for contact form
+      // 3D tilt effect for contact form - disable on mobile
       contactForm3D.addEventListener('mousemove', (e) => {
-        const formRect = contactForm3D.getBoundingClientRect();
-        const x = e.clientX - formRect.left;
-        const y = e.clientY - formRect.top;
-        
-        const centerX = formRect.width / 2;
-        const centerY = formRect.height / 2;
-        
-        const rotateY = (x - centerX) / 20;
-        const rotateX = (centerY - y) / 20;
-        
-        contactForm3D.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        if (!isMobile) {
+          const formRect = contactForm3D.getBoundingClientRect();
+          const x = e.clientX - formRect.left;
+          const y = e.clientY - formRect.top;
+          
+          const centerX = formRect.width / 2;
+          const centerY = formRect.height / 2;
+          
+          const rotateY = (x - centerX) / 20;
+          const rotateX = (centerY - y) / 20;
+          
+          contactForm3D.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        }
       });
       
       contactForm3D.addEventListener('mouseleave', () => {
         contactForm3D.style.transform = 'rotateX(0) rotateY(0)';
       });
       
-      // Smooth scroll navigation code removed since nav links are gone
-      
-      // Create distortion effect on mouse move
+      // Create distortion effect on mouse move - simplified on mobile
       document.addEventListener('mousemove', (e) => {
-        const distortionElements = distortionContainer.querySelectorAll('.distortion-element');
-        const mouseXPercent = e.clientX / window.innerWidth;
-        
-        distortionElements.forEach((element, index) => {
-          const offset = (index % 2 === 0 ? 1 : -1) * mouseXPercent * 50;
-          element.style.transform = `translateX(${offset}px)`;
-        });
+        if (!isMobile) {
+          const distortionElements = distortionContainer.querySelectorAll('.distortion-element');
+          const mouseXPercent = e.clientX / window.innerWidth;
+          
+          distortionElements.forEach((element, index) => {
+            const offset = (index % 2 === 0 ? 1 : -1) * mouseXPercent * 50;
+            element.style.transform = `translateX(${offset}px)`;
+          });
+        }
       });
       
       // Initialize animation after page load
@@ -1308,7 +1527,7 @@
           loadingScreen.style.display = 'none';
           initializeAnimations();
         }, 600);
-      }, 2500);
+      }, isMobile ? 1500 : 2500); // Chargement plus rapide sur mobile
     });
 
     // Define missing keyframes animations
