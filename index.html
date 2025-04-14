@@ -39,12 +39,12 @@
     }
 
     .scroll-container {
-      position: fixed;
+      position: relative;
       top: 0;
       left: 0;
       width: 100%;
-      height: 100vh;
-      overflow: hidden;
+      height: auto;
+      overflow: visible;
     }
 
     /* Interactive canvas background */
@@ -129,6 +129,48 @@
       transform: translateZ(0);
     }
 
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+      animation: fadeInUp 1s ease-out 1s forwards, bounce 2s ease-in-out infinite;
+    }
+
+    .scroll-indicator:hover {
+      opacity: 1;
+    }
+
+    .scroll-indicator .arrow {
+      width: 20px;
+      height: 20px;
+      border-right: 2px solid var(--text-color);
+      border-bottom: 2px solid var(--text-color);
+      transform: rotate(45deg);
+      margin-bottom: 5px;
+    }
+
+    .scroll-indicator .text {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0) translateX(-50%);
+      }
+      50% {
+        transform: translateY(10px) translateX(-50%);
+      }
+    }
+
     /* Distortion effect on scroll */
     .distortion-container {
       position: absolute;
@@ -161,9 +203,144 @@
       will-change: transform;
     }
 
+    /* Services Section */
+    .services {
+      background: linear-gradient(180deg, var(--primary-color) 0%, #f8f8f8 100%);
+      z-index: 3;
+      padding-top: 100px;
+      padding-bottom: 150px;
+      min-height: auto;
+    }
+
+    .services-title {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 4rem;
+      position: relative;
+      transform: translateZ(0);
+    }
+
+    .services-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: var(--accent-color);
+    }
+
+    .services-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      perspective: 1000px;
+    }
+
+    .service-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+      transform: translateY(50px) scale(0.95);
+      opacity: 0;
+      will-change: transform, opacity;
+      position: relative;
+      z-index: 2;
+      cursor: default;
+      height: 100%;
+    }
+
+    .service-card.visible {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .service-icon {
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: var(--accent-color);
+      background: linear-gradient(135deg, rgba(255, 51, 102, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+    }
+
+    .service-content {
+      padding: 2rem;
+    }
+
+    .service-title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .service-title::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 40px;
+      height: 2px;
+      background: var(--accent-color);
+      transition: width 0.3s ease;
+    }
+
+    .service-card:hover .service-title::after {
+      width: 100%;
+    }
+
+    .service-description {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: rgba(14, 14, 14, 0.8);
+    }
+
+    .service-features {
+      margin-top: 1.5rem;
+      list-style: none;
+    }
+
+    .service-features li {
+      margin-bottom: 0.5rem;
+      padding-left: 1.5rem;
+      position: relative;
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    .service-features li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent-color);
+    }
+
+    /* Special styles for service cards */
+    .service-card:nth-child(1) {
+      transition-delay: 0.1s;
+    }
+
+    .service-card:nth-child(2) {
+      transition-delay: 0.2s;
+    }
+
+    .service-card:nth-child(3) {
+      transition-delay: 0.3s;
+    }
+
     /* Projects gallery with 3D effect */
     .projects {
-      background: linear-gradient(180deg, var(--primary-color) 0%, #f5f5f5 100%);
+      background: linear-gradient(180deg, #f8f8f8 0%, #f5f5f5 100%);
       z-index: 2;
     }
 
@@ -636,6 +813,10 @@
         grid-template-columns: 1fr;
       }
       
+      .services-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
       .horizontal-content {
         width: 85%;
       }
@@ -662,6 +843,11 @@
       }
       
       .gallery {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .services-container {
         grid-template-columns: 1fr;
         gap: 1.5rem;
       }
@@ -722,6 +908,7 @@
       }
       
       .projects-title,
+      .services-title,
       .contact-title,
       .horizontal-title {
         font-size: 2rem;
@@ -846,6 +1033,60 @@
       <div class="hero-content">
         <h1 class="hero-title">Creative<br>Developer</h1>
         <p class="hero-subtitle">Crafting immersive digital experiences where code meets design. Pushing the boundaries of web interactions.</p>
+      </div>
+      
+      <!-- Scroll indicator -->
+      <div class="scroll-indicator">
+        <div class="arrow"></div>
+        <div class="text">Scroll to explore</div>
+      </div>
+    </section>
+    
+    <!-- Services section -->
+    <section class="services" id="services">
+      <h2 class="services-title">My Services</h2>
+      <div class="services-container" id="servicesContainer">
+        <div class="service-card">
+          <div class="service-icon">✨</div>
+          <div class="service-content">
+            <h3 class="service-title">Creative Development</h3>
+            <p class="service-description">Transforming your ideas into immersive digital experiences with cutting-edge web technologies.</p>
+            <ul class="service-features">
+              <li>Interactive websites with WebGL & Three.js</li>
+              <li>Animated micro-interactions</li>
+              <li>Responsive and adaptive designs</li>
+              <li>Performance optimized experiences</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">⚡</div>
+          <div class="service-content">
+            <h3 class="service-title">Interface Design</h3>
+            <p class="service-description">Crafting intuitive and visually stunning interfaces that engage users and enhance conversion rates.</p>
+            <ul class="service-features">
+              <li>User-centered interface design</li>
+              <li>Interaction design patterns</li>
+              <li>Prototype development</li>
+              <li>UI animation systems</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">🔍</div>
+          <div class="service-content">
+            <h3 class="service-title">Technical Consulting</h3>
+            <p class="service-description">Expert guidance on implementing modern web technologies and optimizing digital products.</p>
+            <ul class="service-features">
+              <li>Technology stack selection</li>
+              <li>Performance optimization</li>
+              <li>Code architecture planning</li>
+              <li>Technical implementation strategies</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
     
@@ -1025,7 +1266,8 @@
         binaryData: document.getElementById('binaryData'),
         distortionContainer: document.getElementById('distortionContainer'),
         floatingElements: document.getElementById('floatingElements'),
-        contactForm: document.querySelector('.contact-form')
+        contactForm: document.querySelector('.contact-form'),
+        serviceCards: document.querySelectorAll('.service-card')
       };
       
       // Initialize WebGL context for background
@@ -1088,7 +1330,7 @@
         });
         
         // Cursor hover effects for interactive elements
-        document.querySelectorAll('a, button, .project-card').forEach(item => {
+        document.querySelectorAll('a, button, .project-card, .service-card').forEach(item => {
           item.addEventListener('mouseenter', () => {
             elements.cursor.style.width = '10px';
             elements.cursor.style.height = '10px';
@@ -1365,6 +1607,27 @@
         }
       }
       
+      // Check if element is in viewport with offset
+      function isInViewport(element, offset = 0) {
+        const rect = element.getBoundingClientRect();
+        return (
+          rect.top <= (windowHeight * (1 - offset)) &&
+          rect.bottom >= 0
+        );
+      }
+      
+      // Reveal services when they come into view with stagger effect
+      function revealServices() {
+        elements.serviceCards.forEach((card, index) => {
+          if (isInViewport(card, 0.3) && !card.classList.contains('visible')) {
+            // Stagger the animation with increasing delay based on index
+            setTimeout(() => {
+              card.classList.add('visible');
+            }, index * 150);
+          }
+        });
+      }
+      
       // Optimized scroll handler with passive option for better performance
       let scrollRafPending = false;
       window.addEventListener('scroll', () => {
@@ -1391,13 +1654,13 @@
         // Handle horizontal scroll section
         updateHorizontalScroll();
         
+        // Reveal service cards when they come into view
+        revealServices();
+        
         // Process only visible cards for performance
         elements.projectCards.forEach(card => {
-          const cardRect = card.getBoundingClientRect();
-          if (cardRect.top < windowHeight * 0.85 && cardRect.bottom > 0) {
-            if (!card.classList.contains('visible')) {
-              card.classList.add('visible');
-            }
+          if (isInViewport(card, 0.15) && !card.classList.contains('visible')) {
+            card.classList.add('visible');
           }
         });
         
@@ -1558,6 +1821,12 @@
             updateDistortion(e.clientX);
           }, { passive: true });
         }
+        
+        // Smooth scroll for scroll indicator
+        document.querySelector('.scroll-indicator').addEventListener('click', () => {
+          const servicesSection = document.getElementById('services');
+          servicesSection.scrollIntoView({ behavior: 'smooth' });
+        });
       }
       
       // Clean up resources when page is hidden/closed
