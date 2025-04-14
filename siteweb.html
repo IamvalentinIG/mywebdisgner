@@ -1525,28 +1525,39 @@
         skillWheelsAnimated: false
       };
 
-      const bgCtx = elements.bgCanvas.getContext('2d');
-      let width = elements.bgCanvas.width = window.innerWidth;
-      let height = elements.bgCanvas.height = window.innerHeight;
+      const bgCtx = elements.bgCanvas ? elements.bgCanvas.getContext('2d') : null;
+      let width = elements.bgCanvas ? (elements.bgCanvas.width = window.innerWidth) : window.innerWidth;
+      let height = elements.bgCanvas ? (elements.bgCanvas.height = window.innerHeight) : window.innerHeight;
 
       // Core functions
       function resizeCanvas() {
-        width = elements.bgCanvas.width = window.innerWidth;
-        height = elements.bgCanvas.height = window.innerHeight;
+        if (elements.bgCanvas) {
+          width = elements.bgCanvas.width = window.innerWidth;
+          height = elements.bgCanvas.height = window.innerHeight;
+        }
 
         if (elements.canvasGrid) {
           elements.canvasGrid.width = window.innerWidth;
-          elements.canvasGrid.height = document.querySelector('.dynamic-grid-section').offsetHeight;
+          const gridSection = document.querySelector('.dynamic-grid-section');
+          if (gridSection) {
+            elements.canvasGrid.height = gridSection.offsetHeight;
+          }
         }
 
         if (elements.particlesCanvas) {
           elements.particlesCanvas.width = window.innerWidth;
-          elements.particlesCanvas.height = document.querySelector('.interactive-particles-section').offsetHeight;
+          const particlesSection = document.querySelector('.interactive-particles-section');
+          if (particlesSection) {
+            elements.particlesCanvas.height = particlesSection.offsetHeight;
+          }
         }
         
         if (elements.neuralCanvas) {
           elements.neuralCanvas.width = window.innerWidth;
-          elements.neuralCanvas.height = document.querySelector('.about-section').offsetHeight;
+          const aboutSection = document.querySelector('.about-section');
+          if (aboutSection) {
+            elements.neuralCanvas.height = aboutSection.offsetHeight;
+          }
           initNeuralNetwork(); // réinitialiser le réseau neuronal lors du redimensionnement
         }
         
@@ -1555,13 +1566,17 @@
       }
 
       function moveCursor(x, y) {
-        elements.cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-        setTimeout(() => {
-          elements.cursorFollower.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-        }, 70);
+        if (elements.cursor && elements.cursorFollower) {
+          elements.cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+          setTimeout(() => {
+            elements.cursorFollower.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+          }, 70);
+        }
       }
 
       function drawFluidLines() {
+        if (!bgCtx) return;
+        
         bgCtx.clearRect(0, 0, width, height);
         
         // Background
@@ -1669,6 +1684,8 @@
       }
 
       function createFloatingElements() {
+        if (!elements.floatingElements) return;
+        
         elements.floatingElements.innerHTML = '';
         for (let i = 0; i < 12; i++) {
           const element = document.createElement('div');
@@ -1685,6 +1702,8 @@
       }
 
       function createBinaryVisualization() {
+        if (!elements.binaryData) return;
+        
         elements.binaryData.innerHTML = '';
         for (let i = 0; i < 20; i++) {
           const line = document.createElement('div');
@@ -1706,7 +1725,7 @@
       }
 
       function updateHorizontalScroll() {
-        if (!elements.horizontalSection) return;
+        if (!elements.horizontalSection || !elements.horizontalTrack) return;
         
         const horizontalRect = elements.horizontalSection.getBoundingClientRect();
         const distanceFromTop = horizontalRect.top;
@@ -1731,6 +1750,8 @@
         
         const ctx = elements.canvasGrid.getContext('2d');
         const gridSection = document.querySelector('.dynamic-grid-section');
+        if (!gridSection) return;
+        
         let gridTime = 0;
         let gridPoints = [];
         
@@ -1976,6 +1997,8 @@
         
         function animate() {
           const section = document.querySelector('.interactive-particles-section');
+          if (!section) return;
+          
           const rect = section.getBoundingClientRect();
           const isVisible = rect.top < state.windowHeight && rect.bottom > 0;
           
@@ -2057,6 +2080,7 @@
         
         const ctx = elements.neuralCanvas.getContext('2d');
         const aboutSection = document.querySelector('.about-section');
+        if (!aboutSection) return;
         
         // Réinitialiser les nœuds et connexions
         state.neuralNodes = [];
@@ -2464,24 +2488,26 @@ function calculateYearsExperience(jobs) {
         });
         
         // Effet 3D sur l'éditeur
-        elements.codeEditorContainer.addEventListener('mousemove', e => {
-          if (!elements.codeEditorContainer) return;
+        if (elements.codeEditorContainer) {
+          elements.codeEditorContainer.addEventListener('mousemove', e => {
+            if (!elements.codeEditorWrapper) return;
+            
+            const rect = elements.codeEditorContainer.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            const rotateY = ((mouseX - centerX) / centerX) * 5;
+            const rotateX = ((centerY - mouseY) / centerY) * 5;
+            
+            elements.codeEditorWrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+          });
           
-          const rect = elements.codeEditorContainer.getBoundingClientRect();
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-          const mouseX = e.clientX - rect.left;
-          const mouseY = e.clientY - rect.top;
-          
-          const rotateY = ((mouseX - centerX) / centerX) * 5;
-          const rotateX = ((centerY - mouseY) / centerY) * 5;
-          
-          elements.codeEditorWrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        });
-        
-        elements.codeEditorContainer.addEventListener('mouseleave', () => {
-          elements.codeEditorWrapper.style.transform = 'rotateX(0deg) rotateY(0deg)';
-        });
+          elements.codeEditorContainer.addEventListener('mouseleave', () => {
+            elements.codeEditorWrapper.style.transform = 'rotateX(0deg) rotateY(0deg)';
+          });
+        }
         
         // Initialiser l'animation du premier onglet
         updateLineNumbers(1);
@@ -2545,7 +2571,7 @@ function calculateYearsExperience(jobs) {
 
       // Initialisation des roues de compétences
       function initSkillWheels() {
-        if (!elements.frontendWheel || !elements.backendWheel || !elements.creativeWheel || !elements.uiWheel) return;
+        if (!elements.frontendWheel && !elements.backendWheel && !elements.creativeWheel && !elements.uiWheel) return;
         
         const wheelData = [
           {
@@ -2568,6 +2594,8 @@ function calculateYearsExperience(jobs) {
         
         // Créer les tags de compétences autour de chaque roue
         wheelData.forEach(wheel => {
+          if (!wheel.element) return;
+          
           wheel.skills.forEach((skill, i) => {
             const angle = (i / wheel.skills.length) * Math.PI * 2;
             const x = Math.cos(angle) * 100 + 110; // 110px est le rayon de la roue
@@ -2602,6 +2630,8 @@ function calculateYearsExperience(jobs) {
         if (state.skillWheelsAnimated) return;
         
         const aboutSection = document.getElementById('about');
+        if (!aboutSection) return;
+        
         const rect = aboutSection.getBoundingClientRect();
         
         if (rect.top < state.windowHeight && rect.bottom > 0) {
@@ -2642,18 +2672,20 @@ function calculateYearsExperience(jobs) {
         });
         
         // Animation des éléments de distortion
-        for (let i = 0; i < 20; i++) {
-          const distortElement = document.createElement('div');
-          distortElement.className = 'distortion-element';
-          distortElement.style.position = 'absolute';
-          distortElement.style.top = `${(i / 20) * 100}%`;
-          distortElement.style.left = '0';
-          distortElement.style.width = '100%';
-          distortElement.style.height = `${100 / 20}%`;
-          distortElement.style.backgroundImage = 'linear-gradient(90deg, rgba(255,51,102,0.05) 0%, rgba(255,255,255,0) 100%)';
-          distortElement.style.transform = 'translateX(0)';
-          distortElement.style.transition = 'transform 0.5s ease';
-          elements.distortionContainer.appendChild(distortElement);
+        if (elements.distortionContainer) {
+          for (let i = 0; i < 20; i++) {
+            const distortElement = document.createElement('div');
+            distortElement.className = 'distortion-element';
+            distortElement.style.position = 'absolute';
+            distortElement.style.top = `${(i / 20) * 100}%`;
+            distortElement.style.left = '0';
+            distortElement.style.width = '100%';
+            distortElement.style.height = `${100 / 20}%`;
+            distortElement.style.backgroundImage = 'linear-gradient(90deg, rgba(255,51,102,0.05) 0%, rgba(255,255,255,0) 100%)';
+            distortElement.style.transform = 'translateX(0)';
+            distortElement.style.transition = 'transform 0.5s ease';
+            elements.distortionContainer.appendChild(distortElement);
+          }
         }
         
         // Forcer la mise à jour du défilement initial
@@ -2671,7 +2703,7 @@ function calculateYearsExperience(jobs) {
             state.mouseY = e.clientY;
             
             // Distortion effect
-            const distortionElements = elements.distortionContainer.querySelectorAll('.distortion-element');
+            const distortionElements = elements.distortionContainer ? elements.distortionContainer.querySelectorAll('.distortion-element') : [];
             const mouseXPercent = e.clientX / window.innerWidth;
             distortionElements.forEach((element, index) => {
               const offset = (index % 2 === 0 ? 1 : -1) * mouseXPercent * 50;
@@ -2685,30 +2717,38 @@ function calculateYearsExperience(jobs) {
       });
 
       document.addEventListener('mouseleave', () => {
-        elements.cursor.style.opacity = '0';
-        elements.cursorFollower.style.opacity = '0';
+        if (elements.cursor && elements.cursorFollower) {
+          elements.cursor.style.opacity = '0';
+          elements.cursorFollower.style.opacity = '0';
+        }
       });
 
       document.addEventListener('mouseenter', () => {
-        elements.cursor.style.opacity = '1';
-        elements.cursorFollower.style.opacity = '0.5';
+        if (elements.cursor && elements.cursorFollower) {
+          elements.cursor.style.opacity = '1';
+          elements.cursorFollower.style.opacity = '0.5';
+        }
       });
 
       document.querySelectorAll('a, button, .project-card, .grid-card, .skill-tag, .about-cta-btn').forEach(item => {
         item.addEventListener('mouseenter', () => {
-          elements.cursor.style.width = '10px';
-          elements.cursor.style.height = '10px';
-          elements.cursorFollower.style.width = '60px';
-          elements.cursorFollower.style.height = '60px';
-          elements.cursorFollower.style.opacity = '0.2';
+          if (elements.cursor && elements.cursorFollower) {
+            elements.cursor.style.width = '10px';
+            elements.cursor.style.height = '10px';
+            elements.cursorFollower.style.width = '60px';
+            elements.cursorFollower.style.height = '60px';
+            elements.cursorFollower.style.opacity = '0.2';
+          }
         });
         
         item.addEventListener('mouseleave', () => {
-          elements.cursor.style.width = '20px';
-          elements.cursor.style.height = '20px';
-          elements.cursorFollower.style.width = '40px';
-          elements.cursorFollower.style.height = '40px';
-          elements.cursorFollower.style.opacity = '0.5';
+          if (elements.cursor && elements.cursorFollower) {
+            elements.cursor.style.width = '20px';
+            elements.cursor.style.height = '20px';
+            elements.cursorFollower.style.width = '40px';
+            elements.cursorFollower.style.height = '40px';
+            elements.cursorFollower.style.opacity = '0.5';
+          }
         });
       });
 
@@ -2726,42 +2766,50 @@ function calculateYearsExperience(jobs) {
             document.documentElement.style.setProperty('--progress', scrollProgress);
             
             // Header visibility
-            if (scrollTop > 100) {
-              if (state.scrollDirection === 'up') {
-                elements.header.classList.add('header-visible');
+            if (elements.header) {
+              if (scrollTop > 100) {
+                if (state.scrollDirection === 'up') {
+                  elements.header.classList.add('header-visible');
+                } else {
+                  elements.header.classList.remove('header-visible');
+                }
               } else {
                 elements.header.classList.remove('header-visible');
               }
-            } else {
-              elements.header.classList.remove('header-visible');
             }
             
             // Horizontal scroll section
             updateHorizontalScroll();
             
             // Animate project cards
-            elements.projectCards.forEach(card => {
-              if (card.getBoundingClientRect().top < state.windowHeight * 0.85) {
-                card.classList.add('visible');
-              }
-            });
+            if (elements.projectCards) {
+              elements.projectCards.forEach(card => {
+                if (card.getBoundingClientRect().top < state.windowHeight * 0.85) {
+                  card.classList.add('visible');
+                }
+              });
+            }
             
             // Animate grid cards
-            elements.gridCards.forEach(card => {
-              if (card.getBoundingClientRect().top < state.windowHeight * 0.85) {
-                card.classList.add('visible');
-              }
-            });
+            if (elements.gridCards) {
+              elements.gridCards.forEach(card => {
+                if (card.getBoundingClientRect().top < state.windowHeight * 0.85) {
+                  card.classList.add('visible');
+                }
+              });
+            }
             
             // Vérifier la visibilité des skill wheels
             checkSkillWheelsVisibility();
             
             // 3D rotation for contact form
-            const contactRect = elements.contactForm3D.getBoundingClientRect();
-            if (contactRect.top < state.windowHeight && contactRect.bottom > 0) {
-              const contactProgress = 1 - (contactRect.top / state.windowHeight);
-              if (contactProgress >= 0 && contactProgress <= 1) {
-                elements.contactForm3D.style.transform = `rotateX(${20 - contactProgress * 20}deg)`;
+            if (elements.contactForm3D) {
+              const contactRect = elements.contactForm3D.getBoundingClientRect();
+              if (contactRect.top < state.windowHeight && contactRect.bottom > 0) {
+                const contactProgress = 1 - (contactRect.top / state.windowHeight);
+                if (contactProgress >= 0 && contactProgress <= 1) {
+                  elements.contactForm3D.style.transform = `rotateX(${20 - contactProgress * 20}deg)`;
+                }
               }
             }
             
@@ -2773,59 +2821,69 @@ function calculateYearsExperience(jobs) {
 
       // Double-click to toggle header visibility
       document.addEventListener('dblclick', () => {
-        elements.header.classList.toggle('header-visible');
+        if (elements.header) elements.header.classList.toggle('header-visible');
       });
 
       // Navigation buttons
       if (elements.exploreBtn) {
         elements.exploreBtn.addEventListener('click', () => {
-          window.scrollTo({
-            top: document.getElementById('gridSection').offsetTop,
-            behavior: 'smooth'
-          });
+          const gridSection = document.getElementById('gridSection');
+          if (gridSection) {
+            window.scrollTo({
+              top: gridSection.offsetTop,
+              behavior: 'smooth'
+            });
+          }
         });
       }
       
       if (elements.contactBtn) {
         elements.contactBtn.addEventListener('click', () => {
-          window.scrollTo({
-            top: document.getElementById('contact').offsetTop,
-            behavior: 'smooth'
-          });
+          const contactSection = document.getElementById('contact');
+          if (contactSection) {
+            window.scrollTo({
+              top: contactSection.offsetTop,
+              behavior: 'smooth'
+            });
+          }
         });
       }
 
       // Contact form
       const contactForm = document.querySelector('.contact-form');
-      contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        contactForm.style.transform = 'translateZ(50px) scale(0.95)';
-        setTimeout(() => {
-          contactForm.style.transform = 'translateZ(10px) scale(1)';
-          contactForm.reset();
-          alert('Message sent successfully!');
-        }, 1000);
-      });
+      if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          contactForm.style.transform = 'translateZ(50px) scale(0.95)';
+          setTimeout(() => {
+            contactForm.style.transform = 'translateZ(10px) scale(1)';
+            contactForm.reset();
+            alert('Message sent successfully!');
+          }, 1000);
+        });
+      }
 
       // 3D tilt for form
-      elements.contactForm3D.addEventListener('mousemove', (e) => {
-        const rect = elements.contactForm3D.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        elements.contactForm3D.style.transform = `rotateX(${(centerY - y) / 20}deg) rotateY(${(x - centerX) / 20}deg)`;
-      });
-      
-      elements.contactForm3D.addEventListener('mouseleave', () => {
-        elements.contactForm3D.style.transform = 'rotateX(0) rotateY(0)';
-      });
+      if (elements.contactForm3D) {
+        elements.contactForm3D.addEventListener('mousemove', (e) => {
+          const rect = elements.contactForm3D.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          elements.contactForm3D.style.transform = `rotateX(${(centerY - y) / 20}deg) rotateY(${(x - centerX) / 20}deg)`;
+        });
+        
+        elements.contactForm3D.addEventListener('mouseleave', () => {
+          elements.contactForm3D.style.transform = 'rotateX(0) rotateY(0)';
+        });
+      }
 
       // Smooth scroll for navigation
       document.querySelectorAll('.nav-link, .about-cta-btn').forEach(link => {
         link.addEventListener('click', (e) => {
           const href = link.getAttribute('href');
-          if (href.startsWith('#')) {
+          if (href && href.startsWith('#')) {
             e.preventDefault();
             const targetId = href;
             const targetElement = document.querySelector(targetId);
@@ -2841,12 +2899,16 @@ function calculateYearsExperience(jobs) {
 
       // Initialize after loading
       setTimeout(() => {
-        elements.loadingScreen.style.opacity = '0';
-        elements.loadingScreen.style.transform = 'translateY(-20px)';
-        setTimeout(() => {
-          elements.loadingScreen.style.display = 'none';
+        if (elements.loadingScreen) {
+          elements.loadingScreen.style.opacity = '0';
+          elements.loadingScreen.style.transform = 'translateY(-20px)';
+          setTimeout(() => {
+            elements.loadingScreen.style.display = 'none';
+            initializeAnimations();
+          }, 600);
+        } else {
           initializeAnimations();
-        }, 600);
+        }
       }, 2500);
     });
   </script>
