@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creative Developer | Immersive Experience</title>
+  <title>Creative Developer | Modern Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Space+Mono&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -12,7 +12,10 @@
       --primary-color: #ffffff;
       --text-color: #0e0e0e;
       --accent-color: #FF3366;
+      --accent-color-secondary: #3366FF;
+      --accent-color-tertiary: #33FF99;
       --progress: 0;
+      --gradient-position: 0%;
     }
 
     * {
@@ -26,6 +29,7 @@
       -webkit-overflow-scrolling: touch;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
     }
 
     body {
@@ -73,10 +77,18 @@
 
     .progress-bar {
       height: 100%;
-      background: var(--accent-color);
+      background: linear-gradient(90deg, var(--accent-color) 0%, var(--accent-color-secondary) 50%, var(--accent-color-tertiary) 100%);
+      background-size: 200% 100%;
+      animation: moveGradient 5s ease infinite;
       width: calc(var(--progress) * 100%);
       transform: translateZ(0);
       will-change: width;
+    }
+
+    @keyframes moveGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     /* Main sections styling */
@@ -108,6 +120,7 @@
       transform: translateZ(0);
     }
 
+    /* Animated gradient title */
     .hero-title {
       font-size: 8vw;
       font-weight: bold;
@@ -116,10 +129,25 @@
       margin-bottom: 2rem;
       white-space: nowrap;
       transform: translateZ(0);
-      background-image: linear-gradient(135deg, var(--text-color) 0%, var(--accent-color) 100%);
+      background-image: linear-gradient(
+        135deg, 
+        var(--text-color) 0%, 
+        var(--accent-color) 25%, 
+        var(--accent-color-secondary) 50%, 
+        var(--accent-color-tertiary) 75%, 
+        var(--text-color) 100%
+      );
+      background-size: 400% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+      animation: gradientMove 8s ease infinite;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     .hero-subtitle {
@@ -127,7 +155,8 @@
       margin: 0 auto;
       transform: translateZ(0);
       letter-spacing: -1.6px;
-      line-height: -3.5px;
+      line-height: 1.5;
+      max-width: 80%;
     }
 
     /* Scroll indicator */
@@ -142,6 +171,7 @@
       opacity: 0.7;
       transition: opacity 0.3s ease;
       animation: fadeInUp 1s ease-out 1s forwards, bounce 2s ease-in-out infinite;
+      cursor: pointer;
     }
 
     .scroll-indicator:hover {
@@ -204,313 +234,6 @@
       will-change: transform;
     }
 
-    /* Services Section */
-    .services {
-      background: linear-gradient(180deg, var(--primary-color) 0%, #f8f8f8 100%);
-      z-index: 3;
-      padding-top: 100px;
-      padding-bottom: 150px;
-      min-height: auto;
-    }
-
-    .services-title {
-      font-size: 3rem;
-      text-align: center;
-      margin-bottom: 4rem;
-      position: relative;
-      transform: translateZ(0);
-    }
-
-    .services-title::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 3px;
-      background: var(--accent-color);
-    }
-
-    .services-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-      perspective: 1000px;
-    }
-
-    .service-card {
-      background: white;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-      transform: translateY(50px) scale(0.95);
-      opacity: 0;
-      will-change: transform, opacity;
-      position: relative;
-      z-index: 2;
-      cursor: default;
-      height: 100%;
-    }
-
-    .service-card.visible {
-      transform: translateY(0) scale(1);
-      opacity: 1;
-    }
-
-    .service-card:hover {
-      transform: translateY(-10px) scale(1.02);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    }
-
-    .service-icon {
-      height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      color: var(--accent-color);
-      background: linear-gradient(135deg, rgba(255, 51, 102, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
-    }
-
-    .service-content {
-      padding: 2rem;
-    }
-
-    .service-title {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      position: relative;
-      display: inline-block;
-    }
-
-    .service-title::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      bottom: -5px;
-      width: 40px;
-      height: 2px;
-      background: var(--accent-color);
-      transition: width 0.3s ease;
-    }
-
-    .service-card:hover .service-title::after {
-      width: 100%;
-    }
-
-    .service-description {
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: rgba(14, 14, 14, 0.8);
-    }
-
-    .service-features {
-      margin-top: 1.5rem;
-      list-style: none;
-    }
-
-    .service-features li {
-      margin-bottom: 0.5rem;
-      padding-left: 1.5rem;
-      position: relative;
-      font-size: 0.85rem;
-      opacity: 0.9;
-    }
-
-    .service-features li::before {
-      content: '→';
-      position: absolute;
-      left: 0;
-      color: var(--accent-color);
-    }
-
-    /* Special styles for service cards */
-    .service-card:nth-child(1) {
-      transition-delay: 0.1s;
-    }
-
-    .service-card:nth-child(2) {
-      transition-delay: 0.2s;
-    }
-
-    .service-card:nth-child(3) {
-      transition-delay: 0.3s;
-    }
-
-    /* Projects gallery with 3D effect */
-    .projects {
-      background: linear-gradient(180deg, #f8f8f8 0%, #f5f5f5 100%);
-      z-index: 2;
-    }
-
-    .projects-title {
-      font-size: 3rem;
-      text-align: center;
-      margin-bottom: 4rem;
-      position: relative;
-      transform: translateZ(0);
-    }
-
-    .projects-title::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 3px;
-      background: var(--accent-color);
-    }
-
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
-      perspective: 1000px;
-    }
-
-    .project-card {
-      height: 400px;
-      border-radius: 10px;
-      overflow: hidden;
-      position: relative;
-      transform-style: preserve-3d;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-      opacity: 0;
-      transform: translateY(50px) rotateX(10deg);
-      will-change: transform, opacity;
-    }
-
-    .project-card.visible {
-      opacity: 1;
-      transform: translateY(0) rotateX(0);
-    }
-
-    .project-card:hover {
-      transform: scale(1.03) translateZ(20px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    }
-
-    .project-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-      will-change: transform;
-    }
-
-    .project-card:hover .project-image {
-      transform: scale(1.05);
-    }
-
-    .project-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      padding: 2rem;
-      background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
-      color: white;
-      transform: translateY(20%);
-      opacity: 0;
-      transition: all 0.3s ease;
-      will-change: transform, opacity;
-    }
-
-    .project-card:hover .project-overlay {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .project-title {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .project-desc {
-      font-size: 0.875rem;
-      opacity: 0.8;
-    }
-
-    /* Horizontal scroll section */
-    .horizontal-section {
-      height: 100vh;
-      width: 100%;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .horizontal-track {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 400%;
-      display: flex;
-      will-change: transform;
-    }
-
-    .horizontal-item {
-      width: 100vw;
-      height: 100vh;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .horizontal-content {
-      width: 70%;
-      max-width: 1000px;
-      padding: 2rem;
-      position: relative;
-      z-index: 2;
-    }
-
-    .horizontal-title {
-      font-size: 4rem;
-      margin-bottom: 1.5rem;
-      position: relative;
-      display: inline-block;
-    }
-
-    .horizontal-title::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 0;
-      width: 100px;
-      height: 4px;
-      background: var(--accent-color);
-    }
-
-    .horizontal-text {
-      font-size: 1.2rem;
-      line-height: 1.6;
-    }
-
-    /* Parallax elements */
-    .parallax-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      will-change: transform;
-    }
-
-    .parallax-element {
-      position: absolute;
-      will-change: transform;
-      transform: translateZ(0);
-    }
-
     /* Binary data visualization */
     .binary-data {
       position: absolute;
@@ -533,6 +256,463 @@
       will-change: transform;
     }
 
+    /* Animation keyframes */
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 0.7;
+      }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(5deg); }
+      100% { transform: translateY(0) rotate(-5deg); }
+    }
+    
+    @keyframes scrollBinary {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(200%); }
+    }
+    
+    /* Loading animation */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      will-change: opacity, transform;
+    }
+
+    .loading-container {
+      text-align: center;
+    }
+
+    .loading-logo {
+      font-family: 'Major Mono Display', monospace;
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s forwards 0.2s;
+    }
+
+    .loading-bar {
+      width: 200px;
+      height: 3px;
+      background: #eee;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loading-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0;
+      background: var(--accent-color);
+      animation: loadingProgress 2s ease forwards;
+      will-change: width;
+    }
+
+    .loading-text {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      opacity: 0;
+      animation: fadeIn 0.8s forwards 0.5s;
+    }
+
+    @keyframes loadingProgress {
+      0% { width: 0; }
+      10% { width: 10%; }
+      30% { width: 40%; }
+      60% { width: 60%; }
+      80% { width: 80%; }
+      100% { width: 100%; }
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: var(--accent-color);
+      pointer-events: none;
+      mix-blend-mode: difference;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
+      will-change: transform, width, height, opacity;
+    }
+
+    .cursor-follower {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--accent-color);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.5;
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+      will-change: transform, width, height, opacity;
+    }
+    /* Skills section styles */
+    .skills {
+      background: linear-gradient(180deg, var(--primary-color) 0%, #f5f5f8 100%);
+      z-index: 3;
+      padding: 0;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      perspective: 1500px;
+    }
+    
+    .skills-header {
+      padding: 50px 10% 30px;
+      text-align: center;
+    }
+
+    .skills-title {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .skills-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: var(--accent-color);
+    }
+
+    .skills-subtitle {
+      max-width: 700px;
+      margin: 0 auto 30px;
+      line-height: 1.6;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    /* 3D Hexagonal Grid Effect */
+    .hexagonal-grid {
+      position: relative;
+      width: 100%;
+      height: 70vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform-style: preserve-3d;
+      perspective: 1500px;
+    }
+
+    .hex-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transform: rotateX(60deg) rotateZ(0deg);
+      transition: transform 0.8s ease-out;
+    }
+
+    .hex-grid {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-style: preserve-3d;
+      transform: translate(-50%, -50%);
+      will-change: transform;
+    }
+
+    .hex-cell {
+      position: absolute;
+      width: 120px;
+      height: 138px;
+      margin: -69px 0 0 -60px;
+      transform-style: preserve-3d;
+      backface-visibility: visible;
+      transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      will-change: transform, opacity;
+    }
+
+    .hex-prism {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transform: translateZ(0);
+      transition: transform 0.5s ease-out;
+      will-change: transform;
+    }
+
+    .hex-top {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      transform: translateZ(25px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .hex-top:hover {
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0 0 40px rgba(255, 51, 102, 0.2);
+      transform: translateZ(35px);
+    }
+
+    .hex-bottom {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(245, 245, 245, 0.8);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      transform: translateZ(-25px);
+    }
+
+    .hex-side {
+      position: absolute;
+      width: 25px;
+      height: 100%;
+      background: rgba(230, 230, 230, 0.8);
+      transform-origin: 0 0;
+    }
+
+    .hex-side:nth-child(1) {
+      transform: rotateY(0deg) translateZ(60px) translateX(60px);
+      height: 50%;
+      top: 25%;
+    }
+
+    .hex-side:nth-child(2) {
+      transform: rotateY(60deg) translateZ(60px);
+      height: 50%;
+      top: 0;
+    }
+
+    .hex-side:nth-child(3) {
+      transform: rotateY(120deg) translateZ(60px);
+      height: 50%;
+      top: 25%;
+    }
+
+    .hex-side:nth-child(4) {
+      transform: rotateY(180deg) translateZ(60px) translateX(60px);
+      height: 50%;
+      top: 50%;
+    }
+
+    .hex-side:nth-child(5) {
+      transform: rotateY(240deg) translateZ(60px);
+      height: 50%;
+      top: 75%;
+    }
+
+    .hex-side:nth-child(6) {
+      transform: rotateY(300deg) translateZ(60px);
+      height: 50%;
+      top: 50%;
+    }
+
+    /* Skill icon styling */
+    .skill-icon {
+      font-size: 2.5rem;
+      display: block;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 5px;
+      transition: transform 0.3s ease;
+    }
+
+    .skill-name {
+      font-size: 0.75rem;
+      text-align: center;
+      font-weight: bold;
+      display: block;
+      width: 100%;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Skill colors */
+    .html { color: #E44D26; }
+    .css { color: #1572B6; }
+    .js { color: #F7DF1E; }
+    .react { color: #61DAFB; }
+    .node { color: #339933; }
+    .python { color: #3776AB; }
+    .design { color: #FF7F00; }
+    .animation { color: #9C27B0; }
+    .webgl { color: #990000; }
+    .three { color: #000000; }
+    .gsap { color: #88CE02; }
+    .performance { color: #00C853; }
+    .responsive { color: #2979FF; }
+    .accessibility { color: #00BCD4; }
+    .api { color: #7E57C2; }
+    .database { color: #FFC107; }
+    .testing { color: #F44336; }
+    .git { color: #F05032; }
+    .aws { color: #FF9900; }
+
+    /* Floating info panel */
+    .skill-info-panel {
+      position: absolute;
+      top: 40px;
+      right: 40px;
+      width: 280px;
+      min-height: 200px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transform: translateY(30px);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .skill-info-panel.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .skill-info-title {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .skill-info-icon {
+      margin-right: 10px;
+      font-size: 1.5rem;
+    }
+
+    .skill-info-description {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      opacity: 0.9;
+    }
+
+    .skill-info-level {
+      margin-top: 15px;
+    }
+
+    .level-bar {
+      height: 6px;
+      background: #eee;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+
+    .level-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-color) 0%, var(--accent-color-secondary) 100%);
+      border-radius: 3px;
+      transition: width 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Controls */
+    .grid-controls {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 15px;
+      z-index: 5;
+    }
+
+    .grid-button {
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .grid-button:hover {
+      background: white;
+      box-shadow: 0 8px 20px rgba(255, 51, 102, 0.2);
+      transform: translateY(-3px);
+    }
+
+    .grid-button:active {
+      transform: translateY(-1px);
+    }
+
+    /* Particle system */
+    .particles-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: var(--accent-color);
+      border-radius: 50%;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    /* The glowing connection lines */
+    .connections-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
     /* Contact section with 3D form */
     .contact {
       min-height: 100vh;
@@ -542,16 +722,40 @@
       align-items: center;
       position: relative;
       perspective: 1000px;
+      background: linear-gradient(180deg, #f5f5f8 0%, #ffffff 100%);
+      padding: 50px 20px;
     }
 
     .contact-title {
       font-size: 3rem;
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
       text-align: center;
+      position: relative;
+      display: inline-block;
+    }
+
+    .contact-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: var(--accent-color);
+    }
+
+    .contact-subtitle {
+      max-width: 700px;
+      margin: 0 auto 40px;
+      text-align: center;
+      line-height: 1.6;
+      font-size: 1.1rem;
+      opacity: 0.9;
     }
 
     .contact-form-container {
-      width: 80%;
+      width: 90%;
       max-width: 800px;
       transform-style: preserve-3d;
       transition: transform 0.5s ease;
@@ -619,7 +823,55 @@
       box-shadow: 0 10px 20px rgba(230, 41, 85, 0.3);
     }
 
-    /* Footer with gravitational effect */
+    /* Decorative elements around the form */
+    .deco-element {
+      position: absolute;
+      pointer-events: none;
+      will-change: transform;
+      filter: blur(0.5px);
+    }
+
+    .deco-circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255, 51, 102, 0.05) 0%, rgba(51, 102, 255, 0.05) 100%);
+      top: 20%;
+      left: 10%;
+      animation: floatSlow 8s ease-in-out infinite alternate;
+    }
+
+    .deco-square {
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(135deg, rgba(51, 102, 255, 0.05) 0%, rgba(51, 255, 153, 0.05) 100%);
+      border-radius: 10px;
+      bottom: 15%;
+      right: 10%;
+      animation: floatSlow 10s ease-in-out 1s infinite alternate-reverse;
+    }
+
+    .deco-dots {
+      width: 200px;
+      height: 200px;
+      background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+      background-size: 15px 15px;
+      opacity: 0.5;
+      top: 15%;
+      right: 15%;
+      animation: floatSlow 12s ease-in-out 2s infinite alternate;
+    }
+
+    @keyframes floatSlow {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      100% {
+        transform: translate(20px, 20px) rotate(5deg);
+      }
+    }
+
+    /* Footer styling */
     footer {
       background: #111;
       color: white;
@@ -686,144 +938,32 @@
       margin-top: 2rem;
     }
 
-    /* Cursor effects */
-    .cursor {
-      position: fixed;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background-color: var(--accent-color);
-      pointer-events: none;
-      mix-blend-mode: difference;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
-      will-change: transform, width, height, opacity;
-    }
-
-    .cursor-follower {
-      position: fixed;
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--accent-color);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      opacity: 0.5;
-      transform: translate(-50%, -50%);
-      transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
-      will-change: transform, width, height, opacity;
-    }
-
-    /* Loading animation */
-    .loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
-      transition: opacity 0.5s ease, transform 0.5s ease;
-      will-change: opacity, transform;
-    }
-
-    .loading-container {
-      text-align: center;
-    }
-
-    .loading-logo {
-      font-family: 'Major Mono Display', monospace;
-      font-size: 3rem;
-      margin-bottom: 2rem;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.8s forwards 0.2s;
-    }
-
-    .loading-bar {
-      width: 200px;
-      height: 3px;
-      background: #eee;
-      margin: 0 auto;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .loading-progress {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 0;
-      background: var(--accent-color);
-      animation: loadingProgress 2s ease forwards;
-      will-change: width;
-    }
-
-    .loading-text {
-      margin-top: 1rem;
-      font-size: 0.875rem;
-      opacity: 0;
-      animation: fadeIn 0.8s forwards 0.5s;
-    }
-
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeIn {
-      to {
-        opacity: 0.7;
-      }
-    }
-
-    @keyframes loadingProgress {
-      0% { width: 0; }
-      10% { width: 10%; }
-      30% { width: 40%; }
-      60% { width: 60%; }
-      80% { width: 80%; }
-      100% { width: 100%; }
-    }
-
-    @keyframes float {
-      0% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-30px) rotate(5deg); }
-      100% { transform: translateY(0) rotate(-5deg); }
-    }
-    
-    @keyframes scrollBinary {
-      from { transform: translateX(-100%); }
-      to { transform: translateX(200%); }
-    }
-
-    /* Responsive styling */
+    /* Media Queries */
     @media (max-width: 1024px) {
       .hero-title {
-        font-size: 12vw;
+        font-size: 7vw;
       }
       
-      .gallery {
-        grid-template-columns: 1fr;
+      .contact-title {
+        font-size: 2.5rem;
       }
       
-      .services-container {
-        grid-template-columns: repeat(2, 1fr);
+      .deco-circle, .deco-square, .deco-dots {
+        transform: scale(0.8);
       }
       
-      .horizontal-content {
-        width: 85%;
+      .skills-title {
+        font-size: 2.5rem;
       }
       
-      .horizontal-title {
-        font-size: 3rem;
+      .hexagonal-grid {
+        height: 60vh;
+      }
+      
+      .hex-cell {
+        width: 100px;
+        height: 115px;
+        margin: -57.5px 0 0 -50px;
       }
     }
 
@@ -833,54 +973,30 @@
       }
       
       .hero-title {
-        font-size: 13vw;
-        white-space: normal;
+        font-size: 10vw;
       }
       
       .hero-subtitle {
         font-size: 1.1rem;
-        padding: 0 10px;
-        text-shadow: 0 0 1px rgba(255,255,255,0.2);
+        max-width: 95%;
       }
       
-      .gallery {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+      .skills-title,
+      .contact-title {
+        font-size: 2rem;
       }
       
-      .services-container {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-      
-      .project-card {
-        height: 300px;
-      }
-      
-      .project-desc {
-        text-shadow: 0 0 1px rgba(255,255,255,0.2);
-      }
-      
-      .horizontal-content {
-        width: 90%;
-        padding: 1rem;
-      }
-      
-      .horizontal-title {
-        font-size: 2.2rem;
-      }
-      
-      .horizontal-text {
+      .skills-subtitle,
+      .contact-subtitle {
         font-size: 1rem;
-        text-shadow: 0 0 1px rgba(255,255,255,0.2);
       }
       
-      .contact-form-container {
-        width: 95%;
+      .hexagonal-grid {
+        height: 50vh;
       }
       
       .contact-form {
-        padding: 1.5rem;
+        padding: 2rem;
       }
       
       .footer-links {
@@ -888,39 +1004,28 @@
         gap: 1rem;
       }
       
-      .loading-logo {
-        font-size: 2.5rem;
+      .deco-element {
+        display: none;
       }
       
-      .loading-bar {
-        width: 80%;
-        max-width: 250px;
+      .grid-controls {
+        bottom: 15px;
+      }
+      
+      .grid-button {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
       }
     }
 
     @media (max-width: 480px) {
       .hero-title {
-        font-size: 15vw;
-        margin-bottom: 1.5rem;
+        font-size: 12vw;
       }
       
-      .hero-subtitle {
-        font-size: 1rem;
-      }
-      
-      .projects-title,
-      .services-title,
-      .contact-title,
-      .horizontal-title {
-        font-size: 2rem;
-      }
-      
-      .project-card {
-        height: 250px;
-      }
-      
-      .project-title {
-        font-size: 1.2rem;
+      .contact-form {
+        padding: 1.5rem;
       }
       
       .form-input, 
@@ -930,69 +1035,26 @@
       
       .submit-btn {
         padding: 0.8rem 1.5rem;
+        width: 100%;
+      }
+      
+      .hex-cell {
+        width: 80px;
+        height: 92px;
+        margin: -46px 0 0 -40px;
+      }
+      
+      .skill-icon {
+        font-size: 2rem;
+      }
+      
+      .skill-name {
+        font-size: 0.7rem;
       }
       
       .cursor, 
       .cursor-follower {
         display: none;
-      }
-    }
-
-    @media (max-height: 500px) and (orientation: landscape) {
-      .hero {
-        height: auto;
-        min-height: 100vh;
-        padding: 30px 5%;
-      }
-      
-      .hero-title {
-        font-size: 8vw;
-      }
-      
-      .project-card {
-        height: 200px;
-      }
-      
-      .horizontal-section {
-        height: auto;
-        min-height: 100vh;
-      }
-      
-      .horizontal-item {
-        height: auto;
-        min-height: 100vh;
-      }
-    }
-
-    @media (hover: none) {
-      .project-overlay {
-        transform: translateY(0);
-        opacity: 1;
-        background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
-      }
-      
-      .project-card:hover {
-        transform: none;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      }
-      
-      .project-card:hover .project-image {
-        transform: none;
-      }
-      
-      .submit-btn {
-        transition: background-color 0.3s ease;
-      }
-      
-      .submit-btn:active {
-        background: #E62955;
-        transform: translateY(2px);
-      }
-    }
-
-    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-      body {
-        text-rendering: optimizeLegibility;
       }
     }
   </style>
@@ -1033,101 +1095,67 @@
       
       <div class="hero-content">
         <h1 class="hero-title">Creative<br>Developer</h1>
-        <p class="hero-subtitle">Dominate the competition by creating the <br> best possible online presence: yours</p>
+        <p class="hero-subtitle">Crafting immersive digital experiences that push the boundaries of web technology</p>
       </div>
       
       <!-- Scroll indicator -->
-      <div class="scroll-indicator">
+      <div class="scroll-indicator" id="scrollIndicator">
         <div class="arrow"></div>
         <div class="text">Scroll to explore</div>
       </div>
     </section>
-    
-    <!-- Services section -->
-    <section class="services" id="services">
-      <h2 class="services-title">My Skills</h2>
-      <div class="services-container" id="servicesContainer">
-        <div class="service-card">
-          <div class="service-icon">✨</div>
-          <div class="service-content">
-            <h3 class="service-title">Modern & Performance</h3>
-            <p class="service-description">I build high-performance websites using the latest web technologies to ensure speed, scalability, and solid SEO.</p>
-            <ul class="service-features">
-              <li>Latest tech</li>
-              <li>Fully responsive</li>
-              <li>SEO-friendly</li>
-              <li>Ultra fast</li>
-            </ul>
+    <!-- Skills section avec effet 3D impressionnant -->
+    <section class="skills" id="skills">
+      <div class="skills-header">
+        <h2 class="skills-title">My Expertise</h2>
+        <p class="skills-subtitle">Leveraging cutting-edge technologies to create powerful, intuitive, and responsive web applications that deliver exceptional user experiences.</p>
+      </div>
+      
+      <div class="hexagonal-grid" id="hexGrid">
+        <div class="hex-container" id="hexContainer">
+          <div class="hex-grid" id="hexGridInner">
+            <!-- Hexagons will be dynamically generated -->
           </div>
         </div>
         
-        <div class="service-card">
-          <div class="service-icon">⚡</div>
-          <div class="service-content">
-            <h3 class="service-title">Custom & Clean</h3>
-            <p class="service-description">Designs tailored to your brand, with smooth user experiences and attention to visual details that make your site stand out.</p>
-            <ul class="service-features">
-              <li>On-brand</li>
-              <li>Easy to use</li>
-              <li>Subtle motion</li>
-              <li>Accessible</li>
-            </ul>
+        <!-- Skill info panel -->
+        <div class="skill-info-panel" id="skillInfoPanel">
+          <div class="skill-info-title">
+            <span class="skill-info-icon html">✱</span>
+            <span>HTML5</span>
+          </div>
+          <div class="skill-info-description">
+            Building semantic and accessible markup with modern HTML5 features and best practices.
+          </div>
+          <div class="skill-info-level">
+            <small>Proficiency</small>
+            <div class="level-bar">
+              <div class="level-fill" style="width: 95%;"></div>
+            </div>
           </div>
         </div>
         
-        <div class="service-card">
-          <div class="service-icon">🔍</div>
-          <div class="service-content">
-            <h3 class="service-title">Full Support</h3>
-            <p class="service-description">From first idea to final launch, and beyond, I guide you through every step and deliver fully custom solutions.</p>
-            <ul class="service-features">
-              <li>Clear guidance</li>
-              <li>Collaborative</li>
-              <li>Custom code</li>
-              <li>Post-launch help</li>
-            </ul>
-          </div>
+        <!-- Connections canvas for lines between hexagons -->
+        <canvas class="connections-canvas" id="connectionsCanvas"></canvas>
+        
+        <!-- Particle system for visual effects -->
+        <div class="particles-container" id="particlesContainer"></div>
+        
+        <!-- Grid controls -->
+        <div class="grid-controls">
+          <button class="grid-button" id="rotateLeftBtn">↺</button>
+          <button class="grid-button" id="expandBtn">+</button>
+          <button class="grid-button" id="contractBtn">−</button>
+          <button class="grid-button" id="rotateRightBtn">↻</button>
         </div>
       </div>
     </section>
     
-    <!-- Horizontal scroll section -->
-    <section class="horizontal-section" id="horizontal">
-      <div class="horizontal-track" id="horizontalTrack">
-        <div class="horizontal-item">
-          <div class="horizontal-content">
-            <h2 class="horizontal-title">A Streamlined Workflow</h2>
-            <p class="horizontal-text">From idea to launch, I follow a clear, structured process — with full transparency, regular check-ins, and no technical overwhelm. You stay in the loop, every step of the way.</p>
-          </div>
-          <div class="parallax-bg" id="parallaxBg1"></div>
-        </div>
-        <div class="horizontal-item">
-          <div class="horizontal-content">
-            <h2 class="horizontal-title">Business-Driven Results</h2>
-            <p class="horizontal-text">Each website is crafted with your business objectives in mind — whether it’s driving leads, building credibility, or boosting conversions. Design meets strategy.</p>
-          </div>
-          <div class="parallax-bg" id="parallaxBg2"></div>
-        </div>
-        <div class="horizontal-item">
-          <div class="horizontal-content">
-            <h2 class="horizontal-title">Built on Trust</h2>
-            <p class="horizontal-text">Beyond great design and code, I focus on clear communication, reliability, and ongoing support. Clients come for the work — and stay for the relationship.</p>
-          </div>
-          <div class="parallax-bg" id="parallaxBg3"></div>
-        </div>
-        <div class="horizontal-item">
-          <div class="horizontal-content">
-            <h2 class="horizontal-title">Creative Process</h2>
-            <p class="horizontal-text">Combining technical knowledge with artistic sensibility to transform concepts into reality. Working closely with designers and stakeholders to ensure that the technical implementation enhances the creative vision.</p>
-          </div>
-          <div class="parallax-bg" id="parallaxBg4"></div>
-        </div>
-      </div>
-    </section>
-    
-    <!-- Contact section -->
+    <!-- Contact section with 3D form -->
     <section class="contact" id="contact">
-      <h2 class="contact-title">Let's Create Something Amazing</h2>
+      <h2 class="contact-title">Let's Connect</h2>
+      <p class="contact-subtitle">Have a project in mind or just want to chat about technology? I'm always excited to collaborate on new ideas.</p>
+      
       <div class="contact-form-container" id="contactForm3D">
         <form class="contact-form">
           <div class="form-group">
@@ -1139,14 +1167,62 @@
             <input type="email" id="email" class="form-input" required>
           </div>
           <div class="form-group">
-            <label for="message" class="form-label">Your Project</label>
+            <label for="message" class="form-label">Your Message</label>
             <textarea id="message" class="form-textarea" required></textarea>
           </div>
           <button type="submit" class="submit-btn">Send Message</button>
         </form>
       </div>
+      
+      <!-- Decorative elements -->
+      <div class="deco-element deco-circle"></div>
+      <div class="deco-element deco-square"></div>
+      <div class="deco-element deco-dots"></div>
     </section>
-
+    
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <div class="footer-logo">NW</div>
+        
+        <div class="footer-links">
+          <a href="#" class="footer-link">Home</a>
+          <a href="#skills" class="footer-link">Skills</a>
+          <a href="#contact" class="footer-link">Contact</a>
+          <a href="#" class="footer-link">Projects</a>
+          <a href="#" class="footer-link">Blog</a>
+        </div>
+        
+        <div class="footer-social">
+          <a href="#" class="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M6 9H2V21H6V9Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 6C5.10457 6 6 5.10457 6 4C6 2.89543 5.10457 2 4 2C2.89543 2 2 2.89543 2 4C2 5.10457 2.89543 6 4 6Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="#" class="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M23 3C22.0424 3.67548 20.9821 4.19211 19.86 4.53C19.2577 3.83751 18.4573 3.34669 17.567 3.12391C16.6767 2.90115 15.7395 2.9572 14.8821 3.28445C14.0247 3.61171 13.2884 4.1944 12.773 4.95372C12.2575 5.71303 11.9877 6.61234 12 7.53V8.53C10.2426 8.57557 8.50127 8.18581 6.93101 7.39545C5.36074 6.60508 4.01032 5.43864 3 4C3 4 -1 13 8 17C5.94053 18.398 3.48716 19.0989 1 19C10 24 21 19 21 7.5C20.9991 7.22145 20.9723 6.94359 20.92 6.67C21.9406 5.66349 22.6608 4.39271 23 3Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="#" class="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M16 8V13C16 13.5304 16.2107 14.0391 16.5858 14.4142C16.9609 14.7893 17.4696 15 18 15C18.5304 15 19.0391 14.7893 19.4142 14.4142C19.7893 14.0391 20 13.5304 20 13V12C20.0001 10.0167 19.1789 8.10144 17.7068 6.7061C16.2347 5.31076 14.2495 4.57954 12.2661 4.6733C10.2826 4.76706 8.3717 5.67971 7.03625 7.20676C5.7008 8.73381 5.00001 10.7537 5 12.84C4.99999 14.926 5.69993 16.9459 7.0346 18.4731C8.36927 20.0003 10.2794 20.9132 12.2625 21.0074C14.2455 21.1015 16.1806 20.3709 17.64 18.98" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="#" class="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 2H15C13.6739 2 12.4021 2.52678 11.4645 3.46447C10.5268 4.40215 10 5.67392 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73478 14.1054 6.48043 14.2929 6.29289C14.4804 6.10536 14.7348 6 15 6H18V2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+        
+        <p class="copyright">© 2025 Creative Developer. All rights reserved.</p>
+      </div>
+    </footer>
+  </div> <!-- End of scroll-container -->
   <script>
     // Utilisation de requestIdleCallback pour les tâches non critiques
     const requestIdleCallback = window.requestIdleCallback || 
@@ -1187,12 +1263,64 @@
       let lastScrollTop = 0;
       let scrollDirection = 'down';
       let ticking = false;
-      let isHorizontalActive = false;
       let totalScrollHeight;
       let windowHeight;
-      let mouseX, mouseY;
+      let mouseX = 0, mouseY = 0;
       let rafId;
       let time = 0;
+      
+      // Variables for hexagonal grid
+      let hexRotationX = 60;
+      let hexRotationZ = 0;
+      let hexScale = 1;
+      let hexDragging = false;
+      let hexLastMouseX = 0;
+      let hexLastMouseY = 0;
+      let skillInfoVisible = false;
+      let currentSelectedHex = null;
+      let hexCells = [];
+      
+      // Skill data
+      const skillsData = [
+        { id: 'html', name: 'HTML5', icon: '✱', color: '#E44D26', level: 95, 
+          description: 'Building semantic and accessible markup with modern HTML5 features and best practices.' },
+        { id: 'css', name: 'CSS3', icon: '✲', color: '#1572B6', level: 92, 
+          description: 'Creating responsive layouts and beautiful animations with advanced CSS techniques.' },
+        { id: 'js', name: 'JavaScript', icon: '⚡', color: '#F7DF1E', level: 94, 
+          description: 'Developing interactive and dynamic web applications with modern JavaScript.' },
+        { id: 'react', name: 'React', icon: '⚛', color: '#61DAFB', level: 90, 
+          description: 'Building complex user interfaces with React and related ecosystem tools.' },
+        { id: 'node', name: 'Node.js', icon: '◉', color: '#339933', level: 87, 
+          description: 'Server-side JavaScript with Node.js and Express for building robust APIs.' },
+        { id: 'python', name: 'Python', icon: '⟠', color: '#3776AB', level: 82, 
+          description: 'Using Python for data processing, automation and backend development.' },
+        { id: 'design', name: 'UI Design', icon: '◈', color: '#FF7F00', level: 88, 
+          description: 'Creating beautiful and intuitive user interfaces with attention to detail.' },
+        { id: 'animation', name: 'Animation', icon: '⟡', color: '#9C27B0', level: 89, 
+          description: 'Crafting smooth, meaningful animations that enhance user experience.' },
+        { id: 'webgl', name: 'WebGL', icon: '◎', color: '#990000', level: 80, 
+          description: 'Implementing 3D graphics and visualization using WebGL.' },
+        { id: 'three', name: 'Three.js', icon: '✧', color: '#000000', level: 85, 
+          description: 'Creating 3D experiences on the web with Three.js.' },
+        { id: 'gsap', name: 'GSAP', icon: '↯', color: '#88CE02', level: 91, 
+          description: 'Professional-grade animation with the GreenSock Animation Platform.' },
+        { id: 'performance', name: 'Performance', icon: '⚑', color: '#00C853', level: 93, 
+          description: 'Optimizing web applications for maximum speed and efficiency.' },
+        { id: 'responsive', name: 'Responsive', icon: '⌘', color: '#2979FF', level: 95, 
+          description: 'Creating websites that work beautifully across all devices and screen sizes.' },
+        { id: 'accessibility', name: 'Accessibility', icon: '⦿', color: '#00BCD4', level: 92, 
+          description: 'Building inclusive web experiences that work for everyone.' },
+        { id: 'api', name: 'REST/GraphQL', icon: '⧉', color: '#7E57C2', level: 88, 
+          description: 'Designing and consuming APIs with REST and GraphQL.' },
+        { id: 'database', name: 'Databases', icon: '⌬', color: '#FFC107', level: 85, 
+          description: 'Working with SQL and NoSQL databases to store and retrieve data efficiently.' },
+        { id: 'testing', name: 'Testing', icon: '⊕', color: '#F44336', level: 83, 
+          description: 'Ensuring code quality and preventing regressions with automated testing.' },
+        { id: 'git', name: 'Git/GitHub', icon: '⑂', color: '#F05032', level: 90, 
+          description: 'Version control and collaborative development workflows.' },
+        { id: 'aws', name: 'AWS', icon: '⟰', color: '#FF9900', level: 78, 
+          description: 'Deploying and scaling applications on Amazon Web Services.' }
+      ];
 
       // DOM elements
       const elements = {
@@ -1201,16 +1329,24 @@
         cursor: document.getElementById('cursor'),
         cursorFollower: document.getElementById('cursorFollower'),
         progressBar: document.getElementById('progressBar'),
-        projectCards: document.querySelectorAll('.project-card'),
-        horizontalTrack: document.getElementById('horizontalTrack'),
-        horizontalSection: document.getElementById('horizontal'),
         contactForm3D: document.getElementById('contactForm3D'),
         bgCanvas: document.getElementById('bgCanvas'),
         binaryData: document.getElementById('binaryData'),
         distortionContainer: document.getElementById('distortionContainer'),
         floatingElements: document.getElementById('floatingElements'),
         contactForm: document.querySelector('.contact-form'),
-        serviceCards: document.querySelectorAll('.service-card')
+        scrollIndicator: document.getElementById('scrollIndicator'),
+        // Hex grid elements
+        hexContainer: document.getElementById('hexContainer'),
+        hexGridInner: document.getElementById('hexGridInner'),
+        skillInfoPanel: document.getElementById('skillInfoPanel'),
+        particlesContainer: document.getElementById('particlesContainer'),
+        connectionsCanvas: document.getElementById('connectionsCanvas'),
+        // Buttons for hex grid control
+        rotateLeftBtn: document.getElementById('rotateLeftBtn'),
+        rotateRightBtn: document.getElementById('rotateRightBtn'),
+        expandBtn: document.getElementById('expandBtn'),
+        contractBtn: document.getElementById('contractBtn')
       };
       
       // Initialize WebGL context for background
@@ -1225,6 +1361,13 @@
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
           resizeCanvas();
+          
+          // Resize connections canvas for skills
+          if (elements.connectionsCanvas) {
+            elements.connectionsCanvas.width = elements.connectionsCanvas.offsetWidth;
+            elements.connectionsCanvas.height = elements.connectionsCanvas.offsetHeight;
+            drawConnections();
+          }
         }, 100);
       };
       
@@ -1273,7 +1416,7 @@
         });
         
         // Cursor hover effects for interactive elements
-        document.querySelectorAll('a, button, .project-card, .service-card').forEach(item => {
+        document.querySelectorAll('a, button, .grid-button, .hex-top').forEach(item => {
           item.addEventListener('mouseenter', () => {
             elements.cursor.style.width = '10px';
             elements.cursor.style.height = '10px';
@@ -1315,43 +1458,7 @@
             mouseX = e.touches[0].clientX;
             mouseY = e.touches[0].clientY;
           }
-        });
-      }
-      
-      // Optimized function to draw wave patterns
-      function drawWave(ctx, yPos, spacing, index, skipFactor) {
-        ctx.beginPath();
-        
-        const distY = Math.abs(mouseY - yPos);
-        const influence = Math.max(0, 1 - distY / (height * 0.5));
-        
-        // Use lookup tables or precalculate where possible
-        const timeOffset = time * 0.01;
-        const timeOffset2 = time * 0.005;
-        
-        for (let x = 0; x <= width; x += skipFactor) {
-          const distX = Math.abs(mouseX - x);
-          const mouseInfluence = Math.max(0, 1 - distX / (width * 0.3)) * 40 * influence;
-          
-          // Simplified wave calculation with fewer sine operations
-          const baseWave = Math.sin((x * 0.003) + timeOffset) * 12;
-          const secondWave = Math.sin((x * 0.001) + timeOffset2 + index * 0.2) * 18;
-          
-          let waveY = yPos + baseWave + secondWave;
-          
-          // Only add mouse influence when near mouse position
-          if (distX < width * 0.3) {
-            waveY += mouseInfluence * Math.sin((x - mouseX) * 0.01);
-          }
-          
-          if (x === 0) {
-            ctx.moveTo(x, waveY);
-          } else {
-            ctx.lineTo(x, waveY);
-          }
-        }
-        
-        ctx.stroke();
+        }, { passive: true });
       }
       
       // Background animation with optimized rendering
@@ -1369,79 +1476,38 @@
         bgCtx.strokeStyle = 'rgba(50, 80, 150, 0.15)';
         bgCtx.lineWidth = 0.9;
         
-        // Draw horizontal waves with minimal calculations
+        // Draw optimized waves
         for (let i = 0; i < lineCount; i++) {
-          drawWave(bgCtx, i * spacing, spacing, i, skipFactor);
-        }
-        
-        // Only draw particles on devices that can handle it well
-        const particleCount = Math.min(Math.floor(width / 30), 50);
-        bgCtx.fillStyle = 'rgba(40, 70, 140, 0.08)';
-        
-        for (let i = 0; i < particleCount; i++) {
-          const x = Math.random() * width;
-          const y = Math.random() * height;
-          const size = Math.random() * 2.5 + 0.7;
+          bgCtx.beginPath();
           
-          const distX = x - mouseX;
-          const distY = y - mouseY;
-          const dist = Math.sqrt(distX * distX + distY * distY);
+          const yPos = i * spacing;
+          const distY = Math.abs(mouseY - yPos);
+          const influence = Math.max(0, 1 - distY / (height * 0.5));
           
-          if (dist < 200) {
-            const scale = 1 + (200 - dist) / 200;
-            bgCtx.fillRect(x, y, size * scale, size * scale);
-          } else {
-            bgCtx.fillRect(x, y, size, size);
-          }
-        }
-        
-        // Vertical lines - reduced for performance
-        if (!isMobile || Math.random() > 0.7) {
-          bgCtx.strokeStyle = 'rgba(60, 90, 160, 0.12)';
-          bgCtx.lineWidth = 0.7;
+          const timeOffset = time * 0.01;
+          const timeOffset2 = time * 0.005;
           
-          const vertLineCount = Math.floor(lineCount / 2);
-          
-          for (let i = 0; i < vertLineCount; i++) {
-            if (i % 2 === 0 || !isMobile) {  // Skip some on mobile
-              const xPos = i * (width / vertLineCount);
-              bgCtx.beginPath();
-              
-              for (let y = 0; y <= height; y += skipFactor * 2) {
-                const wave1 = Math.sin((y * 0.004) + (time * 0.012)) * 10;
-                const wave2 = Math.cos((y * 0.002) + (time * 0.006) + i * 0.2) * 15;
-                
-                let waveX = xPos + wave1 + wave2;
-                
-                if (y === 0) {
-                  bgCtx.moveTo(waveX, y);
-                } else {
-                  bgCtx.lineTo(waveX, y);
-                }
-              }
-              
-              bgCtx.stroke();
+          for (let x = 0; x <= width; x += skipFactor) {
+            const distX = Math.abs(mouseX - x);
+            const mouseInfluence = Math.max(0, 1 - distX / (width * 0.3)) * 40 * influence;
+            
+            const baseWave = Math.sin((x * 0.003) + timeOffset) * 12;
+            const secondWave = Math.sin((x * 0.001) + timeOffset2 + i * 0.2) * 18;
+            
+            let waveY = yPos + baseWave + secondWave;
+            
+            if (distX < width * 0.3) {
+              waveY += mouseInfluence * Math.sin((x - mouseX) * 0.01);
+            }
+            
+            if (x === 0) {
+              bgCtx.moveTo(x, waveY);
+            } else {
+              bgCtx.lineTo(x, waveY);
             }
           }
-        }
-        
-        // Color accents - reduced for better performance
-        const accentCount = isMobile ? 2 : 4;
-        
-        for (let i = 0; i < accentCount; i++) {
-          bgCtx.beginPath();
-          const x = Math.random() * width;
-          const y = Math.random() * height;
-          const radius = 120 + Math.random() * (isMobile ? 100 : 200);
-          const gradient = bgCtx.createRadialGradient(x, y, 0, x, y, radius);
           
-          const hue = 240 + Math.random() * 40;
-          gradient.addColorStop(0, `hsla(${hue}, 70%, 65%, ${isMobile ? 0.1 : 0.08})`);
-          gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-          
-          bgCtx.fillStyle = gradient;
-          bgCtx.arc(x, y, radius, 0, Math.PI * 2);
-          bgCtx.fill();
+          bgCtx.stroke();
         }
         
         // Animation cycle
@@ -1451,7 +1517,6 @@
       
       // Generate floating elements - optimized DOM manipulations
       function createFloatingElements() {
-        // Use document fragment to avoid reflow
         const fragment = document.createDocumentFragment();
         const elementCount = isMobile ? 8 : 12;
         
@@ -1522,52 +1587,426 @@
         elements.binaryData.appendChild(fragment);
       }
       
-      // Horizontal scroll handling - optimized
-      function updateHorizontalScroll() {
-        const horizontalRect = elements.horizontalSection.getBoundingClientRect();
-        const distanceFromTop = horizontalRect.top;
+      // Create distortion effect
+      function initializeDistortionElements() {
+        const fragment = document.createDocumentFragment();
+        const distortionCount = isMobile ? 10 : 20;
         
-        if (distanceFromTop <= 0 && distanceFromTop >= -horizontalRect.height) {
-          if (!isHorizontalActive) {
-            isHorizontalActive = true;
+        for (let i = 0; i < distortionCount; i++) {
+          const distortElement = document.createElement('div');
+          
+          // Set all styles at once
+          Object.assign(distortElement.style, {
+            position: 'absolute',
+            top: `${(i / distortionCount) * 100}%`,
+            left: '0',
+            width: '100%',
+            height: `${100 / distortionCount}%`,
+            backgroundImage: 'linear-gradient(90deg, rgba(255,51,102,0.05) 0%, rgba(255,255,255,0) 100%)',
+            transform: 'translateX(0)',
+            transition: 'transform 0.5s ease'
+          });
+          
+          fragment.appendChild(distortElement);
+        }
+        
+        if (elements.distortionContainer) {
+          elements.distortionContainer.appendChild(fragment);
+        }
+      }
+      // Hexagonal grid for skills
+      function createHexagonalGrid() {
+        // Prepare the canvas for connections
+        if (elements.connectionsCanvas) {
+          elements.connectionsCanvas.width = elements.connectionsCanvas.offsetWidth;
+          elements.connectionsCanvas.height = elements.connectionsCanvas.offsetHeight;
+        }
+        
+        // Create the hexagon cells
+        if (!elements.hexGridInner) return;
+        
+        // Create a document fragment to batch DOM operations
+        const fragment = document.createDocumentFragment();
+        
+        // Define the hexagon arrangement
+        // This creates a honeycomb pattern where each skill is represented
+        // with proper spacing for a 3D illusion
+        const gridPositions = [
+          {x: 0, y: 0, z: 0}, // Center
+          {x: -1, y: -1, z: 0}, {x: 0, y: -1, z: 0}, {x: 1, y: 0, z: 0},
+          {x: 1, y: 1, z: 0}, {x: 0, y: 1, z: 0}, {x: -1, y: 0, z: 0},
+          {x: -2, y: -1, z: 0}, {x: -1, y: -2, z: 0}, {x: 1, y: -1, z: 0},
+          {x: 2, y: 0, z: 0}, {x: 1, y: 2, z: 0}, {x: -1, y: 2, z: 0},
+          {x: -2, y: 1, z: 0}, {x: -2, y: -2, z: 0}, {x: 0, y: -2, z: 0},
+          {x: 2, y: -1, z: 0}, {x: 2, y: 1, z: 0}, {x: 0, y: 2, z: 0},
+        ];
+        
+        // Calculate spacing between hexagons (adjusting for 3D perspective)
+        const spacing = isMobile ? 110 : 140;
+        
+        // Create each hexagon cell
+        gridPositions.forEach((pos, index) => {
+          // Stop if we've run out of skills data
+          if (index >= skillsData.length) return;
+          
+          const skill = skillsData[index];
+          
+          // Calculate the position based on grid coordinates
+          // Using a special offset for odd rows to create a honeycomb pattern
+          const xPos = pos.x * spacing + (pos.y % 2 === 0 ? 0 : spacing / 2);
+          const yPos = pos.y * spacing * 0.86; // Tighter vertical spacing
+          const zPos = pos.z * spacing;
+          
+          // Create the hexagon DOM structure
+          const hexCell = document.createElement('div');
+          hexCell.className = 'hex-cell';
+          hexCell.dataset.skillId = skill.id;
+          hexCell.style.transform = `translate3d(${xPos}px, ${yPos}px, ${zPos}px)`;
+          
+          // 3D Prism structure
+          const hexPrism = document.createElement('div');
+          hexPrism.className = 'hex-prism';
+          
+          // Top face (visible with skill info)
+          const hexTop = document.createElement('div');
+          hexTop.className = `hex-top ${skill.id}`;
+          
+          // Icon and name on the top face
+          const skillIconEl = document.createElement('span');
+          skillIconEl.className = `skill-icon ${skill.id}`;
+          skillIconEl.textContent = skill.icon;
+          skillIconEl.style.color = skill.color;
+          
+          const skillNameEl = document.createElement('span');
+          skillNameEl.className = 'skill-name';
+          skillNameEl.textContent = skill.name;
+          
+          hexTop.appendChild(skillIconEl);
+          hexTop.appendChild(skillNameEl);
+          
+          // Bottom face
+          const hexBottom = document.createElement('div');
+          hexBottom.className = 'hex-bottom';
+          
+          // Side faces for 3D effect
+          for (let i = 0; i < 6; i++) {
+            const hexSide = document.createElement('div');
+            hexSide.className = 'hex-side';
+            hexPrism.appendChild(hexSide);
           }
           
-          const horizontalScrollLength = elements.horizontalTrack.offsetWidth - window.innerWidth;
-          const scrollProgress = Math.min(1, Math.max(0, -distanceFromTop / horizontalRect.height));
+          // Assemble the hexagon
+          hexPrism.appendChild(hexTop);
+          hexPrism.appendChild(hexBottom);
+          hexCell.appendChild(hexPrism);
           
-          // Use transform for better performance
-          elements.horizontalTrack.style.transform = `translateX(${-scrollProgress * horizontalScrollLength}px)`;
-          
-          // Update parallax with transform3d for GPU acceleration
-          const parallaxLayers = document.querySelectorAll('.parallax-bg');
-          parallaxLayers.forEach((layer, index) => {
-            const speed = 0.05 * (index + 1);
-            const xPos = scrollProgress * 100 * speed;
-            layer.style.transform = `translate3d(${-xPos}%, 0, 0)`;
+          // Add interaction
+          hexTop.addEventListener('click', () => {
+            showSkillInfo(skill);
+            currentSelectedHex = hexCell;
+            
+            // Create particles effect
+            createParticleExplosion(skill.color, hexCell);
           });
-        } else if (isHorizontalActive) {
-          isHorizontalActive = false;
+          
+          // Store reference to the cell
+          hexCells.push({
+            element: hexCell,
+            x: xPos,
+            y: yPos,
+            z: zPos,
+            skill
+          });
+          
+          fragment.appendChild(hexCell);
+        });
+        
+        // Add all hexagons at once
+        elements.hexGridInner.innerHTML = '';
+        elements.hexGridInner.appendChild(fragment);
+        
+        // Draw the connections between hexagons
+        drawConnections();
+      }
+      
+      // Function to display skill information
+      function showSkillInfo(skill) {
+        if (!elements.skillInfoPanel) return;
+        
+        // Get elements inside panel
+        const titleEl = elements.skillInfoPanel.querySelector('.skill-info-title');
+        const descEl = elements.skillInfoPanel.querySelector('.skill-info-description');
+        const levelFillEl = elements.skillInfoPanel.querySelector('.level-fill');
+        
+        // Update panel content
+        if (titleEl) {
+          const iconEl = titleEl.querySelector('.skill-info-icon');
+          if (iconEl) {
+            iconEl.textContent = skill.icon;
+            iconEl.className = `skill-info-icon ${skill.id}`;
+          }
+          titleEl.querySelector('span').textContent = skill.name;
+        }
+        
+        if (descEl) {
+          descEl.textContent = skill.description;
+        }
+        
+        if (levelFillEl) {
+          levelFillEl.style.width = `${skill.level}%`;
+        }
+        
+        // Show panel with animation
+        elements.skillInfoPanel.classList.add('visible');
+        skillInfoVisible = true;
+      }
+      
+      // Hide skill info panel
+      function hideSkillInfo() {
+        if (!elements.skillInfoPanel) return;
+        elements.skillInfoPanel.classList.remove('visible');
+        skillInfoVisible = false;
+      }
+      
+      // Function to draw connections between hexagons
+      function drawConnections() {
+        if (!elements.connectionsCanvas || hexCells.length === 0) return;
+        
+        const ctx = elements.connectionsCanvas.getContext('2d');
+        const { width, height } = elements.connectionsCanvas;
+        
+        // Clear the canvas
+        ctx.clearRect(0, 0, width, height);
+        
+        // Center offset for the canvas
+        const offsetX = width / 2;
+        const offsetY = height / 2;
+        
+        // Set line style
+        ctx.strokeStyle = 'rgba(200, 200, 200, 0.2)';
+        ctx.lineWidth = 1;
+        
+        // Draw connections between neighboring hexagons
+        for (let i = 0; i < hexCells.length; i++) {
+          const cell1 = hexCells[i];
+          
+          // Draw connections only to closest neighbors
+          for (let j = i + 1; j < hexCells.length; j++) {
+            const cell2 = hexCells[j];
+            
+            const dx = cell1.x - cell2.x;
+            const dy = cell1.y - cell2.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // Only connect if they're close enough (neighbors)
+            if (distance < 200) {
+              const opacity = 0.2 - (distance / 1000); // Fade with distance
+              
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(200, 200, 200, ${opacity})`;
+              ctx.moveTo(cell1.x + offsetX, cell1.y + offsetY);
+              ctx.lineTo(cell2.x + offsetX, cell2.y + offsetY);
+              ctx.stroke();
+            }
+          }
         }
       }
       
-      // Check if element is in viewport with offset
-      function isInViewport(element, offset = 0) {
-        const rect = element.getBoundingClientRect();
-        return (
-          rect.top <= (windowHeight * (1 - offset)) &&
-          rect.bottom >= 0
-        );
+      // Particle explosion effect when clicking a hex
+      function createParticleExplosion(color, sourceElement) {
+        if (!elements.particlesContainer) return;
+        
+        // Get the position of the hexagon in the viewport
+        const rect = sourceElement.getBoundingClientRect();
+        const hexGridRect = elements.hexGrid.getBoundingClientRect();
+        
+        // Center of the hexagon
+        const centerX = rect.left + rect.width / 2 - hexGridRect.left;
+        const centerY = rect.top + rect.height / 2 - hexGridRect.top;
+        
+        // Create particles
+        const particleCount = isMobile ? 15 : 30;
+        const fragment = document.createDocumentFragment();
+        
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          
+          // Initial position at the center of the clicked hexagon
+          particle.style.left = `${centerX}px`;
+          particle.style.top = `${centerY}px`;
+          
+          // Randomized color shade
+          const r = parseInt(color.slice(1, 3), 16);
+          const g = parseInt(color.slice(3, 5), 16);
+          const b = parseInt(color.slice(5, 7), 16);
+          particle.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.7)`;
+          
+          // Add to DOM
+          fragment.appendChild(particle);
+          
+          // Animation variables
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 2 + 1;
+          const distance = Math.random() * 100 + 50;
+          const duration = Math.random() * 1000 + 500;
+          
+          // Animate the particle
+          setTimeout(() => {
+            // Make the particle visible
+            particle.style.opacity = '1';
+            
+            // Animate with smooth physics
+            const startTime = performance.now();
+            
+            const animateParticle = (timestamp) => {
+              const elapsed = timestamp - startTime;
+              const progress = Math.min(elapsed / duration, 1);
+              
+              // Easing function for natural movement
+              const easing = 1 - Math.pow(1 - progress, 3); // Cubic ease-out
+              
+              // Calculate position with gravity effect
+              const moveX = Math.cos(angle) * distance * easing * speed;
+              const moveY = Math.sin(angle) * distance * easing * speed + (progress * progress * 100); // Add gravity
+              
+              // Update position
+              particle.style.transform = `translate(${moveX}px, ${moveY}px)`;
+              
+              // Fade out as it moves
+              particle.style.opacity = (1 - progress).toString();
+              
+              // Continue animation until done
+              if (progress < 1) {
+                requestAnimationFrame(animateParticle);
+              } else {
+                // Remove particle when animation is complete
+                particle.remove();
+              }
+            };
+            
+            requestAnimationFrame(animateParticle);
+          }, Math.random() * 100); // Stagger the start times
+        }
+        
+        // Add all particles at once
+        elements.particlesContainer.appendChild(fragment);
       }
       
-      // Reveal services when they come into view with stagger effect
-      function revealServices() {
-        elements.serviceCards.forEach((card, index) => {
-          if (isInViewport(card, 0.3) && !card.classList.contains('visible')) {
-            // Stagger the animation with increasing delay based on index
-            setTimeout(() => {
-              card.classList.add('visible');
-            }, index * 150);
+      // Update hexagonal grid rotation and scale
+      function updateHexGridTransform() {
+        if (!elements.hexContainer) return;
+        
+        elements.hexContainer.style.transform = 
+          `rotateX(${hexRotationX}deg) rotateZ(${hexRotationZ}deg) scale(${hexScale})`;
+      }
+      
+      // Skills section controls
+      function initializeSkillsControls() {
+        // Rotation controls
+        if (elements.rotateLeftBtn) {
+          elements.rotateLeftBtn.addEventListener('click', () => {
+            hexRotationZ -= 15;
+            updateHexGridTransform();
+          });
+        }
+        
+        if (elements.rotateRightBtn) {
+          elements.rotateRightBtn.addEventListener('click', () => {
+            hexRotationZ += 15;
+            updateHexGridTransform();
+          });
+        }
+        
+        // Scale controls
+        if (elements.expandBtn) {
+          elements.expandBtn.addEventListener('click', () => {
+            hexScale = Math.min(hexScale + 0.1, 2.0);
+            updateHexGridTransform();
+          });
+        }
+        
+        if (elements.contractBtn) {
+          elements.contractBtn.addEventListener('click', () => {
+            hexScale = Math.max(hexScale - 0.1, 0.5);
+            updateHexGridTransform();
+          });
+        }
+        
+        // Mouse/touch drag to rotate the grid
+        const hexGrid = document.getElementById('hexGrid');
+        if (hexGrid) {
+          hexGrid.addEventListener(isTouch ? 'touchstart' : 'mousedown', (e) => {
+            hexDragging = true;
+            hexLastMouseX = isTouch ? e.touches[0].clientX : e.clientX;
+            hexLastMouseY = isTouch ? e.touches[0].clientY : e.clientY;
+            e.preventDefault();
+          });
+          
+          document.addEventListener(isTouch ? 'touchend' : 'mouseup', () => {
+            hexDragging = false;
+          });
+          
+          document.addEventListener(isTouch ? 'touchmove' : 'mousemove', (e) => {
+            if (!hexDragging) return;
+            
+            const clientX = isTouch ? e.touches[0].clientX : e.clientX;
+            const clientY = isTouch ? e.touches[0].clientY : e.clientY;
+            
+            const deltaX = clientX - hexLastMouseX;
+            const deltaY = clientY - hexLastMouseY;
+            
+            hexRotationZ += deltaX * 0.3;
+            hexRotationX = Math.max(20, Math.min(80, hexRotationX - deltaY * 0.3));
+            
+            updateHexGridTransform();
+            
+            hexLastMouseX = clientX;
+            hexLastMouseY = clientY;
+          });
+        }
+        
+        // Close skill info panel when clicking outside
+        document.addEventListener('click', (e) => {
+          if (skillInfoVisible) {
+            // Check if click is outside the info panel and not on a hexagon
+            if (!elements.skillInfoPanel.contains(e.target) && 
+                !e.target.closest('.hex-top')) {
+              hideSkillInfo();
+            }
           }
+        });
+      }
+      
+      // 3D effect for contact form
+      function setup3DContactForm() {
+        if (!elements.contactForm3D || isTouch) return;
+        
+        // Add the 3D tilt effect on mouse move
+        elements.contactForm3D.addEventListener('mousemove', (e) => {
+          const rect = elements.contactForm3D.getBoundingClientRect();
+          
+          // Calculate mouse position relative to form
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          // Calculate tilt angle (max 5 degrees in each direction)
+          const tiltX = ((y / rect.height) * 10 - 5) * -1;
+          const tiltY = (x / rect.width) * 10 - 5;
+          
+          // Apply transform with subtle zoom
+          elements.contactForm3D.style.transform = 
+            `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+        
+        // Reset transform when mouse leaves
+        elements.contactForm3D.addEventListener('mouseleave', () => {
+          elements.contactForm3D.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        });
+        
+        // Add slight zoom on hover to enhance 3D effect
+        elements.contactForm3D.addEventListener('mouseenter', () => {
+          elements.contactForm3D.style.transform = 'perspective(1000px) scale3d(1.02, 1.02, 1.02)';
         });
       }
       
@@ -1593,183 +2032,82 @@
         // Update progress bar
         const scrollProgress = scrollTop / totalScrollHeight;
         document.documentElement.style.setProperty('--progress', scrollProgress.toString());
-        
-        // Handle horizontal scroll section
-        updateHorizontalScroll();
-        
-        // Reveal service cards when they come into view
-        revealServices();
-        
-        // Process only visible cards for performance
-        elements.projectCards.forEach(card => {
-          if (isInViewport(card, 0.15) && !card.classList.contains('visible')) {
-            card.classList.add('visible');
-          }
-        });
-        
-        // 3D rotation effect for contact form
-        const contactRect = elements.contactForm3D.getBoundingClientRect();
-        if (contactRect.top < windowHeight && contactRect.bottom > 0) {
-          const contactProgress = 1 - (contactRect.top / windowHeight);
-          if (contactProgress >= 0 && contactProgress <= 1) {
-            const rotateX = isMobile ? 
-              10 - contactProgress * 10 : 
-              20 - contactProgress * 20;
-            elements.contactForm3D.style.transform = `rotateX(${rotateX}deg)`;
-          }
-        }
       }
       
-      // Create distortion effect efficiently
-      function initializeDistortionElements() {
-        const fragment = document.createDocumentFragment();
-        const distortionCount = isMobile ? 10 : 20;
-        
-        for (let i = 0; i < distortionCount; i++) {
-          const distortElement = document.createElement('div');
-          distortElement.className = 'distortion-element';
-          
-          // Set all styles at once
-          Object.assign(distortElement.style, {
-            position: 'absolute',
-            top: `${(i / distortionCount) * 100}%`,
-            left: '0',
-            width: '100%',
-            height: `${100 / distortionCount}%`,
-            backgroundImage: 'linear-gradient(90deg, rgba(255,51,102,0.05) 0%, rgba(255,255,255,0) 100%)',
-            transform: 'translateX(0)',
-            transition: 'transform 0.5s ease'
+      // Smooth scroll for anchor links
+      function setupSmoothScroll() {
+        // Smooth scroll for the scroll indicator
+        if (elements.scrollIndicator) {
+          elements.scrollIndicator.addEventListener('click', () => {
+            const skillsSection = document.getElementById('skills');
+            if (skillsSection) {
+              skillsSection.scrollIntoView({ behavior: 'smooth' });
+            }
           });
-          
-          fragment.appendChild(distortElement);
         }
         
-        elements.distortionContainer.appendChild(fragment);
-      }
-      
-      // Create parallax elements efficiently
-      function initializeParallaxElements() {
-        const parallaxBgs = document.querySelectorAll('.parallax-bg');
-        
-        parallaxBgs.forEach((bg, index) => {
-          const fragment = document.createDocumentFragment();
-          const elemCount = isMobile ? 3 : 5;
-          
-          for (let i = 0; i < elemCount; i++) {
-            const parallaxElement = document.createElement('div');
-            parallaxElement.className = 'parallax-element';
+        // Smooth scroll for all anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', function(e) {
+            e.preventDefault();
             
-            const size = Math.random() * (isMobile ? 150 : 200) + (isMobile ? 80 : 100);
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
             
-            // Set all styles at once
-            Object.assign(parallaxElement.style, {
-              width: `${size}px`,
-              height: `${size}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              borderRadius: Math.random() > 0.5 ? '50%' : '0',
-              background: `rgba(${index * 50}, ${255 - index * 40}, ${150 + index * 20}, 0.1)`,
-              transform: `translateZ(${(i + 1) * -100}px)`
-            });
-            
-            fragment.appendChild(parallaxElement);
-          }
-          
-          bg.appendChild(fragment);
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+          });
         });
       }
       
-      // Initialize animations
-      function initializeAnimations() {
-        // Create visual elements
-        createFloatingElements();
-        createBinaryVisualization();
-        initializeDistortionElements();
-        initializeParallaxElements();
+      // Form validation and submission
+      function setupContactForm() {
+        if (!elements.contactForm) return;
         
-        // Start animation loop
-        drawFluidLines();
-        
-        // Force initial scroll update
-        window.dispatchEvent(new Event('scroll'));
-        
-        // Add input event handlers after initialization
-        setupEventHandlers();
-      }
-      
-      // Set up event handlers
-      function setupEventHandlers() {
-        // Handle contact form submission
         elements.contactForm.addEventListener('submit', (e) => {
           e.preventDefault();
           
           // Form animation on submit
-          elements.contactForm.style.transform = 'translateZ(50px) scale(0.95)';
+          elements.contactForm.style.transform = 'perspective(1000px) translateZ(20px) scale(0.98)';
           
           setTimeout(() => {
             // Reset animation
-            elements.contactForm.style.transform = 'translateZ(10px) scale(1)';
+            elements.contactForm.style.transform = 'perspective(1000px)';
             
             // Reset form fields
             elements.contactForm.reset();
             
             // Show success message
-            alert('Message sent successfully!');
-          }, 1000);
+            alert('Your message has been sent successfully!');
+          }, 800);
         });
+      }
+      
+      // Initialize all components
+      function initializeAnimations() {
+        // Create visual elements
+        createFloatingElements();
+        createBinaryVisualization();
+        initializeDistortionElements();
         
-        // 3D tilt effect for contact form
-        if (!isTouch) {
-          elements.contactForm3D.addEventListener('mousemove', (e) => {
-            const formRect = elements.contactForm3D.getBoundingClientRect();
-            const x = e.clientX - formRect.left;
-            const y = e.clientY - formRect.top;
-            
-            const centerX = formRect.width / 2;
-            const centerY = formRect.height / 2;
-            
-            const rotateY = (x - centerX) / 20;
-            const rotateX = (centerY - y) / 20;
-            
-            elements.contactForm3D.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-          });
-          
-          elements.contactForm3D.addEventListener('mouseleave', () => {
-            elements.contactForm3D.style.transform = 'rotateX(0) rotateY(0)';
-          });
-        }
+        // Initialize hexagonal grid
+        createHexagonalGrid();
+        initializeSkillsControls();
         
-        // Update distortion effect with pointer input
-        const updateDistortion = (clientX) => {
-          requestAnimationFrame(() => {
-            const distortionElements = elements.distortionContainer.querySelectorAll('.distortion-element');
-            const mouseXPercent = clientX / window.innerWidth;
-            
-            distortionElements.forEach((element, index) => {
-              const offset = (index % 2 === 0 ? 1 : -1) * mouseXPercent * 50;
-              element.style.transform = `translateX(${offset}px)`;
-            });
-          });
-        };
+        // Initialize 3D contact form
+        setup3DContactForm();
+        setupContactForm();
         
-        // Support both mouse and touch
-        if (isTouch) {
-          document.addEventListener('touchmove', (e) => {
-            if (e.touches.length > 0) {
-              updateDistortion(e.touches[0].clientX);
-            }
-          }, { passive: true });
-        } else {
-          document.addEventListener('mousemove', (e) => {
-            updateDistortion(e.clientX);
-          }, { passive: true });
-        }
+        // Setup navigation
+        setupSmoothScroll();
         
-        // Smooth scroll for scroll indicator
-        document.querySelector('.scroll-indicator').addEventListener('click', () => {
-          const servicesSection = document.getElementById('services');
-          servicesSection.scrollIntoView({ behavior: 'smooth' });
-        });
+        // Start animation loop for background
+        drawFluidLines();
+        
+        // Force initial scroll update
+        window.dispatchEvent(new Event('scroll'));
       }
       
       // Clean up resources when page is hidden/closed
@@ -1791,16 +2129,6 @@
           
           // Start with critical animations first
           initializeAnimations();
-          
-          // Defer non-critical work
-          requestIdleCallback(() => {
-            // Preload images for better transitions
-            const imagesToPreload = Array.from(document.querySelectorAll('.project-image')).map(img => img.src);
-            imagesToPreload.forEach(src => {
-              const img = new Image();
-              img.src = src;
-            });
-          });
         }, 600);
       }, isMobile ? 1500 : 2000);
     });
