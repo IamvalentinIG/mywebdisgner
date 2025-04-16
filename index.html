@@ -158,7 +158,6 @@
       line-height: 1.5;
       max-width: 80%;
     }
-
     /* Scroll indicator */
     .scroll-indicator {
       position: absolute;
@@ -427,6 +426,7 @@
       align-items: center;
       transform-style: preserve-3d;
       perspective: 1500px;
+      touch-action: none; /* Empêche le défilement pendant les interactions tactiles */
     }
 
     .hex-container {
@@ -544,7 +544,6 @@
       height: 50%;
       top: 50%;
     }
-
     /* Skill icon styling */
     .skill-icon {
       font-size: 2.5rem;
@@ -607,6 +606,7 @@
     .skill-info-panel.visible {
       transform: translateY(0);
       opacity: 1;
+      pointer-events: auto; /* Permet l'interaction quand visible */
     }
 
     .skill-info-title {
@@ -645,7 +645,6 @@
       border-radius: 3px;
       transition: width 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-
     /* Controls */
     .grid-controls {
       position: absolute;
@@ -670,6 +669,7 @@
       cursor: pointer;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       transition: all 0.3s ease;
+      -webkit-tap-highlight-color: transparent; /* Supprime la surbrillance au toucher sur mobile */
     }
 
     .grid-button:hover {
@@ -937,7 +937,6 @@
       opacity: 0.6;
       margin-top: 2rem;
     }
-
     /* Media Queries */
     @media (max-width: 1024px) {
       .hero-title {
@@ -1017,6 +1016,21 @@
         height: 40px;
         font-size: 1rem;
       }
+      
+      /* Amélioration pour panel d'info sur mobile */
+      .skill-info-panel {
+        top: auto;
+        right: auto;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%) translateY(30px);
+        width: 90%;
+        max-width: 300px;
+      }
+      
+      .skill-info-panel.visible {
+        transform: translateX(-50%) translateY(0);
+      }
     }
 
     @media (max-width: 480px) {
@@ -1055,6 +1069,16 @@
       .cursor, 
       .cursor-follower {
         display: none;
+      }
+      
+      /* Ajustements supplémentaires pour mobile */
+      .grid-controls {
+        gap: 10px;
+      }
+      
+      .grid-button {
+        width: 36px;
+        height: 36px;
       }
     }
   </style>
@@ -1104,7 +1128,8 @@
         <div class="text">Scroll to explore</div>
       </div>
     </section>
-    <!-- Skills section avec effet 3D impressionnant -->
+    
+    <!-- Skills section -->
     <section class="skills" id="skills">
       <div class="skills-header">
         <h2 class="skills-title">My Expertise</h2>
@@ -1150,7 +1175,6 @@
         </div>
       </div>
     </section>
-    
     <!-- Contact section with 3D form -->
     <section class="contact" id="contact">
       <h2 class="contact-title">Let's Connect</h2>
@@ -1276,6 +1300,8 @@
       let hexDragging = false;
       let hexLastMouseX = 0;
       let hexLastMouseY = 0;
+      let hexLastTouchX = 0;
+      let hexLastTouchY = 0;
       let skillInfoVisible = false;
       let currentSelectedHex = null;
       let hexCells = [];
@@ -1321,7 +1347,6 @@
         { id: 'aws', name: 'AWS', icon: '⟰', color: '#FF9900', level: 78, 
           description: 'Deploying and scaling applications on Amazon Web Services.' }
       ];
-
       // DOM elements
       const elements = {
         loadingScreen: document.getElementById('loadingScreen'),
@@ -1339,6 +1364,7 @@
         // Hex grid elements
         hexContainer: document.getElementById('hexContainer'),
         hexGridInner: document.getElementById('hexGridInner'),
+        hexGrid: document.getElementById('hexGrid'),
         skillInfoPanel: document.getElementById('skillInfoPanel'),
         particlesContainer: document.getElementById('particlesContainer'),
         connectionsCanvas: document.getElementById('connectionsCanvas'),
@@ -1393,7 +1419,6 @@
       // Call resize initially and on window resize
       window.addEventListener('resize', handleResize);
       resizeCanvas();
-      
       // Custom cursor implementation - only on desktop
       if (!isTouch) {
         const updateCursor = (e) => {
@@ -1514,7 +1539,6 @@
         time += isMobile ? 0.4 : 0.5;
         rafId = requestAnimationFrame(drawFluidLines);
       }
-      
       // Generate floating elements - optimized DOM manipulations
       function createFloatingElements() {
         const fragment = document.createDocumentFragment();
@@ -1700,8 +1724,11 @@
           hexPrism.appendChild(hexBottom);
           hexCell.appendChild(hexPrism);
           
-          // Add interaction
-          hexTop.addEventListener('click', () => {
+          // Add interaction - compatible with touch and mouse
+          hexTop.addEventListener(isTouch ? 'touchstart' : 'click', (e) => {
+            // Prevent default only for touch to avoid scroll issues
+            if (isTouch) e.preventDefault();
+            
             showSkillInfo(skill);
             currentSelectedHex = hexCell;
             
@@ -1728,7 +1755,6 @@
         // Draw the connections between hexagons
         drawConnections();
       }
-      
       // Function to display skill information
       function showSkillInfo(skill) {
         if (!elements.skillInfoPanel) return;
@@ -1811,7 +1837,6 @@
           }
         }
       }
-      
       // Particle explosion effect when clicking a hex
       function createParticleExplosion(color, sourceElement) {
         if (!elements.particlesContainer) return;
@@ -1900,19 +1925,20 @@
         elements.hexContainer.style.transform = 
           `rotateX(${hexRotationX}deg) rotateZ(${hexRotationZ}deg) scale(${hexScale})`;
       }
-      
       // Skills section controls
       function initializeSkillsControls() {
         // Rotation controls
         if (elements.rotateLeftBtn) {
-          elements.rotateLeftBtn.addEventListener('click', () => {
+          elements.rotateLeftBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Empêche le double tap de zoom sur mobile
             hexRotationZ -= 15;
             updateHexGridTransform();
           });
         }
         
         if (elements.rotateRightBtn) {
-          elements.rotateRightBtn.addEventListener('click', () => {
+          elements.rotateRightBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             hexRotationZ += 15;
             updateHexGridTransform();
           });
@@ -1920,14 +1946,16 @@
         
         // Scale controls
         if (elements.expandBtn) {
-          elements.expandBtn.addEventListener('click', () => {
+          elements.expandBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             hexScale = Math.min(hexScale + 0.1, 2.0);
             updateHexGridTransform();
           });
         }
         
         if (elements.contractBtn) {
-          elements.contractBtn.addEventListener('click', () => {
+          elements.contractBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             hexScale = Math.max(hexScale - 0.1, 0.5);
             updateHexGridTransform();
           });
@@ -1936,38 +1964,74 @@
         // Mouse/touch drag to rotate the grid
         const hexGrid = document.getElementById('hexGrid');
         if (hexGrid) {
-          hexGrid.addEventListener(isTouch ? 'touchstart' : 'mousedown', (e) => {
-            hexDragging = true;
-            hexLastMouseX = isTouch ? e.touches[0].clientX : e.clientX;
-            hexLastMouseY = isTouch ? e.touches[0].clientY : e.clientY;
-            e.preventDefault();
-          });
-          
-          document.addEventListener(isTouch ? 'touchend' : 'mouseup', () => {
-            hexDragging = false;
-          });
-          
-          document.addEventListener(isTouch ? 'touchmove' : 'mousemove', (e) => {
-            if (!hexDragging) return;
+          // Gestion du drag pour souris
+          if (!isTouch) {
+            hexGrid.addEventListener('mousedown', (e) => {
+              hexDragging = true;
+              hexLastMouseX = e.clientX;
+              hexLastMouseY = e.clientY;
+              e.preventDefault();
+            });
             
-            const clientX = isTouch ? e.touches[0].clientX : e.clientX;
-            const clientY = isTouch ? e.touches[0].clientY : e.clientY;
+            document.addEventListener('mouseup', () => {
+              hexDragging = false;
+            });
             
-            const deltaX = clientX - hexLastMouseX;
-            const deltaY = clientY - hexLastMouseY;
+            document.addEventListener('mousemove', (e) => {
+              if (!hexDragging) return;
+              
+              const deltaX = e.clientX - hexLastMouseX;
+              const deltaY = e.clientY - hexLastMouseY;
+              
+              hexRotationZ += deltaX * 0.3;
+              hexRotationX = Math.max(20, Math.min(80, hexRotationX - deltaY * 0.3));
+              
+              updateHexGridTransform();
+              
+              hexLastMouseX = e.clientX;
+              hexLastMouseY = e.clientY;
+            });
+          } 
+          // Gestion du drag pour mobile
+          else {
+            hexGrid.addEventListener('touchstart', (e) => {
+              if (e.touches.length === 1) {
+                hexDragging = true;
+                hexLastTouchX = e.touches[0].clientX;
+                hexLastTouchY = e.touches[0].clientY;
+              }
+            }, { passive: false });
             
-            hexRotationZ += deltaX * 0.3;
-            hexRotationX = Math.max(20, Math.min(80, hexRotationX - deltaY * 0.3));
+            document.addEventListener('touchend', () => {
+              hexDragging = false;
+            }, { passive: true });
             
-            updateHexGridTransform();
-            
-            hexLastMouseX = clientX;
-            hexLastMouseY = clientY;
-          });
+            document.addEventListener('touchmove', (e) => {
+              if (!hexDragging || e.touches.length !== 1) return;
+              
+              const touch = e.touches[0];
+              const deltaX = touch.clientX - hexLastTouchX;
+              const deltaY = touch.clientY - hexLastTouchY;
+              
+              // Rotation moins sensible sur mobile pour un meilleur contrôle
+              hexRotationZ += deltaX * 0.2;
+              hexRotationX = Math.max(20, Math.min(80, hexRotationX - deltaY * 0.2));
+              
+              updateHexGridTransform();
+              
+              hexLastTouchX = touch.clientX;
+              hexLastTouchY = touch.clientY;
+              
+              // Empêche le défilement de la page pendant le drag
+              if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+                e.preventDefault();
+              }
+            }, { passive: false });
+          }
         }
         
-        // Close skill info panel when clicking outside
-        document.addEventListener('click', (e) => {
+        // Close skill info panel when clicking/tapping outside
+        const closePanel = (e) => {
           if (skillInfoVisible) {
             // Check if click is outside the info panel and not on a hexagon
             if (!elements.skillInfoPanel.contains(e.target) && 
@@ -1975,9 +2039,19 @@
               hideSkillInfo();
             }
           }
-        });
+        };
+        
+        document.addEventListener('click', closePanel);
+        
+        // Pour les appareils tactiles
+        if (isTouch) {
+          document.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+              closePanel(e.touches[0]);
+            }
+          }, { passive: true });
+        }
       }
-      
       // 3D effect for contact form
       function setup3DContactForm() {
         if (!elements.contactForm3D || isTouch) return;
@@ -2033,7 +2107,6 @@
         const scrollProgress = scrollTop / totalScrollHeight;
         document.documentElement.style.setProperty('--progress', scrollProgress.toString());
       }
-      
       // Smooth scroll for anchor links
       function setupSmoothScroll() {
         // Smooth scroll for the scroll indicator
